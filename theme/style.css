@@ -7,6 +7,7 @@
     padding: 0;
     text-decoration: none;
     font-family: "Poppins", sans-serif;
+    transition: all .3s ease-in-out;
 
 }
 
@@ -14,15 +15,32 @@ body {
     min-height: 200vh;
 }
 
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .btn {
     padding: .5rem 1rem;
     background-color: #FFF;
     /* border-radius: 5rem; */
     color: #000;
+    border: 1px solid #fff;
+}
+
+.btn-solid {
+    background-color: #000;
+    color: #fff;
+}
+
+.btn:hover {
+    background: transparent;
+    color: #fff;
 }
 
 .container {
-    width: 80%;
+    width: 90%;
     margin: auto;
 }
 
@@ -104,11 +122,12 @@ body {
     display: flex;
     align-items: center;
     height: 100%;
+    justify-content: space-between;
 }
 
 .intro-section .right-side,
 .intro-section .left-side {
-    width: 50%;
+    width: 45%;
     padding: 2.5rem;
 }
 
@@ -128,4 +147,108 @@ body {
 .intro-section .intro-btns a {
     background-color: #000;
     color: #fff;
+}
+
+.func-section .section-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+.func-section .container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.func-section .right-side,
+.func-section .left-side {
+    width: 45%;
+
+}
+
+.func-section .section-row .imgBx {
+    width: 450px;
+    height: 450px;
+    object-fit: cover;
+
+}
+
+.func-section .section-row .right-side {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.func-section .section-row:nth-child(odd) .imgBx {
+    justify-content: flex-start;
+    background-color: aqua;
+}
+
+
+.func-section h3 {
+    font-size: 2.5rem;
+    line-height: 3rem;
+}
+
+.func-section .left-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.func-section .teacher-btns {
+    margin: 1rem 0;
+}
+
+.func-section .teacher-btns .btn {
+    background-color: #000;
+    color: #fff;
+}
+
+.func-section ul {
+    list-style: none;
+}
+
+.func-section .section-row .professor-columns {
+    display: flex;
+}
+
+.func-section .section-row .professor-columns i {
+    font-size: 2rem;
+}
+
+.func-section .section-row .professor-columns .professor-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: .5rem;
+}
+
+.join-section {
+    min-height: 60vh;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: column;
+}
+
+.join-section h1 {
+    font-size: 2.5rem;
+}
+
+.join-section p {
+    font-size: 1rem;
+}
+
+.join-section .btn {
+    border: 2px solid #000;
+}
+
+.join-section .join-btns {
+    margin: 1rem 0;
 }
