@@ -11,8 +11,192 @@
 
 }
 
-body {
-    min-height: 200vh;
+:root {
+    --blue-color : #0e59e6;
+
+}
+
+.invite-section {
+    height: 100vh;
+}
+
+.invite-section .container {
+    display: flex;
+    height: 100%;
+
+}
+
+.invite-section .left-side,
+.invite-section .right-side {
+    height: 100%;
+    width: 50%;
+}
+
+
+
+.invite-section .right-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+}
+
+.invite-section .right-side .img-bx {
+    width: 100%;
+    height: 100%;
+}
+
+.invite-section .highlight-title {
+    font-size: 2.5rem;
+    color: #0e59e6;
+}
+
+.invite-section .left-side {
+    padding: 2.5rem 0;
+    width: 60%;
+
+}
+
+.invite-section .left-side form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.invite-section .left-side form label {
+    font-size: .8rem;
+}
+
+.invite-section .left-side form input {
+    width: 300px;
+    height: 50px;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.invite-section .left-side .login-btn, .invite-section .left-side .signup-btn {
+    width: 300px;
+    height: 50px;
+    border-radius: 2rem;
+    font-weight: 800;
+    color : #fff;
+    text-align: center;
+}
+
+.invite-section .left-side .login-btn {
+    background-color: #0e59e6;
+}
+
+
+
+
+.invite-section .left-side .signup-btn {
+    border: 2px  solid #000;
+    color: #000;
+}
+
+
+.footer {
+    background-color: #F2F2F2;
+}
+
+.footer .container {
+    display: flex;
+    justify-content: space-between;
+    padding: 3rem 0;
+}
+
+.footer .container ul li {
+    list-style: none;
+}
+
+.footer .container ul  {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.logan-modal {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;left: 0;
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+
+}
+
+.logan-modal.showModal {
+    display: block;
+}
+
+.logan-modal::after {
+    width: 100%;
+    height: 100%;
+    top: 0;left: 0;
+    z-index: 99;
+    content: '';
+    opacity: .5;
+    background-color: #000;
+    position: absolute;
+
+}
+
+.logan-modal .login-bx {
+    width: 30%;
+    height: 70%;
+    background-color: #FFF;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.logan-modal .login-bx h3 {
+    font-size: 1.5rem;
+    justify-content: flex-start;
+
+}
+
+.logan-modal .login-bx .inputBx {
+    width: 300px;
+    height: 40px;
+    background-color: aquamarine;
+}
+
+.logan-modal .login-bx .inputBx input {
+    width: 100%;
+    height: 100%;
+    padding: .5rem;
+}
+
+.logan-modal .login-bx form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.logan-modal .login-bx form .login-btns .btn {
+    border-color: #000 ;
+    font-size: 15px;
+    padding: .5rem 1rem;
+}
+
+.logan-modal .login-bx form .login-btns {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.logan-modal .login-bx form .login-btns .btn:hover {
+    background-color: #000;
+    color: #fff;
 }
 
 img {
@@ -22,11 +206,11 @@ img {
 }
 
 .btn {
-    padding: .5rem 1rem;
+    padding: 10px 20px;
     background-color: #FFF;
-    /* border-radius: 5rem; */
     color: #000;
     border: 1px solid #fff;
+    cursor: pointer;
 }
 
 .btn-solid {
@@ -40,7 +224,7 @@ img {
 }
 
 .container {
-    width: 90%;
+    width: 80%;
     margin: auto;
 }
 
@@ -51,18 +235,26 @@ img {
     align-items: center;
     position: fixed;
     z-index: 9999;
-    color: #fff;
-
 
 }
 
+
+.header.scrolled {
+    background-color: var(--blue-color);
+    padding: 1% 7%;
+    color: #fff;
+}
+
+.header.scrolled .navbar .nav-list .nav-link {
+    color: #fff;
+}
 
 .header .navbar {
     margin-left: 5%;
 }
 
 .header .nav-list .nav-link {
-    color: #fff;
+    color: #000;
 
 }
 

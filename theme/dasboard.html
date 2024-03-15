@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./dashboard-style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+    <main class="main-section">
+
+        <aside class="sidebar">
+            <nav class="side-nav">
+                <div class="logo">
+                    <img src="./fstt.png" alt="">
+                </div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#" class="nav-link"><i class='bx bx-home'></i></a></li>
+                    <li class="nav-item"><a href="#" class="nav-link"><i class='bx bx-group' ></i></a></li>
+                    <li class="nav-item"><a href="#" class="nav-link"><i class='bx bxs-shopping-bags'></i></a></li>
+                </ul>
+                <div class="logout-btn">
+                    <span><i class='bx bx-log-out'></i></span>
+                </div>
+
+            </nav>
+        </aside>
+
+        <section class="main-content">
+            <div class="container">
+
+            <header class="header-content">
+                <div class="search-bx ">
+                    <form action="">
+                        <div class="inputBx">
+                            <input type="text" name="search" id="search" placeholder="search here...">
+                            <label for="search"><i class='bx bx-search'></i></label>
+                        </div>
+                    </form>
+
+                </div>
+                <ul class="header-options">
+                    <li class="header-item"><button class="header-btn "><i class='bx bxs-bell'></i></button></li>
+                    <li class="header-item"><button class="header-btn"><i class='bx bxs-cog' ></i></button></li>
+                </ul>
+            </header>
+            <h3 class="greetings">Welcome, user</h3>
+            <div class="new-post">
+
+                <form action="">
+                    <div class="inputBx">
+                        <div class="img-icon">
+                            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                        </div>
+                        <input type="text" class="inputBx" placeholder="what do you want to say?">
+                    </div>
+
+                    <div class="files-option">
+                        <label for="file-upload" class="custom-file-upload">
+                            <input id="file-upload" type="file">
+                            <i class='bx bx-images'></i>
+                            photo
+                        </label>
+
+                        <label for="file-upload" class="custom-file-upload">
+                            <input id="file-upload" type="file">
+                            <i class='bx bxs-videos'></i>
+                            video
+                        </label>
+
+                        <label for="file-upload" class="custom-file-upload">
+                            <input id="file-upload" type="file">
+                            <i class='bx bx-file'></i>
+                            docuement
+                        </label>
+                        
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="post">
+                <div class="post-info">
+                    <div class="img-icon">
+                        <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                    </div>
+                    <div>
+                        <p class="user-status">Lorem ipsum dolor sit amet.</p>
+                        <p class="time-since">20 minutes ago</p>
+                    </div>
+
+                </div>
+                <div class="post-text">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorum, vel sit quo obcaecati aliquid earum dolorem non nulla. Pariatur, hic!
+                </div>
+                <div class="post-img">
+                    <img src="https://via.placeholder.com/640x360" alt="">
+                    <div class="likes-count"><i class='bx bxs-like'></i> Likes</div>
+                </div>
+                <div class="post-actions">
+                    <ul>
+                        <li><a href=""><i class='bx bxs-like'></i> Like</a></li>
+                        <li><a href=""><i class='bx bxs-message-alt-dots'></i> Comment</a></li>
+                        <li><a href=""><i class='bx bxs-share'></i> Share</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <aside class="func">
+            <div class="container">
+
+            <div class="profileBx">
+                <div class="cover">
+
+                </div>
+                <div class="user-cover">
+                    <div class="img-icon">
+                        <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                    </div>
+                </div>
+
+                <div class="user-info">
+                    <h3 class="full-name"></h3>
+                    <p class="user-status"></p>
+                    <button class="btn editBtn">Edit Profile <i class='bx bx-edit-alt'></i></button>
+                    <div class="user-stats">
+                        <div class="posts-counts">
+                           <h4>Posts</h4>
+                           <span>144</span>
+                        </div>
+                        <div class="post-contacts">
+                            <h4>Contacts</h4>
+                            <span>400</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="recomBx">
+                <h4 class="box-title">Add to your feed ...</h4>
+                <div class="usersBx">
+                    <div class="userBx">
+                        <div class="img-icon">
+                            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                        </div>
+                        <div class="user-info">
+                            <h5 class="user-name">Ayoub khabali</h5>
+                            <span class="user-status">Student at FSTT</span>
+                            <button type="submit" class="addBtn">Follow <i class='bx bx-plus'></i></button>
+                        </div>
+                    </div>
+                    <div class="userBx">
+                        <div class="img-icon">
+                            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                        </div>
+                        <div class="user-info">
+                            <h5 class="user-name">Ayoub khabali</h5>
+                            <span class="user-status">Student at FSTT</span>
+                            <button type="submit" class="addBtn">Follow <i class='bx bx-plus'></i></button>
+                        </div>
+                    </div>
+                    <div class="userBx">
+                        <div class="img-icon">
+                            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                        </div>
+                        <div class="user-info">
+                            <h5 class="user-name">Ayoub khabali</h5>
+                            <span class="user-status">Student at FSTT</span>
+                            <button type="submit" class="addBtn">Follow <i class='bx bx-plus'></i></button>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+
+        </aside>
+    </div>
+
+    </main>
+
+    
+</body>
+</html>
