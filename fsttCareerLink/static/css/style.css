@@ -1,0 +1,446 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-family: "Poppins", sans-serif;
+    transition: all .3s ease-in-out;
+
+}
+
+:root {
+    --blue-color : #0e59e6;
+
+}
+
+.invite-section {
+    height: 100vh;
+}
+
+.invite-section .container {
+    display: flex;
+    height: 100%;
+
+}
+
+.invite-section .left-side,
+.invite-section .right-side {
+    height: 100%;
+    width: 50%;
+}
+
+
+
+.invite-section .right-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+}
+
+.invite-section .right-side .img-bx {
+    width: 100%;
+    height: 100%;
+}
+
+.invite-section .highlight-title {
+    font-size: 2.5rem;
+    color: #0e59e6;
+}
+
+.invite-section .left-side {
+    padding: 2.5rem 0;
+    width: 60%;
+
+}
+
+.invite-section .left-side form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.invite-section .left-side form label {
+    font-size: .8rem;
+}
+
+.invite-section .left-side form input {
+    width: 300px;
+    height: 50px;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.invite-section .left-side .login-btn, .invite-section .left-side .signup-btn {
+    width: 300px;
+    height: 50px;
+    border-radius: 2rem;
+    font-weight: 800;
+    color : #fff;
+    text-align: center;
+}
+
+.invite-section .left-side .login-btn {
+    background-color: #0e59e6;
+}
+
+
+
+
+.invite-section .left-side .signup-btn {
+    border: 2px  solid #000;
+    color: #000;
+}
+
+
+.footer {
+    background-color: #F2F2F2;
+}
+
+.footer .container {
+    display: flex;
+    justify-content: space-between;
+    padding: 3rem 0;
+}
+
+.footer .container ul li {
+    list-style: none;
+}
+
+.footer .container ul  {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.logan-modal {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;left: 0;
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+
+}
+
+.logan-modal.showModal {
+    display: block;
+}
+
+.logan-modal::after {
+    width: 100%;
+    height: 100%;
+    top: 0;left: 0;
+    z-index: 99;
+    content: '';
+    opacity: .5;
+    background-color: #000;
+    position: absolute;
+
+}
+
+.logan-modal .login-bx {
+    width: 30%;
+    height: 70%;
+    background-color: #FFF;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.logan-modal .login-bx h3 {
+    font-size: 1.5rem;
+    justify-content: flex-start;
+
+}
+
+.logan-modal .login-bx .inputBx {
+    width: 300px;
+    height: 40px;
+    background-color: aquamarine;
+}
+
+.logan-modal .login-bx .inputBx input {
+    width: 100%;
+    height: 100%;
+    padding: .5rem;
+}
+
+.logan-modal .login-bx form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.logan-modal .login-bx form .login-btns .btn {
+    border-color: #000 ;
+    font-size: 15px;
+    padding: .5rem 1rem;
+}
+
+.logan-modal .login-bx form .login-btns {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.logan-modal .login-bx form .login-btns .btn:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn {
+    padding: 10px 20px;
+    background-color: #FFF;
+    color: #000;
+    border: 1px solid #fff;
+    cursor: pointer;
+}
+
+.btn-solid {
+    background-color: #000;
+    color: #fff;
+}
+
+.btn:hover {
+    background: transparent;
+    color: #fff;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+.header {
+    width: 100%;
+    padding: 1rem 3rem;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    z-index: 9999;
+
+}
+
+
+.header.scrolled {
+    background-color: var(--blue-color);
+    padding: 1% 7%;
+    color: #fff;
+}
+
+.header.scrolled .navbar .nav-list .nav-link {
+    color: #fff;
+}
+
+.header .navbar {
+    margin-left: 5%;
+}
+
+.header .nav-list .nav-link {
+    color: #000;
+
+}
+
+.header .navbar .nav-list {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    
+}
+
+.header .header-btns {
+    justify-self: flex-end;
+    position: absolute;
+    right: 3rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.hero-section {
+    background-image: url("./hero.jpg");
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 1;
+
+}
+
+.hero-section .highlight-title {
+    font-size: 4rem;
+    color: #fff;
+    line-height: 5rem;
+    letter-spacing: .1rem;
+}
+
+.hero-section::after {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    content: '';
+    background-color: #000;
+    opacity: .6;
+    z-index: -1;
+}
+
+.intro-section {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+
+}
+
+.intro-section .container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.intro-section .right-side,
+.intro-section .left-side {
+    width: 45%;
+    padding: 2.5rem;
+}
+
+.intro-section .right-side h1 {
+    font-size:  4rem;
+}
+.intro-section .left-side p {
+    font-size: 1rem;
+
+}
+
+.intro-section .intro-btns {
+    margin: 1rem 0;
+
+}
+
+.intro-section .intro-btns a {
+    background-color: #000;
+    color: #fff;
+}
+
+.func-section .section-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+.func-section .container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.func-section .right-side,
+.func-section .left-side {
+    width: 45%;
+
+}
+
+.func-section .section-row .imgBx {
+    width: 450px;
+    height: 450px;
+    object-fit: cover;
+
+}
+
+.func-section .section-row .right-side {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.func-section .section-row:nth-child(odd) .imgBx {
+    justify-content: flex-start;
+    background-color: aqua;
+}
+
+
+.func-section h3 {
+    font-size: 2.5rem;
+    line-height: 3rem;
+}
+
+.func-section .left-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.func-section .teacher-btns {
+    margin: 1rem 0;
+}
+
+.func-section .teacher-btns .btn {
+    background-color: #000;
+    color: #fff;
+}
+
+.func-section ul {
+    list-style: none;
+}
+
+.func-section .section-row .professor-columns {
+    display: flex;
+}
+
+.func-section .section-row .professor-columns i {
+    font-size: 2rem;
+}
+
+.func-section .section-row .professor-columns .professor-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: .5rem;
+}
+
+.join-section {
+    min-height: 60vh;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: column;
+}
+
+.join-section h1 {
+    font-size: 2.5rem;
+}
+
+.join-section p {
+    font-size: 1rem;
+}
+
+.join-section .btn {
+    border: 2px solid #000;
+}
+
+.join-section .join-btns {
+    margin: 1rem 0;
+}

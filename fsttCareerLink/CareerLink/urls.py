@@ -1,6 +1,10 @@
 from django.urls import path
 from .views import index
+from . import views
 from django.http import HttpResponse
+from django.contrib.auth import views as auth_views
+from django.urls import path
+
 
 
 def StudentDashboard(request) :
@@ -18,4 +22,9 @@ urlpatterns = [
     path('student-dashboard/',StudentDashboard),
     path('teacher-dashboard/',TeacherDashboard),
     path('entreprise-dashboard/',EntrepriseDashboard),
+    path('logout/',views.logoutUser,name="logout"),
+    path('login/',views.loginPage,name="login"),
+    path('rooms/',views.rooms,name="rooms"),
+
+
 ]
