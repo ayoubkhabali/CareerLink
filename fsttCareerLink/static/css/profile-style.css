@@ -1,0 +1,17 @@
+.profile-section {
+    display: flex;
+    /* grid-template-columns: 80%; */
+    gap: 2rem;
+    width: 100%;
+    min-height: 100vw;
+    position: relative;
+    justify-content: center;
+}
+
+
+.profile-section .main-profile {
+    background-color: #ffff;
+    width: 90%;
+
+    
+}

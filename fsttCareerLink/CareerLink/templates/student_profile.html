@@ -1,12 +1,21 @@
 {% extends 'index.html' %}
+{% load static %}
 {% block content %}
 
-<h1>Student Profile</h1>
-    {% if student %}
-        <p>University: {{ student.university }}</p>
-        <p>Major: {{ student.major }}</p>
-    {% else %}
-        <p>No student information found for this user.</p>
-    {% endif %}
+
+<div class="profile-section">
+    {% include 'sidebar.html' %}
+    <div class="main-profile">
+        <h1>Student Profile</h1>
+        {% if student %}
+            <p>University: {{ student.university }}</p>
+            <p>Major: {{ student.major }}</p>
+        {% else %}
+            <p>No student information found for this user.</p>
+        {% endif %}
+    </div>
+</div>
+
+
 
 {% endblock %}

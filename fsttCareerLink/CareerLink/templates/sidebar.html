@@ -1,0 +1,18 @@
+{% load static %}
+<aside class="sidebar">
+    <nav class="side-nav">
+        <div class="logo">
+            <img src="{% static 'images/fstt.png' %}" alt="">
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="{% url 'home' %}" class="nav-link"><i class='bx bx-home'></i>Home</a></li>
+            <li class="nav-item"><a href="{% url 'rooms' %}" class="nav-link"><i class='bx bxs-chalkboard' ></i>your rooms</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class='bx bx-group' ></i></a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class='bx bxs-shopping-bags'></i></a></li>
+        </ul>
+        <div class="logout-btn">
+            <a href="{% url 'logout' %}" ><i class='bx bx-log-out'></i></a>
+        </div>
+
+    </nav>
+</aside>

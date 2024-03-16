@@ -20,6 +20,7 @@ def EntrepriseDashboard(request) :
 urlpatterns = [
     path('home/', views.home, name='home'),
     path('', views.welcome, name='welcome'),
+    path('about_us', views.aboutUs, name='about'),
     path('student-dashboard/',StudentDashboard),
     path('teacher-dashboard/',TeacherDashboard),
     path('entreprise-dashboard/',EntrepriseDashboard),

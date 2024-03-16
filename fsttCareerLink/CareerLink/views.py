@@ -11,8 +11,14 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import PostForm  # Import the PostForm
 
+def aboutUs(request) :
+    return render(request,'about_us.html')
+
 def welcome(request) :
-    return render(request,'welcome.html')
+     if request.user.is_authenticated:
+        return redirect('home')
+     else :
+        return render(request,'welcome.html')
 
 def home(request):
     student = None  # Initialize student variable
@@ -59,7 +65,7 @@ def loginPage(request):
 
         if user is not None:
             login(request, user)
-            return redirect('/')
+            return redirect('home')
         else:
             messages.error(request, 'Username or password is incorrect.')
 
@@ -68,8 +74,6 @@ def loginPage(request):
 def logoutUser(request):
     logout(request)
     return redirect('/')
-# Create your views here.
-
 
 
 def student_profile(request):

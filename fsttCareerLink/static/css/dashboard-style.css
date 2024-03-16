@@ -68,7 +68,7 @@ img {
 
 
 
-.main-section .sidebar .nav-list {
+.sidebar .nav-list {
     font-size: 1.2rem  ;
     list-style: none;
     position: relative;
@@ -77,7 +77,7 @@ img {
     gap: 1.5rem;
 }
 
-.main-section .sidebar {
+.sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -87,7 +87,7 @@ img {
     overflow: hidden;
 }
 
-.main-section .sidebar .nav-link  {
+.sidebar .nav-link  {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -96,12 +96,12 @@ img {
     color: var(--blue-color);
 }
 
-.main-section .sidebar:hover {
+.sidebar:hover {
     width: 17vw; /* Width on hover */
     z-index: 99;
 }
 
-.main-section .sidebar .side-nav {
+.sidebar .side-nav {
     display: flex;
     flex-direction: column;
     justify-content:flex-start;
@@ -112,12 +112,12 @@ img {
     
 }
 
-.main-section .sidebar .side-nav .logo {
+.sidebar .side-nav .logo {
     width: 30px;
 }
 
 
-.main-section .sidebar .side-nav .logout-btn {
+.sidebar .side-nav .logout-btn {
     justify-self: flex-end;
     position: absolute;
     bottom: 0;
@@ -242,8 +242,7 @@ padding: 1rem;
     background-color: #fff;
     padding: 1.5rem;
     margin: 1rem 0;
-    width: 300px;
-    height: 500px;
+
 }
 
 .post .post-actions ul{
