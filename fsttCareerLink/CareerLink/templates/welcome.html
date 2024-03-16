@@ -1,0 +1,66 @@
+{% extends 'index.html' %}
+{% include 'navbar.html' %}
+
+{% load static %}
+
+
+{% block content %}
+
+<section class="invite-section">
+    <div class="container">
+        <div class="left-side">
+            <h1 class="highlight-title">Welcome to your professional community</h1>
+            <form action="{% url 'login' %}" method="POST">
+                {% csrf_token %}
+                <label for="email">Enter your username</label>
+                <input type="text" name="username" id="email">
+                <label for="password">Enter your password</label>
+                <input type="password" name="password" id="password">
+                <button type="submit" class="btn login-btn">Sign in</button>
+                <span class="or">---------------- or ----------------</span>
+                <a href="{% url 'logout' %}" class="signup-btn btn">Sign up</a>
+            </form>
+            
+        </div>
+        <div class="right-side">
+            <div class="img-bx">
+                <img src="{% static 'images/invite-img.png' %}" alt="">
+           </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="footer">
+    <div class="container">
+        <ul>
+            <h4 class="col-title">General</h4>
+            <li><a href="" class="list-link">Sign up</a></li>
+            <li><a href="" class="list-link">Help center</a></li>
+            <li><a href="" class="list-link">About</a></li>
+            <li><a href="" class="list-link">Press</a></li>
+        </ul>
+        <ul>
+            <h4 class="col-title">Browse Linkedin</h4>
+            <li><a href="" class="list-link">Learning</a></li>
+            <li><a href="" class="list-link">Jobs</a></li>
+            <li><a href="" class="list-link">Salary</a></li>
+            <li><a href="" class="list-link">Services</a></li>
+        </ul>
+        <ul>
+            <h4 class="col-title">Business Solution</h4>
+            <li><a href="" class="list-link">Talent</a></li>
+            <li><a href="" class="list-link">Marketing</a></li>
+            <li><a href="" class="list-link">Sales</a></li>
+            <li><a href="" class="list-link">Learning</a></li>
+        </ul>
+        <ul>
+            <h4 class="col-title">Directories</h4>
+            <li><a href="" class="list-link">Members</a></li>
+            <li><a href="" class="list-link">Jobs</a></li>
+            <li><a href="" class="list-link">Companies</a></li>
+            <li><a href="" class="list-link">Featured</a></li>
+        </ul>
+    </div>
+</section>
+{% endblock %}

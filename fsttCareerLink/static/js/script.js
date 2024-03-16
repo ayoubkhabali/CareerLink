@@ -1,13 +1,4 @@
 const navbar = document.querySelector(".header")
-// const loginBtn = document.querySelector(".loginBtn")
-// const loginForm = document.querySelector(".login-modal")
-
-// loginBtn.addEventListener("click", (e) => {
-//     e.preventDefault()
-//     console.log("class addedd!!")
-//     loginForm.classList.add("showModal")
-    
-// })
 
 window.addEventListener('scroll', ()=> {
     if (window.scrollY > 50) {
@@ -16,3 +7,24 @@ window.addEventListener('scroll', ()=> {
         navbar.classList.remove('scrolled');
     }
 });
+
+// script.js
+var modal = document.getElementById("myModal");
+
+var editBtn = document.getElementById("edit-btn");
+
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}

@@ -6,8 +6,8 @@ from datetime import datetime
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
     student_id = models.CharField(max_length=20, default='')
-    major = models.CharField(max_length=100, default='')
-    university = models.CharField(max_length=100, default='')
+    university = models.CharField(max_length=20, default='')
+    major = models.CharField(max_length=20, default='')
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professor_profile')
