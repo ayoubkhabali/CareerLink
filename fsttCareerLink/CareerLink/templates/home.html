@@ -122,6 +122,31 @@
                         <li><a href=""><i class='bx bxs-message-alt-dots'></i> Comment</a></li>
                         <li><a href=""><i class='bx bxs-share'></i> Share</a></li>
                     </ul>
+                    <div class="comments-section">
+                        {% for comment in post.comments.all %}
+                        <div class="comment">
+                            <div class="author-info">
+                                <div class="img-icon">
+                                    <!-- Display user avatar or profile picture -->
+                                    <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                                </div>
+                                <span class="author-name">{{ comment.author }}</span>
+                                <!-- <span class="author-name">{{ comment.created_at }}</span> -->
+                            </div>
+
+                            <div class="comment-text">
+                                {{ comment.content }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="add-comment">
+                        <form method="post" action="{% url 'comment_post' post_id=post.id %}">
+                            {% csrf_token %}
+                            <input type="text" name="content" placeholder="Write a comment...">
+                            <button type="submit">Post Comment</button>
+                        </form>
+                    </div>
                 </div>
                 
     

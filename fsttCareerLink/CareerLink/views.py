@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like
+from .models import Student, User,Post,Like,Comment
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
@@ -110,6 +110,21 @@ def like_post(request, post_id):
     
     # Redirect back to the homepage
     return redirect('home')
+
+
+def comment_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            # Create a new comment instance
+            comment = Comment(post=post, author=request.user, content=content)
+            comment.save()
+    
+    # Redirect back to the homepage
+    return redirect('home')
+
 
 def student_profile(request):
     student = None

@@ -446,3 +446,11 @@ img {
 .join-section .join-btns {
     margin: 1rem 0;
 }
+
+.comments-section .comment{
+    display: grid;
+    grid-template-columns: .5fr 3fr;
+    gap: 1rem;
+    align-items: center;
+    margin: 1rem 0;
+}
