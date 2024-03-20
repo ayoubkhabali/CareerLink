@@ -28,6 +28,7 @@ urlpatterns = [
     path('login/',views.loginPage,name="login"),
     path('rooms/',views.rooms,name="rooms"),
     path('student_profile/',views.student_profile,name="student_profile"),
+    path('like/<int:post_id>/', views.like_post, name='like_post'),
 
 
 ]

@@ -2,10 +2,13 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post
+from .models import Student, User,Post,Like
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
-
+from django.http import HttpResponseRedirect,HttpResponseNotAllowed
+from django.urls import reverse
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 
 
@@ -76,9 +79,46 @@ def logoutUser(request):
     return redirect('/')
 
 
+from django.shortcuts import redirect
+from django.http import JsonResponse
+
+
+# views.py
+
+from django.shortcuts import redirect, get_object_or_404
+from .models import Post, Like
+
+def like_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    user = request.user
+    
+    # Check if the user has already liked the post
+    existing_like = Like.objects.filter(post=post, user=user).first()
+    if existing_like:
+        # If the user already liked the post, remove the like
+        existing_like.delete()
+        # Decrement the likes count in the Post model
+        post.likes -= 1
+        post.save()
+    else:
+        # If the user hasn't liked the post, create a new like instance
+        like = Like(post=post, user=user)
+        like.save()
+        # Increment the likes count in the Post model
+        post.likes += 1
+        post.save()
+    
+    # Redirect back to the homepage
+    return redirect('home')
+
 def student_profile(request):
+    student = None
+    posts = None
+
     try:
         student = Student.objects.get(user=request.user)
-        return render(request, 'student_profile.html', {'student': student})
+        posts = Post.objects.filter(author=request.user).order_by('-created_at')
     except Student.DoesNotExist:
-        return render(request, 'student_profile.html', {'student': None})
+        pass
+
+    return render(request, 'student_profile.html', {'student': student, 'posts': posts})
