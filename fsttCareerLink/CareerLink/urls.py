@@ -30,6 +30,8 @@ urlpatterns = [
     path('student_profile/',views.student_profile,name="student_profile"),
     path('like/<int:post_id>/', views.like_post, name='like_post'),
     path('comment/<int:post_id>/', views.comment_post, name='comment_post'),
+    path('share/<int:post_id>/', views.share_post, name='share_post'),
+    path('profile/', views.profile, name='profile'),
 
 
 ]

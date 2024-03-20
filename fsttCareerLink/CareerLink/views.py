@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like,Comment
+from .models import Student, User,Post,Like,Comment,SharePost
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
@@ -125,6 +125,23 @@ def comment_post(request, post_id):
     # Redirect back to the homepage
     return redirect('home')
 
+def share_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    
+    # Create a new instance of the SharePost model
+    share_post_instance = SharePost.objects.create(
+        post=post,
+        user=request.user
+    )
+    
+    # Redirect back to the homepage
+    return redirect('home')
+
+def profile(request):
+    # Assuming you have a user object available
+    shared_posts = SharePost.objects.filter(user=request.user)
+    return render(request, 'profile.html', {'shared_posts': shared_posts})
+
 
 def student_profile(request):
     student = None
@@ -133,6 +150,7 @@ def student_profile(request):
     try:
         student = Student.objects.get(user=request.user)
         posts = Post.objects.filter(author=request.user).order_by('-created_at')
+        
     except Student.DoesNotExist:
         pass
 

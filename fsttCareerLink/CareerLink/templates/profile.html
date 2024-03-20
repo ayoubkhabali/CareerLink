@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="profile-section">
+    {% include 'sidebar.html' %}
+        <h1>Welcome to Your Profile, {{ user.username }}</h1>
+        <div class="some-content">
+        <!-- Display shared posts -->
+        <h2>Shared Posts:</h2>
+        <div class="shared-posts">
+            {% for share_post in shared_posts %}
+                <div class="post">
+                    <p>{{ share_post.post.author.username }} shared:</p>
+                    <p>{{ share_post.post.content }}</p>
+                    <!-- Display post content, attachments, etc. -->
+                </div>
+            {% empty %}
+                <p>No shared posts yet.</p>
+            {% endfor %}
+        </div>
+        </div>
+
+
+</div>
+
+
+
+{% endblock %}
