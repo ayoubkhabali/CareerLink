@@ -1,17 +1,182 @@
+
+:root {
+    --grey-color :#535353;
+    --blue-color : #0e59e6;
+
+}
+
+.sidebar {
+    background-color: #fff;
+    z-index: 99;
+}
+
 .profile-section {
     display: flex;
     /* grid-template-columns: 80%; */
-    gap: 2rem;
+    /* gap: 2rem; */
     width: 100%;
-    min-height: 100vw;
+    min-height: 100vh;
     position: relative;
     justify-content: center;
 }
 
 
 .profile-section .main-profile {
-    background-color: #ffff;
-    width: 90%;
+    width: 100%;
+    margin-left: 8vw;
+}
 
-    
+.top-section .cover-bx {
+    height: 400px;
+    width: 100%;
+    background-image: url('/static/images/cover.jpg');
+    background-size: cover;
+}
+
+.top-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+
+
+}
+
+.top-section .img-icon {
+    width: 120px;
+    height: 120px;
+    position: absolute;
+    transform: translateY(50%);
+    bottom: 0;
+    border: .5rem solid #fff;
+}
+
+.top-section .img-icon img {
+    border-radius: 50%;
+}
+
+.main-profile .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4rem;
+}
+
+.main-profile .user-info .user-statis {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr ;
+    gap: 3rem;
+    text-align: center;
+    margin: 1rem 0;
+    color: grey;
+}
+
+.main-profile .user-info .user-statis h5 {
+    font-size: 1.2rem;
+}
+
+.main-profile .profile-nav-tabs {
+    display: flex;
+    justify-content: center;
+}
+
+.main-profile .profile-nav-tabs ul {
+    display: flex;
+    justify-content: center;
+    /* gap: 2rem; */
+    font-weight: 700;
+    background-color: rgb(232, 232, 232);
+    padding: .5rem 1.3rem ;
+    border-radius: 1rem;
+    align-items: center;
+
+}
+
+.main-profile .profile-nav-tabs ul a {
+    color: var(--grey-color);
+
+}
+
+.main-profile .profile-nav-tabs .current-tab {
+    position: relative;
+    z-index: 2;
+}
+
+.main-profile .profile-nav-tabs .profile-tab {
+    padding: .5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-profile .profile-nav-tabs .current-tab::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    content: '';
+    background: #fff;
+    z-index: -1;
+    border-radius: 2rem;
+}
+
+.main-profile .recent-posts {
+    width: 80%;
+    margin: auto;
+}
+
+.main-profile .recent-posts .post {
+    width: 100%;
+    min-height: 200px;
+    border-radius: 1rem;
+    border: 1px solid var(--grey-color);
+    display: flex;
+    flex-direction: column;
+}
+
+/* .main-profile .recent-posts .your-posts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+} */
+
+.main-profile .recent-posts .post .post-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.main-profile .recent-posts .post .post-info .user-span {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-profile .recent-posts .post .post-info .user-span .datetime {
+    font-size: .8rem;
+}
+
+.main-profile .recent-posts .post .post-actions {
+    border-top: .5px solid #d4d4d4;
+
+}
+
+.main-profile .recent-posts .post .post-actions .btn {
+    font-size: 1.2rem;
+}
+
+.main-profile .recent-posts .post .post-actions .btn:hover {
+    color: var(--blue-color);
+
+}
+
+.main-profile .recent-posts .post .post-actions .share-btn.btn-active,
+.main-profile .recent-posts .post .post-actions .btn-active {
+    color: var(--blue-color);
+}
+
+.main-profile .recent-posts .you-shared {
+    color: var(--blue-color);
+    font-size: 1.3rem;
+    font-weight: 500;
+
 }

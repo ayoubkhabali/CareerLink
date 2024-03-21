@@ -109,7 +109,7 @@ def like_post(request, post_id):
         post.save()
     
     # Redirect back to the homepage
-    return redirect('home')
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 def comment_post(request, post_id):
@@ -138,9 +138,27 @@ def share_post(request, post_id):
     return redirect('home')
 
 def profile(request):
+    posts = None 
+
+
+
     # Assuming you have a user object available
+    posts = Post.objects.filter(author=request.user).order_by('-created_at')
     shared_posts = SharePost.objects.filter(user=request.user)
-    return render(request, 'profile.html', {'shared_posts': shared_posts})
+
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('profile')  # Redirect to the homepage after publishing
+    else:
+        form = PostForm()
+
+
+
+    return render(request, 'profile.html', {'shared_posts': shared_posts,'posts' : posts, 'form':form})
 
 
 def student_profile(request):
@@ -155,3 +173,4 @@ def student_profile(request):
         pass
 
     return render(request, 'student_profile.html', {'student': student, 'posts': posts})
+
