@@ -39,7 +39,7 @@ class User(AbstractUser):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    student_id = models.AutoField(primary_key=True, serialize=False)
+    student_id = models.CharField(max_length=20, primary_key=True)
     university = models.CharField(max_length=20, default='')
     major = models.CharField(max_length=20, default='')
     projects = models.FileField(upload_to='studentProjects/', null=True, blank=True)

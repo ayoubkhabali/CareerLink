@@ -1,29 +1,38 @@
-{% extends 'index.html' %}
+
+<style>
+
+.edit-info-form {
+
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin: auto;
+    gap: .3rem;
+}
+
+.edit-info-form input {
+    width: 100%;
+    height: 30px;
+    padding: 1rem;
+}
+
+.edit-info-form textarea {
+    height: 300px;
+    resize: none;
+    padding: 1rem;
+}
+
+</style>
 
 <div class="about">
 
-    <!-- Display current user information -->
-    <h2>Welcome, {{ user.username }}</h2>
-    <p>Email: {{ user.email }}</p>
-    <p>Bio: {{ user.bio }}</p>
-    <!-- Display profile picture -->
-    <div class="img-icon">
-        <img src="{{ user.profile_pic.url }}" alt="Profile Picture">
-
-    </div>
-
     <!-- Form for editing user information -->
-    <form action="{% url 'update_profile' %}" method="post">
+    <form method="post" action="{% url 'update_profile' username=user.username %}" class="edit-info-form">
         {% csrf_token %}
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" value="{{ user.username }}">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{ user.email }}">
-        <label for="bio">Bio:</label>
-        <textarea id="bio" name="bio">{{ user.bio }}</textarea>
-        <!-- Add more fields as needed -->
-
-        <button type="submit">Save Changes</button>
+        {{ user_form.as_p }}
+        {{ student_form.as_p }}
+        <input type="submit" value="Save">
     </form>
-
+    
+    
 </div>

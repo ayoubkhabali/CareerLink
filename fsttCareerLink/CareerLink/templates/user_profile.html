@@ -41,8 +41,9 @@
         <h1 class="full-name" >{{ user.username }}</h1>
         {% if user.role == "TEACHER" %}
         <p>Teacher at {{user.teacher.department}}</p>
-        {% else %}
-        <p>Student</p>
+        {% elif user.role == "STUDENT" %}
+        <p>Student at {{ user.student.university }}</p>
+        <p>Studying  {{ user.student.major }} major</p>
 
         {% endif %}
         <div class="user-statis">
@@ -63,25 +64,28 @@
 
     <nav class="profile-nav-tabs">
         <ul>
-            <li class="profile-tab current-tab" ><a href="">Posts</a></li>
-            <li class="profile-tab"><a href="">About</a></li>
+            {% if posts_url %}
+
+            <li class="profile-tab current-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
+            <li class="profile-tab"><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
             <li class="profile-tab"><a href="">Groups</a></li>
+            {% elif about_url %}
+            <li class="profile-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
+            <li class="profile-tab  current-tab" ><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
+            <li class="profile-tab"><a href="">Groups</a></li>
+            {% endif %}
+
         </ul>
     </nav>
+    {% if about_url %}
     {% if user.is_authenticated and user == request.user %}
-    <div class="new-post">
-        <div class="img-icon">
-            <img src="{{ user.profile_pic.url }}" alt="">
-        </div>
-        <form method="POST" class="new-post-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-
-            <button type="submit" class="btn submitBtn" >Publish</button>
-        </form>
-
-    </div>
+    {% include 'about_profile.html' %}
     {% endif %}
+
+<div class="recent-posts">
+    <!-- Content for recent posts -->
+</div>
+
 
     <div class="recent-posts">
         <h2>Recent Posts:</h2>      
@@ -140,33 +144,21 @@
             {% endfor %}
         </div>
     </div>
-    <div class="about">
-
-        <!-- Display current user information -->
-        <h2>Welcome, {{ user.username }}</h2>
-        <p>Email: {{ user.email }}</p>
-        <p>Bio: {{ user.bio }}</p>
-        <!-- Display profile picture -->
+    {% elif posts_url %}
+    <div class="new-post">
         <div class="img-icon">
-            <img src="{{ user.profile_pic.url }}" alt="Profile Picture">
-
+            <img src="{{ user.profile_pic.url }}" alt="">
         </div>
+        <form method="POST" class="new-post-form">
+                {% csrf_token %}
+                {{ form.as_p }}
 
-        <!-- Form for editing user information -->
-        <form action="{% url 'update_profile' %}" method="post">
-            {% csrf_token %}
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="{{ user.username }}">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="{{ user.email }}">
-            <label for="bio">Bio:</label>
-            <textarea id="bio" name="bio">{{ user.bio }}</textarea>
-            <!-- Add more fields as needed -->
-
-            <button type="submit">Save Changes</button>
+            <button type="submit" class="btn submitBtn" >Publish</button>
         </form>
 
     </div>
+    {% endif %}
+
     </div>
 
 </div>

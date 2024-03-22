@@ -40,6 +40,7 @@ def home(request):
     shared_posts = SharePost.objects.filter(user=user)
 
     return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts})
+
 def rooms(request) :
     return render(request,'rooms.html')
 
@@ -47,17 +48,17 @@ def rooms(request) :
 @login_required  # Ensure the user is authenticated
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
-    
+    about_url = request.path == f'/profile/{request.user.username}/update/'
+    posts_url = request.path == f'/profile/{request.user.username}/'
+
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = user  # Set the author of the post to the current user
             post.save()
-
             # Update user's posts attribute
             user.posts.add(post)
-
             return redirect('user_profile', username=username)
     else:
         form = PostForm()
@@ -66,29 +67,36 @@ def user_profile(request, username):
     posts = user.posts.all().order_by('-created_at')
     shared_posts = SharePost.objects.filter(user=user)
 
-    return render(request, 'user_profile.html', {'user': user, 'form': form, 'posts': posts, 'shared_posts': shared_posts})
+    context = {'user': user, 'form': form, 'posts': posts, 'shared_posts': shared_posts,
+               'posts_url' : posts_url, 'about_url' : about_url}
+
+    return render(request, 'user_profile.html', context)
 
 
-def update_profile(request):
+from django.shortcuts import render, redirect
+from .forms import ChangeStudentInfoForm
+from .models import Student
+
+from django.shortcuts import render, redirect
+from .forms import ChangeStudentInfoForm, StudentInfoForm
+from .models import Student
+
+def update_profile(request, username):
+
+
+    user = User.objects.get(username=username)
+    student = user.student
     if request.method == 'POST':
-        # Get updated data from the form
-        new_username = request.POST['username']
-        new_email = request.POST['email']
-        new_bio = request.POST['bio']
-        # Update user's information
-        request.user.username = new_username
-        request.user.email = new_email
-        request.user.bio = new_bio
-        request.user.save()
-        # Optionally, add a success message
-        messages.success(request, 'Profile updated successfully.')
-        # Redirect to the user's profile page with the username as an argument
-        return redirect('user_profile', username=request.user.username)
+        user_form = ChangeStudentInfoForm(request.POST, instance=user)
+        student_form = StudentInfoForm(request.POST, instance=student)
+        if user_form.is_valid() and student_form.is_valid():
+            user_form.save()
+            student_form.save()
+        return redirect('user_profile', username=username)
     else:
-        # Handle GET request (not needed in this example)
-        pass
-
-
+        user_form = ChangeStudentInfoForm(instance=user)
+        student_form = StudentInfoForm(instance=student)
+    return render(request, 'about_profile.html', {'user_form': user_form, 'student_form': student_form})
 
 from django.contrib.auth import get_user_model
 

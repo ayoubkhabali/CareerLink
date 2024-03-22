@@ -1,7 +1,9 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User
+from .models import User,Student
+
+
 
 class CustomUserCreationForm(UserCreationForm):
     role = forms.ChoiceField(choices=User.Role.choices)
@@ -28,4 +30,14 @@ class PostForm(forms.ModelForm):
         labels = {
             'content': '',  # Set the label for 'content' field to an empty string
         }
+
+class StudentInfoForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['university', 'major']  # Fields specific to Student model
+
+class ChangeStudentInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'bio']  # Fields specific to User model
 

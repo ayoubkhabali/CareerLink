@@ -34,13 +34,12 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/about/', views.profile, name='profile-edit'),
     path('profile/<str:username>', RedirectView.as_view(url='/profile/%(username)s/')),
-    path('profile/<str:username>/', views.user_profile, name='user_profile'),
+    path('profile/<str:username>/about/', views.user_profile, name='about_profile'),
     path('follow/<str:username>/', views.follow_user, name='follow_user'),
     path('unfollow/<str:username>/', views.unfollow_user, name='unfollow_user'),
-    path('update_profile/', views.update_profile, name='update_profile'),
-
-
-
+    path('profile/<str:username>/update/', views.update_profile, name='update_profile'),
+    path('profile/<str:username>/', views.user_profile, name='user_profile'),
+    
 ]
 
 from django.conf import settings
