@@ -69,6 +69,27 @@ def user_profile(request, username):
     return render(request, 'user_profile.html', {'user': user, 'form': form, 'posts': posts, 'shared_posts': shared_posts})
 
 
+def update_profile(request):
+    if request.method == 'POST':
+        # Get updated data from the form
+        new_username = request.POST['username']
+        new_email = request.POST['email']
+        new_bio = request.POST['bio']
+        # Update user's information
+        request.user.username = new_username
+        request.user.email = new_email
+        request.user.bio = new_bio
+        request.user.save()
+        # Optionally, add a success message
+        messages.success(request, 'Profile updated successfully.')
+        # Redirect to the user's profile page with the username as an argument
+        return redirect('user_profile', username=request.user.username)
+    else:
+        # Handle GET request (not needed in this example)
+        pass
+
+
+
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
