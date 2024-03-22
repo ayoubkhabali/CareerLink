@@ -48,7 +48,7 @@
         </style>
         <div class="new-post">
             <div class="img-icon">
-                <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                <img src="{{user.profile_pic.url}}" alt="">
             </div>
             <form method="POST"  class="new-post-form">
                 {% csrf_token %}
@@ -67,7 +67,7 @@
             <div class="post">
                 <div class="post-info">
                     <div class="img-icon">
-                        <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                        <img src="{{user.profile_pic.url}}" alt="">
                     </div>
                     <div>
                         <h3 class="author-post">{{ post.author.username }}</h3>
@@ -131,12 +131,10 @@
         <div class="container">
 
         <div class="profileBx">
-            <div class="cover">
 
-            </div>
-            <div class="user-cover">
+            <div class="user-cover" style="background-image: url('{{ user.profile_cover.url }}')">
                 <div class="img-icon">
-                    <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                    <img src="{{user.profile_pic.url}}" alt="">
                 </div>
             </div>
 

@@ -6,11 +6,12 @@
     {% include 'sidebar.html' %}
     <div class="main-profile">
     <div class="top-section">
-        <div class="cover-bx">
+        <div class="cover-bx" style="background-image: url('{{ user.profile_cover.url }}')">
         </div>
-        <div class="img-icon profile-icon ">
-            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+        <div class="img-icon profile-icon">
+            <img src="{{ user.profile_pic.url }}" alt="">
         </div>
+        
         <div class="profile-func">
             {% if user.is_authenticated and user == request.user %}
 
@@ -65,7 +66,7 @@
     {% if user.is_authenticated and user == request.user %}
     <div class="new-post">
         <div class="img-icon">
-            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+            <img src="{{ user.profile_pic.url }}" alt="">
         </div>
         <form method="POST" class="new-post-form">
                 {% csrf_token %}
@@ -85,7 +86,7 @@
                <div class="post">
                 <div class="post-info">
                     <div class="img-icon">
-                        <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                        <img src="{{ post.author.profile_pic.url }}" alt="">
                     </div>
                     <div class="user-span">
                         <h5 class="username">{{ post.author.username }}</h5>

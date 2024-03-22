@@ -18,8 +18,8 @@ class User(AbstractUser):
     followers = models.ManyToManyField('self', related_name='user_followers_set', symmetrical=False)
     following = models.ManyToManyField('self', related_name='user_following_set', symmetrical=False)
 
-    profile_pic = models.FileField(upload_to='profilePics/', null=True, blank=True)
-    profile_cover = models.FileField(upload_to='profileCovers/', null=True, blank=True)
+    profile_pic = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_pic.jpg')
+    profile_cover = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_cover.jpg')
 
     def save(self, *args, **kwargs):
         creating = not self.pk

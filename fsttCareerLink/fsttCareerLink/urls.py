@@ -17,12 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from django.views.generic import RedirectView
+
 
 def home(request) :
     return HttpResponse("This is home page")
 
 
 urlpatterns = [
+      path('admin', RedirectView.as_view(url='admin/')),
     path('admin/', admin.site.urls),
     # path('',home),
     path('', include('CareerLink.urls')),

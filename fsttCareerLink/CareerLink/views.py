@@ -9,9 +9,6 @@ from django.http import HttpResponseRedirect,HttpResponseNotAllowed
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-
-
-
 from .forms import PostForm  # Import the PostForm
 
 def aboutUs(request) :
@@ -24,37 +21,29 @@ def welcome(request) :
         return render(request,'welcome.html')
 
 def home(request):
-    student = None  # Initialize student variable
-    posts = None  # Initialize posts variable
-    
+    user = request.user  # Get the currently logged-in user
 
-    # Fetch all posts, ordered by creation date
-    posts = Post.objects.all().order_by('-created_at')
-    
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
+            post.author = user  # Set the author of the post to the current user
             post.save()
-            request.user.posts += 1
-            request.user.save()
+
+            # Update user's posts attribute
+            user.posts.add(post)
             return redirect('home')  # Redirect to the homepage after publishing
     else:
         form = PostForm()
 
-    return render(request, 'home.html', {'form': form, 'posts': posts})
+    posts = user.posts.all().order_by('-created_at')
+    shared_posts = SharePost.objects.filter(user=user)
 
-
+    return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts})
 def rooms(request) :
     return render(request,'rooms.html')
 
-from django.contrib.auth import authenticate, login
 
-
-from django.contrib.auth.decorators import login_required
-
-from .models import Post
 @login_required  # Ensure the user is authenticated
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
@@ -75,7 +64,6 @@ def user_profile(request, username):
 
     # Query user's posts
     posts = user.posts.all().order_by('-created_at')
-
     shared_posts = SharePost.objects.filter(user=user)
 
     return render(request, 'user_profile.html', {'user': user, 'form': form, 'posts': posts, 'shared_posts': shared_posts})
