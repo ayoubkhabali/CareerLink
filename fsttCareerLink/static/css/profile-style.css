@@ -2,6 +2,8 @@
 :root {
     --grey-color :#535353;
     --blue-color : #0e59e6;
+    --light-shadow :  2px 2px 5px rgb(214, 214, 214);
+
 
 }
 
@@ -23,7 +25,7 @@
 
 .profile-section .main-profile {
     width: 100%;
-    margin-left: 8vw;
+    margin-left: 6vw;
 }
 
 .top-section .cover-bx {
@@ -49,12 +51,27 @@
     position: absolute;
     transform: translateY(50%);
     bottom: 0;
-    border: .5rem solid #fff;
+    border: .5rem solid #eef1f5;
 }
 
 .top-section .img-icon img {
     border-radius: 50%;
 }
+
+.top-section .profile-func  {
+   background-color: aqua;
+   width: 70%;
+   position: relative;
+}
+
+.top-section .profile-func .post-btn {
+    position: absolute;
+    margin: 1rem 0;
+    border-radius: 2rem;
+    font-weight: 600;
+    box-shadow: var(--light-shadow);
+}
+
 
 .main-profile .user-info {
     display: flex;
@@ -178,5 +195,44 @@
     color: var(--blue-color);
     font-size: 1.3rem;
     font-weight: 500;
+
+}
+
+.new-post {
+    display: flex;
+    width: 70%;
+    min-height: 100px;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem auto;
+    border-radius: 2rem;
+}
+
+.new-post .new-post-form {
+    height: 90%;
+    gap: 1rem;
+    width: 80%;
+    display: grid;
+    grid-template-columns: 90% 10%;
+    
+}
+
+.new-post .new-post-form .main-post{
+    resize: none;
+    width: 100%;
+    height: 50px;
+    border-radius: 1rem;
+    padding: .5rem;
+}
+
+.new-post .new-post-form .submitBtn {
+    padding: 0 .5rem;
+    background-color: var(--blue-color);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 1rem;
+    height: 50px;
 
 }

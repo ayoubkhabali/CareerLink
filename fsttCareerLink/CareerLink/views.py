@@ -27,11 +27,7 @@ def home(request):
     student = None  # Initialize student variable
     posts = None  # Initialize posts variable
     
-    try:
-        student = Student.objects.get(user=request.user)
-    except Student.DoesNotExist:
-        pass  # If student doesn't exist, keep student as None
-    
+
     # Fetch all posts, ordered by creation date
     posts = Post.objects.all().order_by('-created_at')
     
@@ -45,34 +41,31 @@ def home(request):
     else:
         form = PostForm()
 
-    return render(request, 'home.html', {'student': student, 'form': form, 'posts': posts})
+    return render(request, 'home.html', {'form': form, 'posts': posts})
 
 
 def rooms(request) :
     return render(request,'rooms.html')
 
+from django.contrib.auth import authenticate, login
+
 def loginPage(request):
     if request.user.is_authenticated:
         return redirect('home')
 
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            messages.error(request, "User doesn't exist.")
-            return redirect('home')  # Redirect back to login page if user doesn't exist
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
-
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Username or password is incorrect.')
+            messages.error(request, 'Invalid username or password.')
 
     return render(request, 'home.html')
+
 
 def logoutUser(request):
     logout(request)
@@ -139,10 +132,6 @@ def share_post(request, post_id):
 
 def profile(request):
     posts = None 
-
-
-
-    # Assuming you have a user object available
     posts = Post.objects.filter(author=request.user).order_by('-created_at')
     shared_posts = SharePost.objects.filter(user=request.user)
 
@@ -155,9 +144,6 @@ def profile(request):
             return redirect('profile')  # Redirect to the homepage after publishing
     else:
         form = PostForm()
-
-
-
     return render(request, 'profile.html', {'shared_posts': shared_posts,'posts' : posts, 'form':form})
 
 

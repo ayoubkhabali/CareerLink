@@ -11,6 +11,9 @@
         <div class="img-icon profile-icon ">
             <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
         </div>
+        <div class="profile-func">
+            <a class="post-btn btn" href="#newPost">new post</a>
+        </div>
     </div>
 
     <div class="user-info">
@@ -39,6 +42,18 @@
             <li class="profile-tab"><a href="">Groups</a></li>
         </ul>
     </nav>
+    <div class="new-post">
+        <div class="img-icon">
+            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+        </div>
+        <form method="POST" class="new-post-form">
+            {% csrf_token %}
+                {{ form.as_p }}
+
+            <button type="submit" class="btn submitBtn" >Publish</button>
+        </form>
+
+    </div>
     <div class="recent-posts">
         <h2>Recent Posts:</h2>      
         <div class="your-posts">

@@ -47,44 +47,14 @@
                 }
         </style>
         <div class="new-post">
-            <form method="POST">
+            <div class="img-icon">
+                <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+            </div>
+            <form method="POST"  class="new-post-form">
                 {% csrf_token %}
-                <div class="inputBx">
                     {{ form.as_p }}
-
-                </div>
-                <button type="submit" >Publish</button>
+                <button type="submit" class="submitBtn" >Publish</button>
             </form>
-
-            <!-- <form action="">
-                <div class="inputBx">
-                    <div class="img-icon">
-                        <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
-                    </div>
-                    <input type="text" class="inputBx" placeholder="what do you want to say?">
-                </div>
-
-                <div class="files-option">
-                    <label for="file-upload" class="custom-file-upload">
-                        <input id="file-upload" type="file">
-                        <i class='bx bx-images'></i>
-                        photo
-                    </label>
-
-                    <label for="file-upload" class="custom-file-upload">
-                        <input id="file-upload" type="file">
-                        <i class='bx bxs-videos'></i>
-                        video
-                    </label>
-
-                    <label for="file-upload" class="custom-file-upload">
-                        <input id="file-upload" type="file">
-                        <i class='bx bx-file'></i>
-                        docuement
-                    </label>
-                    
-                </div>
-            </form> -->
 
         </div>
 
