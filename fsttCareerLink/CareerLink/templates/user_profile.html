@@ -1,0 +1,154 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+
+<div class="profile-section">
+    {% include 'sidebar.html' %}
+    <div class="main-profile">
+    <div class="top-section">
+        <div class="cover-bx">
+        </div>
+        <div class="img-icon profile-icon ">
+            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+        </div>
+        <div class="profile-func">
+            {% if user.is_authenticated and user == request.user %}
+
+            <a class="post-btn btn" href="#newPost">new post</a>
+            {% else %}
+
+            {% if request.user not in user.followers.all %}
+            <form method="post" action="{% url 'follow_user' user.username %}">
+                {% csrf_token %}
+                <button type="submit">Follow</button>
+            </form>
+            {% else %}
+            <form method="post" action="{% url 'unfollow_user' user.username %}">
+                {% csrf_token %}
+                <button type="submit">Unfollow</button>
+            </form>
+
+
+            {% endif %}
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="user-info">
+        <h1 class="full-name" >{{ user.username }}</h1>
+        <p>FSTT Sutudent - Licence IDAI</p>
+        <div class="user-statis">
+            <div class="post-count">
+                <h5>{{ user.posts.count }}</h5>
+                <p>Posts</p>
+            </div>
+            <div class="followers-count">
+                <h5>{{ user.followers.count }}</h5>
+                <p>Followers</p>
+            </div>
+            <div class="groups-count">
+                <h5>218</h5>
+                <p>Groups</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="profile-nav-tabs">
+        <ul>
+            <li class="profile-tab current-tab" ><a href="">Posts</a></li>
+            <li class="profile-tab"><a href="">About</a></li>
+            <li class="profile-tab"><a href="">Groups</a></li>
+        </ul>
+    </nav>
+    {% if user.is_authenticated and user == request.user %}
+    <div class="new-post">
+        <div class="img-icon">
+            <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+        </div>
+        <form method="POST" class="new-post-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+            <button type="submit" class="btn submitBtn" >Publish</button>
+        </form>
+
+    </div>
+    {% endif %}
+
+    <div class="recent-posts">
+        <h2>Recent Posts:</h2>      
+        <div class="your-posts">
+
+            {% for post in posts %}
+               <div class="post">
+                <div class="post-info">
+                    <div class="img-icon">
+                        <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                    </div>
+                    <div class="user-span">
+                        <h5 class="username">{{ post.author.username }}</h5>
+                        <span class="datetime" >29 min</span>  
+                    </div>
+
+                </div>
+                <div class="post-content">
+                    {{ post.content }}
+                </div>
+                <div class="post-actions">
+                    <div class="icon-actions">
+                        <a href="{% url 'like_post' post_id=post.id %}"class="like-btn btn" > {{ post.likes }}  <i class='bx bx-heart'></i></a>
+                        <button class="comment-btn btn">0 <i class='bx bxs-comment-detail'></i></button>
+                        <button class="share-btn btn btn-active"><i class='bx bxs-share'></i></button>
+                    </div>
+                </div>
+            </div>         
+            {% endfor %}
+
+            {% for share_post in shared_posts %}
+            <div class="post">
+                <span class="you-shared"><i class='bx bx-share' ></i> You shared :</span>
+
+                <div class="post-info">
+                    <div class="img-icon">
+                        <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                    </div>
+                    <div class="user-span">
+                        <h5 class="username">{{ share_post.post.author.username }}</h5>
+                        <span class="datetime" >29 min</span>  
+                    </div>
+
+                </div>
+                <div class="post-content">
+                    {{ share_post.post.content }}
+                </div>
+                <div class="post-actions">
+                    <div class="icon-actions">
+                        <a href="{% url 'like_post' post_id=share_post.post.id %}"class="like-btn btn" > {{ share_post.post.likes }}  <i class='bx bx-heart'></i></a>
+                        <button class="comment-btn btn">0 <i class='bx bxs-comment-detail'></i></button>
+                        <button class="share-btn btn btn-active"><i class='bx bxs-share'></i></button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+
+</div>
+
+
+</div>
+
+<script>
+    const actionBtns = document.querySelectorAll(".post-actions .btn");
+    actionBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.classList.toggle("btn-active")
+        });
+    });
+
+</script>
+
+{% endblock %}

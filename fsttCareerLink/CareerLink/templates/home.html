@@ -149,15 +149,15 @@
                 <p>No student information found for this user.</p>
             {% endif %}
                 <p class="user-status"></p>
-                <button class="btn editBtn" id="edit-btn" >Edit Profile <i class='bx bx-edit-alt'></i></button>
+                <a class="btn editBtn" id="edit-btn"  href="{% url 'user_profile' username=user.username %}">Edit Profile <i class='bx bx-edit-alt'></i></a>
                 <div class="user-stats">
                     <div class="posts-counts">
                        <h4>Posts</h4>
-                       <span>{{request.user.posts}}</span>
+                       <span>{{request.user.posts.count}}</span>
                     </div>
                     <div class="post-contacts">
                         <h4>Followers</h4>
-                        <span>{{request.user.followers}}</span>
+                        <span>{{request.user.followers.count}}</span>
                     </div>
                 </div>
             </div>

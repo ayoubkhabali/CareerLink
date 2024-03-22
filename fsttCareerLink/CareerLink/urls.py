@@ -33,6 +33,9 @@ urlpatterns = [
     path('share/<int:post_id>/', views.share_post, name='share_post'),
     path('profile/', views.profile, name='profile'),
     path('profile/about/', views.profile, name='profile-edit'),
+    path('profile/<str:username>/', views.user_profile, name='user_profile'),
+    path('follow/<str:username>/', views.follow_user, name='follow_user'),
+    path('unfollow/<str:username>/', views.unfollow_user, name='unfollow_user'),
 
 
 ]

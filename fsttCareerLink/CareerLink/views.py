@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like,Comment,SharePost
+from .models import Student, User,Post,Like,Comment,SharePost, Follow
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
@@ -50,6 +50,54 @@ def rooms(request) :
     return render(request,'rooms.html')
 
 from django.contrib.auth import authenticate, login
+
+
+from django.contrib.auth.decorators import login_required
+
+from .models import Post
+@login_required  # Ensure the user is authenticated
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = user  # Set the author of the post to the current user
+            post.save()
+
+            # Update user's posts attribute
+            user.posts.add(post)
+
+            return redirect('user_profile', username=username)
+    else:
+        form = PostForm()
+
+    # Query user's posts
+    posts = user.posts.all().order_by('-created_at')
+
+    shared_posts = SharePost.objects.filter(user=user)
+
+    return render(request, 'user_profile.html', {'user': user, 'form': form, 'posts': posts, 'shared_posts': shared_posts})
+
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+@login_required
+def follow_user(request, username):
+    user_to_follow = User.objects.get(username=username)
+    request.user.following.add(user_to_follow)
+    user_to_follow.followers.add(request.user)
+    return redirect('user_profile', username=username)
+
+@login_required
+def unfollow_user(request, username):
+    user_to_unfollow = User.objects.get(username=username)
+    request.user.following.remove(user_to_unfollow)
+    user_to_unfollow.followers.remove(request.user)
+    return redirect('user_profile', username=username)
 
 def loginPage(request):
     if request.user.is_authenticated:

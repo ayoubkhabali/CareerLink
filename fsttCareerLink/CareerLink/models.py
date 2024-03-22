@@ -14,9 +14,10 @@ class User(AbstractUser):
     base_role = Role.ADMIN
     role = models.CharField(max_length=50, choices=Role.choices)
     bio = models.TextField(blank=True)
-    posts = models.IntegerField(default=0)
-    followers = models.IntegerField(default=0)
-    following = models.IntegerField(default=0)
+    posts = models.ManyToManyField('Post', related_name='authors')
+    followers = models.ManyToManyField('self', related_name='user_followers_set', symmetrical=False)
+    following = models.ManyToManyField('self', related_name='user_following_set', symmetrical=False)
+
     profile_pic = models.FileField(upload_to='profilePics/', null=True, blank=True)
     profile_cover = models.FileField(upload_to='profileCovers/', null=True, blank=True)
 
@@ -60,7 +61,7 @@ class Post(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     attachement = models.FileField(upload_to='posts-files/', null=True, blank=True)
-    likes = models.IntegerField(default=0)  # Remove related_name="like"
+    likes = models.IntegerField(default=0)  
 
 
 class Comment(models.Model):
@@ -75,8 +76,8 @@ class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Follow(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following_set')
-    followed_account = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers_set')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_following')
+    followed_account = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_followers')
 
 class SharePost(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='shared_posts')
