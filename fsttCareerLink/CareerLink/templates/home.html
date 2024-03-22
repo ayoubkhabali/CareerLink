@@ -153,11 +153,11 @@
                 <div class="user-stats">
                     <div class="posts-counts">
                        <h4>Posts</h4>
-                       <span>144</span>
+                       <span>{{request.user.posts}}</span>
                     </div>
                     <div class="post-contacts">
-                        <h4>Contacts</h4>
-                        <span>400</span>
+                        <h4>Followers</h4>
+                        <span>{{request.user.followers}}</span>
                     </div>
                 </div>
             </div>

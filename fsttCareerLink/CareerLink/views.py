@@ -37,6 +37,8 @@ def home(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            request.user.posts += 1
+            request.user.save()
             return redirect('home')  # Redirect to the homepage after publishing
     else:
         form = PostForm()
@@ -141,6 +143,7 @@ def profile(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            request.user.posts += 1
             return redirect('profile')  # Redirect to the homepage after publishing
     else:
         form = PostForm()
