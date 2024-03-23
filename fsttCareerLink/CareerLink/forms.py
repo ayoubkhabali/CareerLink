@@ -23,13 +23,17 @@ class CustomUserChangeForm(UserChangeForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['content']
+        fields = ['content', 'post_type', 'attachment', 'post_media']  # Add 'post_type' and 'attachment' fields
         widgets = {
-            'content': forms.Textarea(attrs={'class': 'main-post', 'placeholder': 'tell us something...'}),
+            'content': forms.Textarea(attrs={'class': 'main-post', 'placeholder': 'Tell us something...'}),
         }
         labels = {
-            'content': '',  # Set the label for 'content' field to an empty string
+            'content': '',
+            'post_type': 'Post Type',  
+            'post_media': 'Media',  # Add label for 'attachment' field
+            'attachment': 'Attachment',  # Add label for 'attachment' field
         }
+
 
 class StudentInfoForm(forms.ModelForm):
     class Meta:

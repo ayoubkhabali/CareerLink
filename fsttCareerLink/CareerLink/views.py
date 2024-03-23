@@ -24,15 +24,13 @@ def home(request):
     user = request.user  # Get the currently logged-in user
 
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)  # Include request.FILES for file uploads
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = user  # Set the author of the post to the current user
+            post.author = user
             post.save()
-
-            # Update user's posts attribute
             user.posts.add(post)
-            return redirect('home')  # Redirect to the homepage after publishing
+            return redirect('home')
     else:
         form = PostForm()
 
@@ -52,14 +50,13 @@ def user_profile(request, username):
     posts_url = request.path == f'/profile/{request.user.username}/'
 
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)  # Include request.FILES for file uploads
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = user  # Set the author of the post to the current user
+            post.author = user
             post.save()
-            # Update user's posts attribute
             user.posts.add(post)
-            return redirect('user_profile', username=username)
+            return redirect('user_profile',username)
     else:
         form = PostForm()
 

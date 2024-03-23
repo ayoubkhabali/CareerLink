@@ -17,7 +17,6 @@ class User(AbstractUser):
     posts = models.ManyToManyField('Post', related_name='authors')
     followers = models.ManyToManyField('self', related_name='user_followers_set', symmetrical=False)
     following = models.ManyToManyField('self', related_name='user_following_set', symmetrical=False)
-
     profile_pic = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_pic.jpg')
     profile_cover = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_cover.jpg')
 
@@ -56,12 +55,19 @@ class Enterprise(models.Model):
     company_name = models.CharField(max_length=100, default='')
 
 class Post(models.Model):
+    class PostType(models.TextChoices):
+        PEDAGOGICAL = "PEDAGOGICAL", "Activités pédagogiques"
+        RESEARCH = "RESEARCH", "Activités de recherche"
+        REGULAR = "REGULAR", "Regular Post"
+
     id = models.AutoField(primary_key=True, serialize=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    attachement = models.FileField(upload_to='posts-files/', null=True, blank=True)
-    likes = models.IntegerField(default=0)  
+    post_media = models.FileField(upload_to='posts-files/', null=True, blank=True)  # Add attachment field
+    attachment = models.FileField(upload_to='posts-files/', null=True, blank=True)  # Add attachment field
+    likes = models.IntegerField(default=0)
+    post_type = models.CharField(max_length=50, choices=PostType.choices, default=PostType.REGULAR)
 
 
 class Comment(models.Model):
@@ -117,8 +123,6 @@ class Class(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     students = models.ManyToManyField(Student, related_name='classes')
-
-
 
 
 class Assignment(models.Model):

@@ -82,38 +82,114 @@
     {% include 'about_profile.html' %}
     {% endif %}
 
-<div class="recent-posts">
-    <!-- Content for recent posts -->
-</div>
+    {% elif posts_url %}
+    <div class="new-post">
+        <div class="img-icon">
+            <img src="{{user.profile_pic.url}}" alt="">
+        </div>
+        <form method="post" enctype="multipart/form-data">  <!-- Add enctype for file uploads -->
+            {% csrf_token %}
+         <div class="upper-part">
+            {{ form.content }}
+            {% if request.user.role == "TEACHER" %}
+            {{ form.post_type }}  <!-- Add post_type field -->
+            {% endif %}
+         </div>
+         <div class="bottom-part">
+            <div class="file-input">
+                {{ form.post_media }}  <!-- Add post_type field -->
 
+            </div>
+            <div class="file-input">
+                {{ form.attachment }}  <!-- Add attachment field -->
+            </div>
+         </div>
+         <input type="submit" value="Publish">
+        </form>
+        
+
+    </div>
 
     <div class="recent-posts">
+
         <h2>Recent Posts:</h2>      
+        <nav class="profile-nav-tabs filtering-posts">
+            <ul>
+                <li class="profile-tab current-tab" data-filter="all">All</li>
+                <li class="profile-tab" data-filter="POST">Regular Posts</li>
+                <li class="profile-tab" data-filter="PEDAGOGICAL">Pedagogical Activities</li>
+                <li class="profile-tab" data-filter="RESEARCH">Research Activities</li>
+            </ul>
+        </nav>
         <div class="your-posts">
 
             {% for post in posts %}
-               <div class="post">
+            <div class="post" data-type="{{ post.post_type}}">
                 <div class="post-info">
                     <div class="img-icon">
-                        <img src="{{ post.author.profile_pic.url }}" alt="">
+                        <img src="{{user.profile_pic.url}}" alt="">
                     </div>
-                    <div class="user-span">
-                        <h5 class="username">{{ post.author.username }}</h5>
-                        <span class="datetime" >29 min</span>  
-                    </div>
+                    <div>
+                        <h3 class="author-post">{{ post.author.username }}</h3>
+                        <p class="time-since">{{ post.created_at }}</p>
+                        <p class="time-since">{{ post.id }}</p>
+                        <p class="time-since">{{ post.post_type }}</p>
 
+                    </div>
+    
                 </div>
-                <div class="post-content">
-                    {{ post.content }}
+                <div class="post-text">
+                    {{ post.content }}   
+
+                 </div>
+                 <div class="post-img">
+                    {% if post.post_media %}
+                        <img src="{{ post.post_media.url }}" alt="Post Image">
+                    {% endif %}
                 </div>
-                <div class="post-actions">
-                    <div class="icon-actions">
-                        <a href="{% url 'like_post' post_id=post.id %}"class="like-btn btn" > {{ post.likes }}  <i class='bx bx-heart'></i></a>
-                        <button class="comment-btn btn">0 <i class='bx bxs-comment-detail'></i></button>
-                        <button class="share-btn btn btn-active"><i class='bx bxs-share'></i></button>
+                <div class="post-img">
+                    {% if post.attachment %}
+                        <img src="{{ post.attachment.url }}" alt="Post Image">
+                    {% endif %}
+                </div>
+                
+
+                 <div class="post-actions">
+                    <ul>
+                        <li><a href="{% url 'like_post' post_id=post.id %}"><i class='bx bxs-message-alt-dots'></i>  {{ post.likes }} Like</a></li>
+
+                        <li><a href=""><i class='bx bxs-message-alt-dots'></i> Comment</a></li>
+                        <li><a href="{% url 'share_post' post_id=post.id %}"><i class='bx bxs-share'></i> Share</a></li>
+                    </ul>
+                    <div class="comments-section">
+                        {% for comment in post.comments.all %}
+                        <div class="comment">
+                            <div class="author-info">
+                                <div class="img-icon">
+                                    <!-- Display user avatar or profile picture -->
+                                    <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                                </div>
+                                <span class="author-name">{{ comment.author }}</span>
+                                <!-- <span class="author-name">{{ comment.created_at }}</span> -->
+                            </div>
+
+                            <div class="comment-text">
+                                {{ comment.content }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="add-comment">
+                        <form method="post" action="{% url 'comment_post' post_id=post.id %}">
+                            {% csrf_token %}
+                            <input type="text" name="content" placeholder="Write a comment...">
+                            <button type="submit">Post Comment</button>
+                        </form>
                     </div>
                 </div>
-            </div>         
+                
+    
+            </div>     
             {% endfor %}
 
             {% for share_post in shared_posts %}
@@ -122,7 +198,7 @@
 
                 <div class="post-info">
                     <div class="img-icon">
-                        <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
+                        <img src="{{ share_post.post.author.profile_pic.url }}" alt="">
                     </div>
                     <div class="user-span">
                         <h5 class="username">{{ share_post.post.author.username }}</h5>
@@ -133,6 +209,17 @@
                 <div class="post-content">
                     {{ share_post.post.content }}
                 </div>
+                <div class="post-img">
+                    {% if share_.post.post_media %}
+                        <img src="{{ share_post.post.post_media.url }}" alt="Post Image">
+                    {% endif %}
+                </div>
+                <div class="post-img">
+                    {% if share_post.post.attachment %}
+                        <img src="{{ share_post.post.attachment.url }}" alt="Post Image">
+                    {% endif %}
+                </div>
+                
                 <div class="post-actions">
                     <div class="icon-actions">
                         <a href="{% url 'like_post' post_id=share_post.post.id %}"class="like-btn btn" > {{ share_post.post.likes }}  <i class='bx bx-heart'></i></a>
@@ -143,19 +230,6 @@
             </div>
             {% endfor %}
         </div>
-    </div>
-    {% elif posts_url %}
-    <div class="new-post">
-        <div class="img-icon">
-            <img src="{{ user.profile_pic.url }}" alt="">
-        </div>
-        <form method="POST" class="new-post-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-
-            <button type="submit" class="btn submitBtn" >Publish</button>
-        </form>
-
     </div>
     {% endif %}
 
@@ -173,6 +247,29 @@
             btn.classList.toggle("btn-active")
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.filtering-posts .profile-tab');
+        const posts = document.querySelectorAll('.your-posts .post');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const filter = this.dataset.filter;
+    
+                tabs.forEach(t => t.classList.remove('current-tab'));
+                this.classList.add('current-tab');
+
+                posts.forEach(post => {
+                    if (filter === 'all' || post.dataset.type === filter) {
+                        post.style.display = 'block';
+                    } else {
+                        post.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+    
 
 </script>
 
