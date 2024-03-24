@@ -39,8 +39,8 @@ urlpatterns = [
     path('unfollow/<str:username>/', views.unfollow_user, name='unfollow_user'),
     path('profile/<str:username>/update/', views.update_profile, name='update_profile'),
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
-    path('profile/<str:username>/groups/', views.user_profile, name='groups_profile'),
-    path('profile/<str:username>/groups', RedirectView.as_view(url='/profile/%(username)s/groups/')),
+    path('profile/<str:username>/classes/', views.user_profile, name='classes_profile'),
+    path('profile/<str:username>/classes', RedirectView.as_view(url='/profile/%(username)s/classes/')),
 
     
 ]
