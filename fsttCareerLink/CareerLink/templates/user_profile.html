@@ -41,6 +41,8 @@
         <h1 class="full-name" >{{ user.username }}</h1>
         {% if user.role == "TEACHER" %}
         <p>Teacher at {{user.teacher.department}}</p>
+        <p>{{about_url}}</p>
+        <p>{{posts_url}}</p>
         {% elif user.role == "STUDENT" %}
         <p>Student at {{ user.student.university }}</p>
         <p>Studying  {{ user.student.major }} major</p>
@@ -75,10 +77,16 @@
             <li class="profile-tab"><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
             <li class="profile-tab"><a href="">Groups</a></li>
 
+            {% else %}
+
+            <li class="profile-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
+            <li class="profile-tab"><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
+            <li class="profile-tab  current-tab"><a href="">Groups</a></li>
             {% endif %}
 
         </ul>
     </nav>
+
     {% if about_url %}
     {% if user.is_authenticated and user == request.user %}
 
@@ -235,6 +243,10 @@
             </div>
             {% endfor %}
         </div>
+    </div>
+
+    {% else %}
+    <div>
     </div>
     {% endif %}
 

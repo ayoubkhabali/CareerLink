@@ -47,7 +47,7 @@ def rooms(request) :
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
     posts_url = request.path == f'/profile/{request.user.username}/'
-    about_url = request.path == f'/profile/{request.user.username}/about/'  # Check if the URL corresponds to the about section
+    about_url = request.path == f'/profile/{request.user.username}/update/'  # Check if the URL corresponds to the about section
     
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
@@ -73,10 +73,10 @@ def user_profile(request, username):
     }
     
     return render(request, 'user_profile.html', context)
-
-@login_required
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)
+    posts_url = request.path == f'/profile/{request.user.username}/'
+    about_url = request.path == f'/profile/{request.user.username}/update/'
     
     if request.user.role == 'STUDENT':
         student = user.student
@@ -90,7 +90,8 @@ def update_profile(request, username):
         else:
             user_form = ChangeStudentInfoForm(instance=user)
             student_form = StudentInfoForm(instance=student)
-        return render(request, 'about_profile.html', {'user_form': user_form, 'student_form': student_form})
+        context = {'user_form': user_form, 'student_form': student_form, 'posts_url': posts_url, 'about_url': about_url}
+        return render(request, 'about_profile.html', context)
     
     elif request.user.role == 'TEACHER':
         teacher = user.teacher
@@ -104,10 +105,12 @@ def update_profile(request, username):
         else:
             user_form = ChangeTeacherInfoForm(instance=user)
             teacher_form = TeacherInfoForm(instance=teacher)
-        return render(request, 'about_profile.html', {'user_form': user_form, 'teacher_form': teacher_form})
+        context = {'user_form': user_form, 'teacher_form': teacher_form, 'posts_url': posts_url, 'about_url': about_url}
+        return render(request, 'user_profile.html', context)
     
     else:
-        return render(request, 'user_profile.html')
+        return render(request, 'user_profile.html', {'posts_url': posts_url, 'about_url': about_url})
+
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
