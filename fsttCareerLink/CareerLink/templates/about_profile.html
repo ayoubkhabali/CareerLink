@@ -30,9 +30,17 @@
     <form method="post" action="{% url 'update_profile' username=user.username %}" class="edit-info-form">
         {% csrf_token %}
         {{ user_form.as_p }}
+        {% if request.user.role == 'STUDENT' %}
+
         {{ student_form.as_p }}
+        {% elif request.user.role == 'TEACHER' %}
+        {{ teacher_form.as_p }}
+        {% endif %}
+
         <input type="submit" value="Save">
     </form>
+
     
     
 </div>
+

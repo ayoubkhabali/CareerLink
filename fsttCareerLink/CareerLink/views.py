@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .forms import PostForm  # Import the PostForm
+from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm
 
 def aboutUs(request) :
     return render(request,'about_us.html')
@@ -41,60 +42,72 @@ def home(request):
 
 def rooms(request) :
     return render(request,'rooms.html')
-
-
-@login_required  # Ensure the user is authenticated
+# In views.py
+@login_required
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
-    about_url = request.path == f'/profile/{request.user.username}/update/'
     posts_url = request.path == f'/profile/{request.user.username}/'
-
+    about_url = request.path == f'/profile/{request.user.username}/about/'  # Check if the URL corresponds to the about section
+    
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)  # Include request.FILES for file uploads
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = user
             post.save()
             user.posts.add(post)
-            return redirect('user_profile',username)
+            return redirect('user_profile', username=username)
     else:
         form = PostForm()
-
-    # Query user's posts
+    
     posts = user.posts.all().order_by('-created_at')
     shared_posts = SharePost.objects.filter(user=user)
-
-    context = {'user': user, 'form': form, 'posts': posts, 'shared_posts': shared_posts,
-               'posts_url' : posts_url, 'about_url' : about_url}
-
+    
+    context = {
+        'user': user,
+        'form': form,
+        'posts': posts,
+        'shared_posts': shared_posts,
+        'posts_url': posts_url,
+        'about_url': about_url  # Pass the about_url variable to the template
+    }
+    
     return render(request, 'user_profile.html', context)
 
-
-from django.shortcuts import render, redirect
-from .forms import ChangeStudentInfoForm
-from .models import Student
-
-from django.shortcuts import render, redirect
-from .forms import ChangeStudentInfoForm, StudentInfoForm
-from .models import Student
-
+@login_required
 def update_profile(request, username):
-
-
-    user = User.objects.get(username=username)
-    student = user.student
-    if request.method == 'POST':
-        user_form = ChangeStudentInfoForm(request.POST, instance=user)
-        student_form = StudentInfoForm(request.POST, instance=student)
-        if user_form.is_valid() and student_form.is_valid():
-            user_form.save()
-            student_form.save()
-        return redirect('user_profile', username=username)
+    user = get_object_or_404(User, username=username)
+    
+    if request.user.role == 'STUDENT':
+        student = user.student
+        if request.method == 'POST':
+            user_form = ChangeStudentInfoForm(request.POST, instance=user)
+            student_form = StudentInfoForm(request.POST, instance=student)
+            if user_form.is_valid() and student_form.is_valid():
+                user_form.save()
+                student_form.save()
+                return redirect('user_profile', username=username)
+        else:
+            user_form = ChangeStudentInfoForm(instance=user)
+            student_form = StudentInfoForm(instance=student)
+        return render(request, 'about_profile.html', {'user_form': user_form, 'student_form': student_form})
+    
+    elif request.user.role == 'TEACHER':
+        teacher = user.teacher
+        if request.method == 'POST':
+            user_form = ChangeTeacherInfoForm(request.POST, instance=user)
+            teacher_form = TeacherInfoForm(request.POST, instance=teacher)
+            if user_form.is_valid() and teacher_form.is_valid():
+                user_form.save()
+                teacher_form.save()
+                return redirect('user_profile', username=username)
+        else:
+            user_form = ChangeTeacherInfoForm(instance=user)
+            teacher_form = TeacherInfoForm(instance=teacher)
+        return render(request, 'about_profile.html', {'user_form': user_form, 'teacher_form': teacher_form})
+    
     else:
-        user_form = ChangeStudentInfoForm(instance=user)
-        student_form = StudentInfoForm(instance=student)
-    return render(request, 'about_profile.html', {'user_form': user_form, 'student_form': student_form})
-
+        return render(request, 'user_profile.html')
 from django.contrib.auth import get_user_model
 
 User = get_user_model()

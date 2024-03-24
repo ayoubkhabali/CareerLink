@@ -61,25 +61,30 @@
             </div>
         </div>
     </div>
-
     <nav class="profile-nav-tabs">
         <ul>
-            {% if posts_url %}
+
+            {% if about_url %}
+            <li class="profile-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
+            <li class="profile-tab  current-tab" ><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
+            <li class="profile-tab"><a href="">Groups</a></li>
+
+            {% elif posts_url %}
 
             <li class="profile-tab current-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
             <li class="profile-tab"><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
             <li class="profile-tab"><a href="">Groups</a></li>
-            {% elif about_url %}
-            <li class="profile-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
-            <li class="profile-tab  current-tab" ><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
-            <li class="profile-tab"><a href="">Groups</a></li>
+
             {% endif %}
 
         </ul>
     </nav>
     {% if about_url %}
     {% if user.is_authenticated and user == request.user %}
+
+
     {% include 'about_profile.html' %}
+
     {% endif %}
 
     {% elif posts_url %}

@@ -1,7 +1,7 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User,Student
+from .models import User,Student, Teacher
 
 
 
@@ -39,6 +39,18 @@ class StudentInfoForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = ['university', 'major']  # Fields specific to Student model
+
+class TeacherInfoForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['department']  # Fields specific to Student model
+
+
+class ChangeTeacherInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'bio']  # Fields specific to User model
+
 
 class ChangeStudentInfoForm(forms.ModelForm):
     class Meta:
