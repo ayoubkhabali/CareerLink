@@ -1,9 +1,15 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User,Student, Teacher
+from .models import User,Student, Teacher,Class
 
 
+class ClassForm(forms.ModelForm):
+    students = forms.ModelMultipleChoiceField(queryset=Student.objects.all(), required=False)
+
+    class Meta:
+        model = Class
+        fields = ['title', 'description', 'students']
 
 class CustomUserCreationForm(UserCreationForm):
     role = forms.ChoiceField(choices=User.Role.choices)

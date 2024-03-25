@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .forms import PostForm  # Import the PostForm
-from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm
+from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm
 
 def aboutUs(request) :
     return render(request,'about_us.html')
@@ -20,6 +20,7 @@ def welcome(request) :
         return redirect('home')
      else :
         return render(request,'welcome.html')
+     
 
 def home(request):
     user = request.user  # Get the currently logged-in user
@@ -48,6 +49,7 @@ def user_profile(request, username):
     user = get_object_or_404(User, username=username)
     posts_url = request.path == f'/profile/{request.user.username}/'
     about_url = request.path == f'/profile/{request.user.username}/update/'  # Check if the URL corresponds to the about section
+   
     
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
@@ -62,8 +64,19 @@ def user_profile(request, username):
     
     posts = user.posts.all().order_by('-created_at')
     shared_posts = SharePost.objects.filter(user=user)
+
+    if request.method == 'POST':
+        class_form = ClassForm(request.POST)
+        if  class_form.is_valid():
+            new_class = form.save(commit=False)
+            new_class.teacher = request.user.teacher  # Assuming the user is a teacher
+            new_class.save()
+            return redirect('user_profile', username=request.user.username)
+    else:
+        class_form = ClassForm()
     
     context = {
+        'class_form' : class_form,
         'user': user,
         'form': form,
         'posts': posts,
@@ -73,10 +86,28 @@ def user_profile(request, username):
     }
     
     return render(request, 'user_profile.html', context)
+
+def create_class(request):
+
+    if request.method == 'POST':
+        class_form = ClassForm(request.POST)
+        if  class_form.is_valid():
+            new_class = class_form.save(commit=False)
+            new_class.teacher = request.user.teacher  # Assuming the user is a teacher
+            new_class.save()
+            return redirect('user_profile', username=request.user.username)
+    else:
+        form = ClassForm()
+    return render(request, 'create_class.html', {' class_form':  class_form})
+
+
+
+
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)
     posts_url = request.path == f'/profile/{request.user.username}/'
     about_url = request.path == f'/profile/{request.user.username}/update/'
+
     
     if request.user.role == 'STUDENT':
         student = user.student

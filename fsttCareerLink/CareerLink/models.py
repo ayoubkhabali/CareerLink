@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from datetime import datetime
+import uuid
 
 
 class User(AbstractUser):
@@ -38,11 +39,32 @@ class User(AbstractUser):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    student_id = models.CharField(max_length=20, primary_key=True)
+    CNE = models.CharField(max_length=20,primary_key = True) 
     university = models.CharField(max_length=20, default='')
     major = models.CharField(max_length=20, default='')
     projects = models.FileField(upload_to='studentProjects/', null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        # Generate a unique student_id if it's not already set
+        if not self.CNE:
+            self.CNE = self.generate_unique_student_id()
+        super().save(*args, **kwargs)
+
+
+    def generate_unique_student_id(self):
+        # Fetch the latest student ID from the database
+        last_student = Student.objects.order_by('-CNE').first()
+        if last_student:
+            last_id = int(last_student.CNE[1:])  # Extract numerical part
+            new_id = last_id + 1
+        else:
+            new_id = 1
+        # Generate the new student ID with the desired format
+        return f'P{new_id:08d}'  # Example: P13424563
+
+
+    def __str__(self):
+        return self.user.username
 
 
 class Teacher(models.Model):
@@ -71,21 +93,25 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Like(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_likes")  # Custom related_name
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Follow(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_following')
     followed_account = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_followers')
 
 class SharePost(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='shared_posts')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     shared_at = models.DateTimeField(auto_now_add=True)
@@ -94,6 +120,7 @@ class SharePost(models.Model):
         return f"{self.user.username} shared {self.post.id}"
 
 class Subject(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     name = models.CharField(max_length=100)
     description = models.TextField()
 
@@ -101,6 +128,7 @@ class Subject(models.Model):
         return self.name
 
 class Course(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     name = models.CharField(max_length=100)
     description = models.TextField()
     subjects = models.ManyToManyField(Subject, related_name='courses')
@@ -111,21 +139,23 @@ class Course(models.Model):
         return self.name
 
 class Exam(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     professor = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     exam_date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    location = models.CharField(max_length=100)
     description = models.TextField()
 
 class Class(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True, serialize=False)
+    title = models.CharField(max_length=100)
+    description = models.TextField(default='')
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     students = models.ManyToManyField(Student, related_name='classes')
 
 
 class Assignment(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     title = models.CharField(max_length=100)
     description = models.TextField()
     due_date = models.DateField()
@@ -138,6 +168,7 @@ class Assignment(models.Model):
 
     
 class ChatMessage(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
     content = models.TextField()

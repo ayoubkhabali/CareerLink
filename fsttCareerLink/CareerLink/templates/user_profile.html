@@ -15,7 +15,11 @@
         <div class="profile-func">
             {% if user.is_authenticated and user == request.user %}
 
-            <a class="post-btn btn" href="#newPost">new post</a>
+            <!-- <a class="post-btn btn" href="#newPost">new post</a> -->
+                {% if user.role == "TEACHER" %}
+            <button class="post-btn btn modal-trigger" >Create Class</button>
+                {% endif %}
+            
             {% else %}
 
             {% if request.user not in user.followers.all %}
@@ -69,19 +73,19 @@
             {% if about_url %}
             <li class="profile-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
             <li class="profile-tab  current-tab" ><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
-            <li class="profile-tab"><a href="">Groups</a></li>
+            <li class="profile-tab"><a href="{% url 'classes' username=request.user.username %}">classes</a></li>
 
             {% elif posts_url %}
 
             <li class="profile-tab current-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
             <li class="profile-tab"><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
-            <li class="profile-tab"><a href="">Groups</a></li>
+            <li class="profile-tab"><a href="{% url 'classes' username=request.user.username %}">classes</a></li>
 
             {% else %}
 
             <li class="profile-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
             <li class="profile-tab"><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
-            <li class="profile-tab  current-tab"><a href="">Groups</a></li>
+            <li class="profile-tab current-tab"><a href="{% url 'classes' username=request.user.username %}">classes</a></li>
             {% endif %}
 
         </ul>
@@ -257,7 +261,32 @@
 
 </div>
 
+
+<div class="overlay">
+    <div class="modal">
+        {% include 'create_class.html' %}
+    </div>
+</div>
+
+
+
 <script>
+
+const modalBtn = document.querySelector(".modal-trigger")
+const modalBox = document.querySelector(".overlay")
+
+modalBtn.addEventListener("click", ()=> {
+  modalBox.classList.toggle("show-modal")
+})
+
+modalBox.addEventListener("click", (event) => {
+  // Check if the clicked element is the overlay itself
+  if (event.target === modalBox) {
+    modalBox.classList.remove("show-modal"); // Remove the class
+  }
+});
+
+
     const actionBtns = document.querySelectorAll(".post-actions .btn");
     actionBtns.forEach(btn => {
         btn.addEventListener("click", () => {

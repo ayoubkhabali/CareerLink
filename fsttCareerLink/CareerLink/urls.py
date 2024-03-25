@@ -31,7 +31,6 @@ urlpatterns = [
     path('like/<int:post_id>/', views.like_post, name='like_post'),
     path('comment/<int:post_id>/', views.comment_post, name='comment_post'),
     path('share/<int:post_id>/', views.share_post, name='share_post'),
-    path('profile/', views.profile, name='profile'),
     path('profile/about/', views.profile, name='profile-edit'),
     path('profile/<str:username>', RedirectView.as_view(url='/profile/%(username)s/')),
     path('profile/<str:username>/about/', views.user_profile, name='about_profile'),
@@ -39,8 +38,9 @@ urlpatterns = [
     path('unfollow/<str:username>/', views.unfollow_user, name='unfollow_user'),
     path('profile/<str:username>/update/', views.update_profile, name='update_profile'),
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
-    path('profile/<str:username>/classes/', views.user_profile, name='classes_profile'),
+    path('profile/<str:username>/classes/', views.user_profile, name='classes'),
     path('profile/<str:username>/classes', RedirectView.as_view(url='/profile/%(username)s/classes/')),
+    path('classes/create-class', views.create_class,name="create_class"),
 
     
 ]
