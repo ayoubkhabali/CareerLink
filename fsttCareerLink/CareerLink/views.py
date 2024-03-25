@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like,Comment,SharePost, Follow
+from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
@@ -49,6 +49,7 @@ def user_profile(request, username):
     user = get_object_or_404(User, username=username)
     posts_url = request.path == f'/profile/{request.user.username}/'
     about_url = request.path == f'/profile/{request.user.username}/update/'  # Check if the URL corresponds to the about section
+    classes_url = request.path == f'/profile/{request.user.username}/classes/'  # Check if the URL corresponds to the about section
    
     
     if request.method == 'POST':
@@ -74,8 +75,14 @@ def user_profile(request, username):
             return redirect('user_profile', username=request.user.username)
     else:
         class_form = ClassForm()
+
+    if request.user.role == 'TEACHER' :
+        teacher = request.user.teacher
+        classes = Class.objects.filter(teacher=teacher).prefetch_related('students')
     
     context = {
+        'classes_url' : classes_url,
+        'classes' : classes,
         'class_form' : class_form,
         'user': user,
         'form': form,
@@ -91,15 +98,15 @@ def create_class(request):
 
     if request.method == 'POST':
         class_form = ClassForm(request.POST)
-        if  class_form.is_valid():
+        if class_form.is_valid():
             new_class = class_form.save(commit=False)
-            new_class.teacher = request.user.teacher  # Assuming the user is a teacher
+            new_class.teacher = request.user.teacher
             new_class.save()
+            class_form.save_m2m()  # Save many-to-many relationships
             return redirect('user_profile', username=request.user.username)
     else:
-        form = ClassForm()
-    return render(request, 'create_class.html', {' class_form':  class_form})
-
+        class_form = ClassForm()  # Use the same variable name here
+    return render(request, 'create_class.html', {'class_form': class_form})
 
 
 

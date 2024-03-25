@@ -249,6 +249,22 @@
         </div>
     </div>
 
+    {% elif classes_url %}
+            <h1>Classes Taught by {{ request.user.username }}</h1>
+            <ul>
+                {% for class_instance in classes %}
+                <li>
+                    <strong>{{ class_instance.title }}</strong> - {{ class_instance.description }}
+                    <ul>
+                        {% for student in class_instance.students.all %}
+                        <li>{{ student.name }} ({{ student.CNE }})</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+
+
     {% else %}
     <div>
     </div>

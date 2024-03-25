@@ -2,10 +2,11 @@ from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from .models import User,Student, Teacher,Class
+from django.forms.widgets import CheckboxSelectMultiple
 
 
 class ClassForm(forms.ModelForm):
-    students = forms.ModelMultipleChoiceField(queryset=Student.objects.all(), required=False)
+    students = forms.ModelMultipleChoiceField(queryset=Student.objects.all(), required=False, widget=CheckboxSelectMultiple)
 
     class Meta:
         model = Class
