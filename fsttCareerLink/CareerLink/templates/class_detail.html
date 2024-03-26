@@ -19,28 +19,26 @@
         font-size: 1.5rem;
     }
 
+    .form-container {
+        margin-top: 1rem;
+    }
+
 
         .create-post {
+
             width: 90%;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 1rem;
+            align-items: flex-start;
+            flex-direction: column;
+            margin: 3rem 0;
             background: var(--color-white);
             padding: 0.4rem var(--card-padding);
             border-radius: var(--border-radius);
             margin: auto;
-        }
+            gap: 1rem;
+            width: 80%;
+            height: 500px;
 
-        .create-post textarea {
-            width: 100%;
-            justify-self: start;
-            padding-left: 1rem;
-            background: transparent;
-            color: var(--color-dark);
-            margin-right: 1rem;
-            resize: none;
-            height: 250px;
         }
 
         .class-detail-container {
@@ -48,7 +46,6 @@
             display: flex;
             justify-content: flex-end;
             margin: auto;
-
         }
 
         .feeds {
@@ -71,14 +68,8 @@
     </div>
 </div>
 
-<div>
-    <form action="" class="create-post">
-        <div class="profile-photo">
-        <img src="{{request.user.profile_pic.url}}">
-        </div>
-        <textarea name="" id="" cols="30" placeholder="What do you want to tell to your student? Mr. {{ request.user }}" id="create-post" rows="10"></textarea>
-        <input type="submit" value="Post" class="btn btn-primary">
-    </form>
+<div class="create-post" >
+    {% include 'create_announcement.html' %}
 
 </div>
 
@@ -125,8 +116,13 @@
 
 
 <div class="overlay">
-    <div class="modal">
+    <div class="modal  announcement-modal">
         {% include 'create_announcement.html' %}
+
+    </div>
+    <div class="modal  assignment-modal">
+        {% include 'create_assignment.html' %}
+
     </div>
 </div>
 

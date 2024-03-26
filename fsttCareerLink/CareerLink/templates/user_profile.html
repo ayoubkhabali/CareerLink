@@ -61,8 +61,8 @@
                 <p>Followers</p>
             </div>
             <div class="groups-count">
-                <h5>218</h5>
-                <p>Groups</p>
+                <h5>{{ user.following.count }}</h5>
+                <p>Following</p>
             </div>
         </div>
     </div>
@@ -254,13 +254,7 @@
             <ul>
                 {% for class_instance in classes %}
                 <li>
-                    <li>            <a href="{% url 'class_detail' class_instance.id class_instance.title %}">{{ class_instance.title }}</a>            </li>
-                    <ul>
-
-                        {% for student in class_instance.students.all %}
-                        <li>{{ student.username }} ({{ student.CNE }})</li>
-                        {% endfor %}
-                    </ul>
+                     <a href="{% url 'class_detail' class_instance.id class_instance.title %}">{{ class_instance.title }}</a> 
                 </li>
                 {% endfor %}
             </ul>
@@ -294,9 +288,5 @@
         {% include 'create_class.html' %}
     </div>
 </div>
-
-
-
-
 
 {% endblock %}

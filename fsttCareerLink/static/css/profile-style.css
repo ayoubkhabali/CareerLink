@@ -14,8 +14,6 @@
 
 .profile-section {
     display: flex;
-    /* grid-template-columns: 80%; */
-    /* gap: 2rem; */
     width: 100%;
     min-height: 100vh;
     position: relative;

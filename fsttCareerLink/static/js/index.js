@@ -47,8 +47,6 @@ window.addEventListener('resize', () => {
 
 
 
-
-
 const modalBtn = document.querySelectorAll(".modal-trigger")
 const modalBox = document.querySelector(".overlay")
 
@@ -56,6 +54,9 @@ const modalBox = document.querySelector(".overlay")
 modalBtn.forEach(btn => {
     btn.addEventListener("click", ()=> {
         modalBox.classList.toggle("show-modal")
+        if (btn.dataset.formType === 'announcement')
+        modalBox.querySelector(".overlay .announcement-modal").style.display = 'block'
+
 
     })
 })
@@ -65,6 +66,32 @@ modalBox.addEventListener("click", (event) => {
     modalBox.classList.remove("show-modal"); // Remove the class
   }
 });
+
+
+
+
+const messages = document.querySelector('.messages');
+const message = messages.querySelectorAll('.message');
+const messageSearch = document.querySelector('#message-search');
+
+
+
+const searchMessage = () => {
+    const val = messageSearch.value.toLowerCase();
+    message.forEach(user => {
+        let name = user.querySelector('h5').textContent.toLowerCase();
+        if(name.indexOf(val) != -1) {
+            user.style.display = 'flex'; 
+        } else {
+            user.style.display = 'none';
+        }
+    })
+}
+
+messageSearch.addEventListener('keyup', searchMessage);
+
+
+
 
 
     const actionBtns = document.querySelectorAll(".post-actions .btn");

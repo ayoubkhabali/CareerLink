@@ -230,13 +230,13 @@ img {
     box-shadow: var(--light-shadow);
 }
 
-.btn-solid {
-    background-color: #000;
+.btn:hover {
+    background-color: #1976D2;
     color: #fff;
 }
 
-.btn:hover {
-    background: transparent;
+.btn-solid {
+    background-color: #000;
     color: #fff;
 }
 
@@ -498,6 +498,7 @@ img {
     background-color: #FFF;
     position: fixed;
     z-index: 9999;
+    display: none;
 }
 
 .overlay.show-modal {

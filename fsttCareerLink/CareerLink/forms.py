@@ -1,7 +1,7 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User,Student, Teacher,Class,Announcement
+from .models import User,Student, Teacher,Class,Announcement,Assignment
 from django.forms.widgets import CheckboxSelectMultiple
 
 
@@ -13,6 +13,13 @@ class AnnouncementForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows': 4, 'cols': 40}),  # Adjust rows and columns as needed
         }
+
+class AssignmentForm(forms.ModelForm):
+
+    class Meta:
+        model = Assignment
+        fields = ['title', 'description', 'due_date']
+
 
 
 class ClassForm(forms.ModelForm):
