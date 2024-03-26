@@ -1,9 +1,8 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% block content %}
 
 <div class="profile-section">
-    {% include 'sidebar.html' %}
     <div class="main-profile">
     <div class="top-section">
         <div class="cover-bx" style="background-image: url('{{ user.profile_cover.url }}')">
@@ -254,10 +253,11 @@
             <ul>
                 {% for class_instance in classes %}
                 <li>
-                    <strong>{{ class_instance.title }}</strong> - {{ class_instance.description }}
+                    <li><a href="{% url 'class_detail' class_instance.id %}">{{ class_instance.title }}</a> - {{ class_instance.description }}</li>
                     <ul>
+
                         {% for student in class_instance.students.all %}
-                        <li>{{ student.name }} ({{ student.CNE }})</li>
+                        <li>{{ student.username }} ({{ student.CNE }})</li>
                         {% endfor %}
                     </ul>
                 </li>

@@ -71,10 +71,16 @@ class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default='')
     department = models.CharField(max_length=100, default='')
 
+    def __str__(self):
+        return self.user.username
+
 
 class Enterprise(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default='')
     company_name = models.CharField(max_length=100, default='')
+
+    def __str__(self):
+        return self.user.username
 
 class Post(models.Model):
     class PostType(models.TextChoices):
@@ -90,7 +96,6 @@ class Post(models.Model):
     attachment = models.FileField(upload_to='posts-files/', null=True, blank=True)  # Add attachment field
     likes = models.IntegerField(default=0)
     post_type = models.CharField(max_length=50, choices=PostType.choices, default=PostType.REGULAR)
-
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True, serialize=False)
@@ -152,6 +157,8 @@ class Class(models.Model):
     description = models.TextField(default='')
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     students = models.ManyToManyField(Student, related_name='classes')
+    class_cover = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_cover.jpg')
+
 
 
 class Assignment(models.Model):

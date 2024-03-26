@@ -5,25 +5,10 @@ from django.http import HttpResponse
 from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.views.generic import RedirectView
-
-
-def StudentDashboard(request) :
-    return HttpResponse("This is studet dashboard page")
-
-def TeacherDashboard(request) :
-    return HttpResponse("This is Teacher dashboard page")
-
-
-def EntrepriseDashboard(request) :
-    return HttpResponse("This is Entreprise dashboard page")
-
 urlpatterns = [
     path('home/', views.home, name='home'),
     path('', views.welcome, name='welcome'),
     path('about_us', views.aboutUs, name='about'),
-    path('student-dashboard/',StudentDashboard),
-    path('teacher-dashboard/',TeacherDashboard),
-    path('entreprise-dashboard/',EntrepriseDashboard),
     path('logout/',views.logoutUser,name="logout"),
     path('login/',views.loginPage,name="login"),
     path('rooms/',views.rooms,name="rooms"),
@@ -41,6 +26,7 @@ urlpatterns = [
     path('profile/<str:username>/classes/', views.user_profile, name='classes'),
     path('profile/<str:username>/classes', RedirectView.as_view(url='/profile/%(username)s/classes/')),
     path('classes/create-class', views.create_class,name="create_class"),
+    path('class/<int:class_id>/', views.class_detail, name='class_detail'),
 
     
 ]

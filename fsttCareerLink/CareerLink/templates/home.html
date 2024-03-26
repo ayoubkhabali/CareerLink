@@ -1,27 +1,12 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
 
 {% if request.user.is_authenticated %}
 <main class="main-section">
-    {% include 'sidebar.html' %}
-
     <section class="main-content">
         <div class="container">
-
-        <header class="header-content">
-            <div class="search-bx ">
-                <form method="get" action="">
-                   <input type="text" placeholder="Search here ...">
-                   <button type="submit"><i class='bx bx-search'></i></button>
-                </form>
-            </div>
-            <ul class="header-options">
-                <li class="header-item"><button class="header-btn "><i class='bx bxs-bell'></i></button></li>
-                <li class="header-item"><button class="header-btn"><i class='bx bxs-cog' ></i></button></li>
-            </ul>
-        </header>
         <h3 class="greetings">Welcome,  {{ request.user.username }}</h3>
         <style>
                 input[type="text"],
@@ -122,85 +107,69 @@
 
 
 
-        <div class="posts-container">
             {% if posts %}
             <h2>Recent Posts</h2>
+            <div class="feeds">
+
             {% for post in posts %}
-            <div class="post">
-                <div class="post-info">
-                    <div class="img-icon">
-                        <img src="{{user.profile_pic.url}}" alt="">
-                    </div>
-                    <div>
-                        <h3 class="author-post">{{ post.author.username }}</h3>
-                        <p class="time-since">{{ post.created_at }}</p>
-                        <p class="time-since">{{ post.id }}</p>
-                        <p class="time-since">{{ post.post_type }}</p>
 
-                    </div>
-    
-                </div>
-                <div class="post-text">
-                    {{ post.content }}   
-                 </div>
-                 <div class="post-img">
-                    {% if post.post_media %}
-                        <img src="{{ post.post_media.url }}" alt="Post Image">
-                    {% endif %}
-                </div>
-                <div class="post-img">
-                    {% if post.attachment %}
-                        <img src="{{ post.attachment.url }}" alt="Post Image">
-                    {% endif %}
-                </div>
-                
 
-                 <div class="post-actions">
-                    <ul>
-                        <li><a href="{% url 'like_post' post_id=post.id %}"><i class='bx bxs-message-alt-dots'></i>  {{ post.likes }} Like</a></li>
-
-                        <li><a href=""><i class='bx bxs-message-alt-dots'></i> Comment</a></li>
-                        <li><a href="{% url 'share_post' post_id=post.id %}"><i class='bx bxs-share'></i> Share</a></li>
-                    </ul>
-                    <div class="comments-section">
-                        {% for comment in post.comments.all %}
-                        <div class="comment">
-                            <div class="author-info">
-                                <div class="img-icon">
-                                    <!-- Display user avatar or profile picture -->
-                                    <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
-                                </div>
-                                <span class="author-name">{{ comment.author }}</span>
-                                <!-- <span class="author-name">{{ comment.created_at }}</span> -->
+                <div class="feed">
+                    <div class="head">
+                        <div class="user">
+                            <div class="profile-photo">
+                                <img src="{{ request.user.profile_pic.url }}">
                             </div>
-
-                            <div class="comment-text">
-                                {{ comment.content }}
+                            <div class="info">
+                                <h3>{{post.author.username}}</h3>
+                                <small>{{post.created_at}}</small>
                             </div>
                         </div>
-                        {% endfor %}
+                        <span class="edit">
+                            <i class="uil uil-ellipsis-h"></i>
+                        </span>
                     </div>
-                    <div class="add-comment">
-                        <form method="post" action="{% url 'comment_post' post_id=post.id %}">
-                            {% csrf_token %}
-                            <input type="text" name="content" placeholder="Write a comment...">
-                            <button type="submit">Post Comment</button>
-                        </form>
+
+                    <div class="caption">
+                        <br>
+                        <p> {{post.content}}
+                        <span class="harsh-tag">#lifestyle</span></p>
+                    </div>
+                    {% if post.post_media %}
+
+                    <div class="photo">
+                        <img src="{{post.post_media.url}}">
+                    </div>
+                    {% endif%}
+
+
+                    <div class="action-buttons">
+                        <div class="interaction-buttons">
+                            <span><a href="{% url 'like_post' post_id=post.id %}"> <i class="uil uil-heart"></i> </a></span>
+                            <span><i class="uil uil-comment-dots"></i></span>
+                            <span><a href="{% url 'share_post' post_id=post.id %}"><i class="uil uil-share-alt"></i></a></span>
+                        </div>
+
+                    </div>
+
+                    <div class="liked-by">
+                        <p>Liked by {{post.likes}} people</b></p>
+                    </div>
+
+                    <div class="comments text-muted">
+                        View all 277 comments
                     </div>
                 </div>
-                
-    
-            </div>
 
             {% endfor %}
+            </div>
 
             {% else %}
             <p>No posts found.</p>
         {% endif %}
-        </div>
     </section>
 
-    <aside class="func">
+    <!-- <aside class="func">
         <div class="container">
 
         <div class="profileBx">
@@ -272,44 +241,11 @@
         </div>
     </div>
 
-    </aside>
+    </aside> -->
 </div>
 
 </main>
 {% endif %}
-
-<section class="footer">
-    <div class="container">
-        <ul>
-            <h4 class="col-title">General</h4>
-            <li><a href="" class="list-link">Sign up</a></li>
-            <li><a href="" class="list-link">Help center</a></li>
-            <li><a href="" class="list-link">About</a></li>
-            <li><a href="" class="list-link">Press</a></li>
-        </ul>
-        <ul>
-            <h4 class="col-title">Browse Linkedin</h4>
-            <li><a href="" class="list-link">Learning</a></li>
-            <li><a href="" class="list-link">Jobs</a></li>
-            <li><a href="" class="list-link">Salary</a></li>
-            <li><a href="" class="list-link">Services</a></li>
-        </ul>
-        <ul>
-            <h4 class="col-title">Business Solution</h4>
-            <li><a href="" class="list-link">Talent</a></li>
-            <li><a href="" class="list-link">Marketing</a></li>
-            <li><a href="" class="list-link">Sales</a></li>
-            <li><a href="" class="list-link">Learning</a></li>
-        </ul>
-        <ul>
-            <h4 class="col-title">Directories</h4>
-            <li><a href="" class="list-link">Members</a></li>
-            <li><a href="" class="list-link">Jobs</a></li>
-            <li><a href="" class="list-link">Companies</a></li>
-            <li><a href="" class="list-link">Featured</a></li>
-        </ul>
-    </div>
-</section>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+    .top-section .cover-bx {
+        width: 95%;
+        margin: 1rem auto;
+        border-radius: 2rem;
+        position: relative;
+        height: 250px;
+    }
+
+    .top-section .cover-bx .class-info {
+        position: absolute;
+        bottom: 1rem;
+        left: 1.5rem;
+        font-size: 1.5rem;
+    }
+</style>
+
+<div class="top-section">
+    <div class="cover-bx" style="background-image: url('{{ class_instance.class_cover.url }}')">
+        <div class="class-info">
+            <h2>{{ class_instance.title }}</h2>
+            <p>{{ class_instance.teacher.user }}</p>
+
+        </div>
+    </div>
+    
+</div>
+
+<ul>
+
+    {% for student in class_instance.students.all %}
+    <li>{{ student.username }} ({{ student.CNE }})</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

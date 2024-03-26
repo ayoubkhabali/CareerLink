@@ -109,6 +109,9 @@ def create_class(request):
     return render(request, 'create_class.html', {'class_form': class_form})
 
 
+def class_detail(request, class_id):
+    class_instance = get_object_or_404(Class, pk=class_id)
+    return render(request, 'class_detail.html', {'class_instance': class_instance})
 
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)

@@ -10,7 +10,7 @@ class ClassForm(forms.ModelForm):
 
     class Meta:
         model = Class
-        fields = ['title', 'description', 'students']
+        fields = ['title', 'description', 'students', 'class_cover']
 
 class CustomUserCreationForm(UserCreationForm):
     role = forms.ChoiceField(choices=User.Role.choices)
