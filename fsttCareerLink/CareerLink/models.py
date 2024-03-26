@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 from django.contrib.postgres.fields import ArrayField
-from datetime import datetime
+from datetime import datetime,timezone
 import uuid
 
 
@@ -159,6 +159,18 @@ class Class(models.Model):
     students = models.ManyToManyField(Student, related_name='classes')
     class_cover = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_cover.jpg')
 
+
+
+class Announcement(models.Model):
+    class_instance = models.ForeignKey(Class, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    attachment = models.FileField(upload_to='announcement_attachments/', null=True, blank=True)
+    photo = models.ImageField(upload_to='announcement_photos/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Assignment(models.Model):

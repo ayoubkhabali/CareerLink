@@ -26,7 +26,9 @@ urlpatterns = [
     path('profile/<str:username>/classes/', views.user_profile, name='classes'),
     path('profile/<str:username>/classes', RedirectView.as_view(url='/profile/%(username)s/classes/')),
     path('classes/create-class', views.create_class,name="create_class"),
-    path('class/<int:class_id>/', views.class_detail, name='class_detail'),
+    # path('class/<int:class_id>/', views.class_detail, name='class_detail'),
+    path('class/<int:class_id>/<str:class_title>/', views.class_detail, name='class_detail'),
+
 
     
 ]

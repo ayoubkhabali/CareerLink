@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .forms import PostForm  # Import the PostForm
-from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm
+from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm
 
 def aboutUs(request) :
     return render(request,'about_us.html')
@@ -50,8 +50,8 @@ def user_profile(request, username):
     posts_url = request.path == f'/profile/{request.user.username}/'
     about_url = request.path == f'/profile/{request.user.username}/update/'  # Check if the URL corresponds to the about section
     classes_url = request.path == f'/profile/{request.user.username}/classes/'  # Check if the URL corresponds to the about section
+    classes = None
    
-    
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -79,6 +79,10 @@ def user_profile(request, username):
     if request.user.role == 'TEACHER' :
         teacher = request.user.teacher
         classes = Class.objects.filter(teacher=teacher).prefetch_related('students')
+
+    elif request.user.role == 'STUDENT':
+        student = request.user.student
+        classes = Class.objects.filter(students=student).prefetch_related('students')
     
     context = {
         'classes_url' : classes_url,
@@ -109,9 +113,21 @@ def create_class(request):
     return render(request, 'create_class.html', {'class_form': class_form})
 
 
-def class_detail(request, class_id):
+def class_detail(request, class_id, class_title):
     class_instance = get_object_or_404(Class, pk=class_id)
-    return render(request, 'class_detail.html', {'class_instance': class_instance})
+    class_form = AnnouncementForm()  # Define class_form outside the if statement
+ 
+    if request.method == 'POST':
+        class_form = AnnouncementForm(request.POST, request.FILES)
+        if form.is_valid():
+            announcement = class_form.save(commit=False)
+            announcement.class_instance = class_instance
+            announcement.save()
+            return redirect('class_detail', class_id=class_id, class_title=class_title)
+    else:
+        form = AnnouncementForm()
+    
+    return render(request, 'class_detail.html', {'class_instance': class_instance, 'class_form': class_form})
 
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)

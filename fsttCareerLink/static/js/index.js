@@ -45,6 +45,67 @@ window.addEventListener('resize', () => {
     }
 });
 
+
+
+
+
+const modalBtn = document.querySelector(".modal-trigger")
+const modalBox = document.querySelector(".overlay")
+
+modalBtn.addEventListener("click", ()=> {
+  modalBox.classList.toggle("show-modal")
+})
+
+modalBox.addEventListener("click", (event) => {
+  // Check if the clicked element is the overlay itself
+  if (event.target === modalBox) {
+    modalBox.classList.remove("show-modal"); // Remove the class
+  }
+});
+
+
+    const actionBtns = document.querySelectorAll(".post-actions .btn");
+    actionBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.classList.toggle("btn-active")
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.filtering-posts .profile-tab');
+        const posts = document.querySelectorAll('.your-posts .post');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const filter = this.dataset.filter;
+    
+                tabs.forEach(t => t.classList.remove('current-tab'));
+                this.classList.add('current-tab');
+
+                posts.forEach(post => {
+                    if (filter === 'all' || post.dataset.type === filter) {
+                        post.style.display = 'block';
+                    } else {
+                        post.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
 const toggler = document.getElementById('theme-toggle');
 
 toggler.addEventListener('change', function () {
@@ -54,3 +115,4 @@ toggler.addEventListener('change', function () {
         document.body.classList.remove('dark');
     }
 });
+

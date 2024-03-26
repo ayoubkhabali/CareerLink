@@ -1,8 +1,14 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User,Student, Teacher,Class
+from .models import User,Student, Teacher,Class,Announcement
 from django.forms.widgets import CheckboxSelectMultiple
+
+
+class AnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = Announcement
+        fields = ['title', 'content', 'attachment', 'photo']
 
 
 class ClassForm(forms.ModelForm):
