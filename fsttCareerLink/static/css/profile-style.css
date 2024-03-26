@@ -29,9 +29,12 @@
 
 .top-section .cover-bx {
     height: 400px;
-    width: 100%;
     background-image: url('/static/images/cover.jpg');
     background-size: cover;
+    width: 90%;
+    margin: auto;
+    margin-top: 2rem;
+    border-radius: 2rem;
 }
 
 .top-section {

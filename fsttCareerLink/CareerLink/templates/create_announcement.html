@@ -1,6 +1,21 @@
-<form method="post" enctype="multipart/form-data">
+<style>
+    .announcement-form textarea {
+        height: 200px;
+    }
+
+    .announcement-form  {
+        width: 95%;
+        margin: auto;
+    }
+
+    .announcement-form input, form textarea {
+        width: 100%;
+    }
+</style>
+
+<form method="post" enctype="multipart/form-data"  class="announcement-form">
     {% csrf_token %}
     {{ class_form.as_p }}
-    <button type="submit">Create Announcement</button>
+    <button type="submit" class="btn">Create Announcement</button>
   </form>
   

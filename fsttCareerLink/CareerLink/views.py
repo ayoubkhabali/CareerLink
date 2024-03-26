@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class
+from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
@@ -113,13 +113,17 @@ def create_class(request):
     return render(request, 'create_class.html', {'class_form': class_form})
 
 
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Class, Announcement
+from .forms import AnnouncementForm
+
 def class_detail(request, class_id, class_title):
     class_instance = get_object_or_404(Class, pk=class_id)
     class_form = AnnouncementForm()  # Define class_form outside the if statement
- 
+
     if request.method == 'POST':
         class_form = AnnouncementForm(request.POST, request.FILES)
-        if form.is_valid():
+        if class_form.is_valid():
             announcement = class_form.save(commit=False)
             announcement.class_instance = class_instance
             announcement.save()
@@ -127,46 +131,45 @@ def class_detail(request, class_id, class_title):
     else:
         form = AnnouncementForm()
     
-    return render(request, 'class_detail.html', {'class_instance': class_instance, 'class_form': class_form})
+    # Filter announcements by class_instance
+    announcements = Announcement.objects.filter(class_instance=class_instance).order_by('-created_at')
+    
+    return render(request, 'class_detail.html', {'class_instance': class_instance, 'class_form': class_form, 'announcements': announcements})
+
+
 
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)
     posts_url = request.path == f'/profile/{request.user.username}/'
     about_url = request.path == f'/profile/{request.user.username}/update/'
 
-    
-    if request.user.role == 'STUDENT':
-        student = user.student
-        if request.method == 'POST':
-            user_form = ChangeStudentInfoForm(request.POST, instance=user)
-            student_form = StudentInfoForm(request.POST, instance=student)
+    if request.method == 'POST':
+        if user.role == 'STUDENT':
+            user_form = ChangeStudentInfoForm(request.POST, request.FILES, instance=user)
+            student_form = StudentInfoForm(request.POST, request.FILES, instance=user.student)
             if user_form.is_valid() and student_form.is_valid():
                 user_form.save()
                 student_form.save()
                 return redirect('user_profile', username=username)
-        else:
-            user_form = ChangeStudentInfoForm(instance=user)
-            student_form = StudentInfoForm(instance=student)
-        context = {'user_form': user_form, 'student_form': student_form, 'posts_url': posts_url, 'about_url': about_url}
-        return render(request, 'about_profile.html', context)
-    
-    elif request.user.role == 'TEACHER':
-        teacher = user.teacher
-        if request.method == 'POST':
-            user_form = ChangeTeacherInfoForm(request.POST, instance=user)
-            teacher_form = TeacherInfoForm(request.POST, instance=teacher)
+        elif user.role == 'TEACHER':
+            user_form = ChangeTeacherInfoForm(request.POST, request.FILES, instance=user)
+            teacher_form = TeacherInfoForm(request.POST, request.FILES, instance=user.teacher)
             if user_form.is_valid() and teacher_form.is_valid():
                 user_form.save()
                 teacher_form.save()
                 return redirect('user_profile', username=username)
-        else:
-            user_form = ChangeTeacherInfoForm(instance=user)
-            teacher_form = TeacherInfoForm(instance=teacher)
-        context = {'user_form': user_form, 'teacher_form': teacher_form, 'posts_url': posts_url, 'about_url': about_url}
-        return render(request, 'user_profile.html', context)
-    
     else:
-        return render(request, 'user_profile.html', {'posts_url': posts_url, 'about_url': about_url})
+        if user.role == 'STUDENT':
+            user_form = ChangeStudentInfoForm(instance=user)
+            student_form = StudentInfoForm(instance=user.student)
+            context = {'user_form': user_form, 'student_form': student_form, 'posts_url': posts_url, 'about_url': about_url}
+            return render(request, 'about_profile.html', context)
+        elif user.role == 'TEACHER':
+            user_form = ChangeTeacherInfoForm(instance=user)
+            teacher_form = TeacherInfoForm(instance=user.teacher)
+            context = {'user_form': user_form, 'teacher_form': teacher_form, 'posts_url': posts_url, 'about_url': about_url}
+            return render(request, 'user_profile.html', context)
+    return render(request, 'user_profile.html', {'posts_url': posts_url, 'about_url': about_url})
 
 from django.contrib.auth import get_user_model
 

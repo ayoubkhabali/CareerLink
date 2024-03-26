@@ -159,8 +159,6 @@ class Class(models.Model):
     students = models.ManyToManyField(Student, related_name='classes')
     class_cover = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_cover.jpg')
 
-
-
 class Announcement(models.Model):
     class_instance = models.ForeignKey(Class, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
@@ -171,7 +169,6 @@ class Announcement(models.Model):
 
     def __str__(self):
         return self.title
-
 
 class Assignment(models.Model):
     id = models.AutoField(primary_key=True, serialize=False)

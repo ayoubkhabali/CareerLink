@@ -107,7 +107,7 @@ body{
 }
 
 .sidebar .side-menu li.active{
-    background: var(--grey);
+    background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
     position: relative;
 }
 
@@ -183,7 +183,6 @@ body{
 
 .content nav{
     height: 56px;
-    background: var(--light);
     padding: 0 24px 0 0;
     display: flex;
     align-items: center;

@@ -6,9 +6,13 @@ from django.forms.widgets import CheckboxSelectMultiple
 
 
 class AnnouncementForm(forms.ModelForm):
+
     class Meta:
         model = Announcement
         fields = ['title', 'content', 'attachment', 'photo']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 4, 'cols': 40}),  # Adjust rows and columns as needed
+        }
 
 
 class ClassForm(forms.ModelForm):
@@ -62,11 +66,10 @@ class TeacherInfoForm(forms.ModelForm):
 class ChangeTeacherInfoForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'bio']  # Fields specific to User model
-
+        fields = ['username', 'email', 'first_name', 'last_name', 'bio','profile_pic','profile_cover']  # Fields specific to User model
 
 class ChangeStudentInfoForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'bio']  # Fields specific to User model
+        fields = ['username', 'email', 'first_name', 'last_name', 'bio','profile_pic','profile_cover']  # Fields specific to User model
 

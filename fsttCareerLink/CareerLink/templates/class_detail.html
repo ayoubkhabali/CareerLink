@@ -42,6 +42,18 @@
             resize: none;
             height: 250px;
         }
+
+        .class-detail-container {
+            width: 80%;
+            display: flex;
+            justify-content: flex-end;
+            margin: auto;
+
+        }
+
+        .feeds {
+            width: 100%;
+        }
 </style>
 
 <div class="top-section">
@@ -53,18 +65,11 @@
         </div>
     </div>
     <div class="class-action">
-        <button class="btn modal-trigger">create an assignment</button>
-        <button class="btn modal-trigger">create an annoncement</button>
+        <button type="button" class="modal-trigger btn" data-form-type="assignment">Create Assignment</button>
+        <button type="button" class="modal-trigger btn" data-form-type="announcement">Create Announcement</button>
         <button class="btn modal-trigger">start exam</button>
     </div>
 </div>
-
-<ul>
-
-    {% for student in class_instance.students.all %}
-    <li>{{ student.username }} ({{ student.CNE }})</li>
-    {% endfor %}
-</ul>
 
 <div>
     <form action="" class="create-post">
@@ -77,6 +82,46 @@
 
 </div>
 
+<div class="class-detail-container">
+    <div class="feeds">
+        {% for announcement in announcements %}
+    
+        <div class="feed">
+            <div class="head">
+                <div class="user">
+                    <div class="profile-photo">
+                        <img src="{{ announcement.class_instance.teacher.user.profile_pic.url }}">
+                    </div>
+                    <div class="info">
+                        <h3>{{announcement.class_instance.teacher}}</h3>
+                        <small>{{announcement.created_at}}</small>
+                    </div>
+                </div>
+                <span class="edit">
+                    <i class="uil uil-ellipsis-h"></i>
+                </span>
+            </div>
+    
+            <div class="caption">
+                <br>
+                <p> {{announcement.content}}
+                <span class="harsh-tag">#lifestyle</span></p>
+            </div>
+            {% if announcement.photo %}
+    
+            <div class="photo">
+                <img src="{{announcement.photo.url}}">
+            </div>
+            {% endif%}
+        </div>
+        {% endfor %}
+    
+    </div>
+
+</div>
+
+
+
 
 
 <div class="overlay">
@@ -84,6 +129,7 @@
         {% include 'create_announcement.html' %}
     </div>
 </div>
+
 
 
 

@@ -49,15 +49,18 @@ window.addEventListener('resize', () => {
 
 
 
-const modalBtn = document.querySelector(".modal-trigger")
+const modalBtn = document.querySelectorAll(".modal-trigger")
 const modalBox = document.querySelector(".overlay")
 
-modalBtn.addEventListener("click", ()=> {
-  modalBox.classList.toggle("show-modal")
+
+modalBtn.forEach(btn => {
+    btn.addEventListener("click", ()=> {
+        modalBox.classList.toggle("show-modal")
+
+    })
 })
 
 modalBox.addEventListener("click", (event) => {
-  // Check if the clicked element is the overlay itself
   if (event.target === modalBox) {
     modalBox.classList.remove("show-modal"); // Remove the class
   }
