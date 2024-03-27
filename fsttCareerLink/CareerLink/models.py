@@ -170,13 +170,18 @@ class Announcement(models.Model):
     def __str__(self):
         return self.title
 
+from django.utils import timezone
+
+
 class Assignment(models.Model):
+    class_instance = models.ForeignKey(Class, on_delete=models.CASCADE)
     id = models.AutoField(primary_key=True, serialize=False)
     title = models.CharField(max_length=100)
     description = models.TextField()
     due_date = models.DateField()
-    associated_class = models.ForeignKey(Class, on_delete=models.CASCADE)
+    attachment = models.FileField(upload_to='announcement_attachments/', null=True, blank=True)
     assigned_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title

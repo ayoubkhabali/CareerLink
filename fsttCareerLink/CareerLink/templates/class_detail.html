@@ -41,16 +41,7 @@
 
         }
 
-        .class-detail-container {
-            width: 80%;
-            display: flex;
-            justify-content: flex-end;
-            margin: auto;
-        }
 
-        .feeds {
-            width: 100%;
-        }
 </style>
 
 <div class="top-section">
@@ -68,46 +59,71 @@
     </div>
 </div>
 
-<div class="create-post" >
+<!-- <div class="create-post" >
     {% include 'create_announcement.html' %}
 
-</div>
+</div> -->
 
 <div class="class-detail-container">
+    <div class="assignments-box">
+        <h3 class="assignments-title">Upcoming</h3>
+        {% if assignments %}
+            {% for assignment in assignments %}
+                <span>{{assignment.title}}</span>
+            {% endfor %}
+        {% else %}
+        <p>Woohoo, no work due soon!        </p>
+        {% endif %}
+    </div>
     <div class="feeds">
-        {% for announcement in announcements %}
-    
-        <div class="feed">
-            <div class="head">
+        <div class="feed announce-something modal-trigger" data-form-type="announcement">
+            <div class="head" >
                 <div class="user">
                     <div class="profile-photo">
-                        <img src="{{ announcement.class_instance.teacher.user.profile_pic.url }}">
+                        <img src="{{class_instance.teacher.user.profile_pic.url}}" alt="">
                     </div>
-                    <div class="info">
-                        <h3>{{announcement.class_instance.teacher}}</h3>
-                        <small>{{announcement.created_at}}</small>
-                    </div>
+                    <div class="info" style="display: flex;align-items: center;color: slategray;"><p>Announce something to your class.</p></div>
                 </div>
-                <span class="edit">
-                    <i class="uil uil-ellipsis-h"></i>
-                </span>
             </div>
-    
-            <div class="caption">
-                <br>
-                <p> {{announcement.content}}
-                <span class="harsh-tag">#lifestyle</span></p>
-            </div>
-            {% if announcement.photo %}
-    
-            <div class="photo">
-                <img src="{{announcement.photo.url}}">
-            </div>
-            {% endif%}
         </div>
-        {% endfor %}
+
+        {% if announcements %}
+            {% for announcement in announcements %}
+                    <div class="feed">
+                        <div class="head">
+                            <div class="user">
+                                <div class="profile-photo">
+                                    <img src="{{ announcement.class_instance.teacher.user.profile_pic.url }}">
+                                </div>
+                                <div class="info">
+                                    <h3>{{announcement.class_instance.teacher}}</h3>
+                                    posted a new announcement : {{announcement.class_instance.title}}
+                                </div>
+                            </div>
+                            <span class="edit">
+                                <i class="uil uil-ellipsis-h"></i>
+                            </span>
+                        </div>
+                
+                        <div class="caption">
+                            <br>
+                            <p> {{announcement.content}}
+                        </div>
+                        {% if announcement.photo %}
+                
+                        <div class="photo">
+                            <img src="{{announcement.photo.url}}">
+                        </div>
+                        {% endif%}
+                    </div>
+
+            {% endfor %}
+        {% else %}
+        <p>no announcements found</p>
+        {% endif %}
     
     </div>
+
 
 </div>
 

@@ -47,6 +47,34 @@ window.addEventListener('resize', () => {
 
 
 
+const actionBtns = document.querySelectorAll(".post-actions .btn");
+actionBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+        btn.classList.toggle("btn-active")
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.filtering-posts .profile-tab');
+    const posts = document.querySelectorAll('.your-posts .post');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+
+            tabs.forEach(t => t.classList.remove('current-tab'));
+            this.classList.add('current-tab');
+
+            posts.forEach(post => {
+                if (filter === 'all' || post.dataset.type === filter) {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        });
+    });
+});
 
 const modalBtn = document.querySelectorAll(".modal-trigger")
 const modalBox = document.querySelector(".overlay")
@@ -57,7 +85,9 @@ modalBtn.forEach(btn => {
         modalBox.classList.toggle("show-modal")
         if (btn.dataset.formType === 'announcement')
             modalBox.querySelector(".overlay .announcement-modal").style.display = 'block'
-        
+        if (btn.dataset.formType === 'assignment')
+            modalBox.querySelector(".overlay .assignment-modal").style.display = 'block'
+         
 
     })
 })
@@ -65,8 +95,21 @@ modalBtn.forEach(btn => {
 modalBox.addEventListener("click", (event) => {
   if (event.target === modalBox) {
     modalBox.classList.remove("show-modal"); // Remove the class
-  }
+    modalBox.querySelectorAll(".overlay .modal").forEach(modal => {modal.style.display ='none'})  }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -88,43 +131,6 @@ const searchMessage = () => {
 }
 
 messageSearch.addEventListener('keyup', searchMessage);
-
-
-
-
-
-
-    const actionBtns = document.querySelectorAll(".post-actions .btn");
-    actionBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            btn.classList.toggle("btn-active")
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const tabs = document.querySelectorAll('.filtering-posts .profile-tab');
-        const posts = document.querySelectorAll('.your-posts .post');
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                const filter = this.dataset.filter;
-    
-                tabs.forEach(t => t.classList.remove('current-tab'));
-                this.classList.add('current-tab');
-
-                posts.forEach(post => {
-                    if (filter === 'all' || post.dataset.type === filter) {
-                        post.style.display = 'block';
-                    } else {
-                        post.style.display = 'none';
-                    }
-                });
-            });
-        });
-    });
-    
-
-
 
 
 

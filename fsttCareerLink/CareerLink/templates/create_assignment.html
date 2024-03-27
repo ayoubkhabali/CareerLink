@@ -1,0 +1,21 @@
+<style>
+    .modal-form textarea {
+        height: 200px;
+    }
+
+    .modal-form  {
+        width: 95%;
+        margin: auto;
+    }
+
+    .modal-form input, form textarea {
+        width: 100%;
+    }
+</style>
+
+<form method="post" enctype="multipart/form-data"  class="modal-form">
+    {% csrf_token %}
+    {{ assignment_form.as_p }}
+    <button type="submit" name="assignment_submit" class="btn">Create Assignment</button>
+  </form>
+  

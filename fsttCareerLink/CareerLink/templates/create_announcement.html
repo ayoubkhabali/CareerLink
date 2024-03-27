@@ -1,21 +1,21 @@
 <style>
-    .announcement-form textarea {
+    .modal-form textarea {
         height: 200px;
     }
 
-    .announcement-form  {
+    .modal-form  {
         width: 95%;
         margin: auto;
     }
 
-    .announcement-form input, form textarea {
+    .modal-form input, form textarea {
         width: 100%;
     }
 </style>
 
-<form method="post" enctype="multipart/form-data"  class="announcement-form">
+<form method="post" enctype="multipart/form-data"  class="modal-form">
     {% csrf_token %}
     {{ class_form.as_p }}
-    <button type="submit" class="btn">Create Announcement</button>
+    <button type="submit" name="announcement_submit" class="btn">Create Announcement</button>
   </form>
   

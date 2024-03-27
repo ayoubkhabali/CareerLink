@@ -3,6 +3,7 @@ from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from .models import User,Student, Teacher,Class,Announcement,Assignment
 from django.forms.widgets import CheckboxSelectMultiple
+from datetime import date
 
 
 class AnnouncementForm(forms.ModelForm):
@@ -14,12 +15,17 @@ class AnnouncementForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'rows': 4, 'cols': 40}),  # Adjust rows and columns as needed
         }
 
+from django.utils import timezone
+
 class AssignmentForm(forms.ModelForm):
 
     class Meta:
         model = Assignment
-        fields = ['title', 'description', 'due_date']
-
+        fields = ['title', 'description','due_date','attachment']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 
 class ClassForm(forms.ModelForm):

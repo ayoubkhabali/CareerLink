@@ -504,3 +504,28 @@ img {
 .overlay.show-modal {
     display: flex;
 }
+
+
+.class-detail-container {
+    width: 95%;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    /* grid-template-rows: auto auto; */
+    margin: auto;
+    gap: 3rem;
+}
+
+.class-detail-container .assignments-box {
+    border: .5px  solid rgb(106, 106, 106);
+    border-radius: 5px;
+    color: rgb(106, 106, 106);
+    padding: 1rem ;
+}
+
+.announce-form-feed {
+    display: none;
+}
+
+.show-announce-form-feed {
+    display: block;
+}

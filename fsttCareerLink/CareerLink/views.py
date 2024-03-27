@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement
+from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement,Assignment
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .forms import PostForm  # Import the PostForm
-from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm
+from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm
 
 def aboutUs(request) :
     return render(request,'about_us.html')
@@ -117,25 +117,41 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Class, Announcement
 from .forms import AnnouncementForm
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def class_detail(request, class_id, class_title):
     class_instance = get_object_or_404(Class, pk=class_id)
-    class_form = AnnouncementForm()  # Define class_form outside the if statement
+    class_form = AnnouncementForm()
+    assignment_form = AssignmentForm()
 
     if request.method == 'POST':
-        class_form = AnnouncementForm(request.POST, request.FILES)
-        if class_form.is_valid():
-            announcement = class_form.save(commit=False)
-            announcement.class_instance = class_instance
-            announcement.save()
-            return redirect('class_detail', class_id=class_id, class_title=class_title)
-    else:
-        form = AnnouncementForm()
-    
-    # Filter announcements by class_instance
-    announcements = Announcement.objects.filter(class_instance=class_instance).order_by('-created_at')
-    
-    return render(request, 'class_detail.html', {'class_instance': class_instance, 'class_form': class_form, 'announcements': announcements})
+        if 'announcement_submit' in request.POST:
+            class_form = AnnouncementForm(request.POST, request.FILES)
+            if class_form.is_valid():
+                announcement = class_form.save(commit=False)
+                announcement.class_instance = class_instance
+                announcement.save()
+                return redirect('class_detail', class_id=class_id, class_title=class_title)
+        elif 'assignment_submit' in request.POST:
+            assignment_form = AssignmentForm(request.POST, request.FILES)
+            if assignment_form.is_valid():
+                assignment = assignment_form.save(commit=False)
+                assignment.class_instance = class_instance
+                assignment.assigned_by = request.user.teacher  # Set the assigned_by field
+                assignment.save()
+                return redirect('class_detail', class_id=class_id, class_title=class_title)
 
+    announcements = Announcement.objects.filter(class_instance=class_instance).order_by('-created_at')
+    assignments = Assignment.objects.filter(class_instance=class_instance).order_by('-created_at')
+    context = {
+        'class_instance': class_instance,
+        'class_form': class_form,
+        'assignment_form': assignment_form,
+        'announcements': announcements,
+        'assignments': assignments
+    }
+    return render(request, 'class_detail.html', context)
 
 
 def update_profile(request, username):
