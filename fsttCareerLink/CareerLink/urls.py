@@ -28,6 +28,8 @@ urlpatterns = [
     path('classes/create-class', views.create_class,name="create_class"),
     # path('class/<int:class_id>/', views.class_detail, name='class_detail'),
     path('class/<int:class_id>/<str:class_title>/', views.class_detail, name='class_detail'),
+    path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/', views.assignment_detail, name='assignment_detail'),
+    path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/unsubmit/', views.unsubmit_assignment, name='unsubmit_assignment'),
 
 
     

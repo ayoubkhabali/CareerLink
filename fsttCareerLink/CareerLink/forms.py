@@ -1,9 +1,16 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User,Student, Teacher,Class,Announcement,Assignment
+from .models import User,Student, Teacher,Class,Announcement,Assignment,AssignmentSubmission
 from django.forms.widgets import CheckboxSelectMultiple
 from datetime import date
+
+
+
+class AssignmentSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = AssignmentSubmission
+        fields = ['submission_file']
 
 
 class AnnouncementForm(forms.ModelForm):

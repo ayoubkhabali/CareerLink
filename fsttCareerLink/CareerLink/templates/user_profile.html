@@ -263,7 +263,6 @@
         <ul>
             {% for class_instance in classes %}
             <li>            <a href="{% url 'class_detail' class_instance.id class_instance.title %}">{{ class_instance.title }}</a>            </li>
-            <!-- Add more class details as needed -->
             {% endfor %}
         </ul>
         {% else %}

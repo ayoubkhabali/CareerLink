@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement,Assignment
+from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement,Assignment,AssignmentSubmission
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .forms import PostForm  # Import the PostForm
-from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm
+from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm,AssignmentSubmissionForm
 
 def aboutUs(request) :
     return render(request,'about_us.html')
@@ -152,6 +152,43 @@ def class_detail(request, class_id, class_title):
         'assignments': assignments
     }
     return render(request, 'class_detail.html', context)
+
+def assignment_detail(request, class_id, class_title, assignment_id):
+    class_instance = get_object_or_404(Class, pk=class_id)
+    assignment = get_object_or_404(Assignment, pk=assignment_id)
+
+
+    if request.method == 'POST':
+        assign_submit_form = AssignmentSubmissionForm(request.POST, request.FILES)
+        if assign_submit_form.is_valid():
+            assign_submit = assign_submit_form.save(commit=False)
+            assign_submit.assignment = assignment
+            assign_submit.student = request.user
+            assign_submit.save()
+            return redirect('assignment_detail', class_id=class_id, class_title=class_title, assignment_id=assignment_id)
+    else:
+        assign_submit_form = AssignmentSubmissionForm()
+    
+    if request.user.role == 'STUDENT':
+        # Filter submissions by the current student
+        my_submissions = AssignmentSubmission.objects.filter(student=request.user, assignment=assignment)
+    else:
+        my_submissions = None
+
+
+    assignment_submissions = AssignmentSubmission.objects.filter(assignment=assignment)
+
+    context = {
+        'class_instance': class_instance, 'assignment': assignment, 'assign_submit_form': assign_submit_form,
+        'assignment_submissions' : assignment_submissions, 'my_submissions': my_submissions}
+    return render(request, 'assignment_detail.html', context)
+
+def unsubmit_assignment(request, class_id, class_title, assignment_id):
+    assignment_submission = get_object_or_404(AssignmentSubmission, student=request.user, assignment_id=assignment_id)
+    assignment_submission.delete()
+    # Redirect back to the assignment detail page
+    return redirect('assignment_detail', class_id=class_id, class_title=class_title, assignment_id=assignment_id)
+
 
 
 def update_profile(request, username):

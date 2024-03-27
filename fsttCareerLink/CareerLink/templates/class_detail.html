@@ -67,10 +67,14 @@
 <div class="class-detail-container">
     <div class="assignments-box">
         <h3 class="assignments-title">Upcoming</h3>
+        <ul>
         {% if assignments %}
             {% for assignment in assignments %}
-                <span>{{assignment.title}}</span>
+            <li>
+                <a href="{% url 'assignment_detail' class_instance.id class_instance.title assignment.id %}">{{ assignment.title }}</a>
+            </li>
             {% endfor %}
+        </ul>
         {% else %}
         <p>Woohoo, no work due soon!        </p>
         {% endif %}

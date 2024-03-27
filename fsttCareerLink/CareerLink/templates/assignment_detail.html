@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main-assignment">
+    <div class="assignment-container">
+        <div class="assignment-head">
+            <i class='bx bx-clipboard' ></i>
+            <div class="info">
+                <h2 class="assign-title"> {{assignment.title}}</h2>
+                <p>{{assignment.assigned_by}} - {{assignment.created_at }}</p>
+                <p class="due-time">Due {{ assignment.due_date }}</p>
+            </div>
+        </div>
+        <div class="assign-content">
+            <p>{{ assignment.description }}</p>
+        </div>
+        {% if assignment.attachment %}
+        <div class="assign-attachment">
+            <a href="{{ assignment.attachment.url }}" download><i class='bx bxs-file-archive'></i> {{ assignment.attachment }}</a>
+        </div>
+        {% endif %}
+    
+    </div>
+    <div class="assign-work">
+        {% if request.user.role == 'STUDENT' %}
+            <h3 class="box-title">Your Work</h3>
+                {% if my_submissions %}
+                    <div class="already-assigned">
+                        {% for submission in my_submissions %}
+                        <p>{{ submission.submission_file.url }}</p>
+                        <form method="post" action="{% url 'unsubmit_submission' class_id=class_instance.id class_title=class_instance.title assignment_id=assignment.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Unsubmit</button>
+                        </form>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ assign_submit_form.as_p }}
+                    <button type="submit">Submit</button>
+                </form>
+                {% endif %}
+        {% elif request.user.role == 'TEACHER' %}
+        <h3 class="box-title">Students Work</h3>
+            <div class="already-assigned">
+                {% for submission in assignment_submissions %}
+                    <a href="{{submission.submission_file.url}}" download>{{ submission.submission_file.url }}</a>
+                {% endfor %}
+            </div>
+        {% else %}
+        <div>
+
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+
+{% endblock %}
