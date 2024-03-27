@@ -182,6 +182,9 @@ class Assignment(models.Model):
     attachment = models.FileField(upload_to='announcement_attachments/', null=True, blank=True)
     assigned_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
+    submitted_by = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='submitted_assignments', null=True, blank=True)
+    submission = models.FileField(upload_to='assignment_submissions/', null=True, blank=True)
+
 
     def __str__(self):
         return self.title
