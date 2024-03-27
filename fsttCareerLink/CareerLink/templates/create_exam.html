@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .question-form {
+        margin: 0 2rem;
+    }
+    .question-form input{
+        margin: .2rem 0;
+    }
+    .questionBtn {
+        margin: 0 .5rem ;
+    }
+</style>
+<div class="question-paper-container">
+    <h2>Create Exam</h2>
+    <form method="post" class="question-form">
+        {% csrf_token %}
+        {{ exam_form.as_p }}
+        {% for question_form, answer_set in question_and_answer_forms %}
+        <fieldset>
+            <legend>Question</legend>
+            {{ question_form.as_p }}
+            {% for answer_form in answer_set %}
+            {{ answer_form.as_p }}
+            {% endfor %}
+        </fieldset>
+        {% endfor %}
+        <button type="submit">Create Exam</button>
+    </form>
+
+    <button id="add-question">Add Question</button>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addButton = document.getElementById('add-question');
+        addButton.addEventListener('click', function() {
+            const numQuestions = document.querySelectorAll('fieldset').length;
+            const newQuestion = document.querySelector('fieldset').cloneNode(true);
+            const labels = newQuestion.querySelectorAll('label');
+            labels.forEach(label => {
+                const labelText = label.innerText.split(' ')[0];
+                label.innerText = labelText + ' ' + (numQuestions + 1);
+            });
+            newQuestion.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+            newQuestion.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+            document.querySelector('form').appendChild(newQuestion);
+        });
+    });
+    </script>
+</div>
+{% endblock %}

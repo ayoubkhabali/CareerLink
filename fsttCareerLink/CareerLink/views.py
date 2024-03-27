@@ -189,7 +189,57 @@ def unsubmit_assignment(request, class_id, class_title, assignment_id):
     # Redirect back to the assignment detail page
     return redirect('assignment_detail', class_id=class_id, class_title=class_title, assignment_id=assignment_id)
 
+from .models import Exam, Question, Answer
 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Class, Exam
+
+
+from .forms import ExamForm, QuestionForm, AnswerForm
+def create_exam(request, class_id, class_title):
+    # Retrieve the class instance
+    class_instance = get_object_or_404(Class, pk=class_id)
+
+    if request.method == 'POST':
+        exam_form = ExamForm(request.POST)
+        question_forms = [QuestionForm(request.POST, prefix=str(i)) for i in range(3)]
+        answer_forms = [[AnswerForm(request.POST, prefix=f'answer-{i}-{j}') for j in range(3)] for i in range(3)]
+
+        if exam_form.is_valid() and all([q.is_valid() for q in question_forms]) and all([all([a.is_valid() for a in ans]) for ans in answer_forms]):
+            exam = exam_form.save(commit=False)
+            exam.class_instance = class_instance  # Assign the class instance to the exam
+            exam.professor = request.user
+            exam.save()
+
+            for question_form, answer_set in zip(question_forms, answer_forms):
+                question = question_form.save(commit=False)
+                question.exam = exam
+                question.save()
+
+                for answer_form in answer_set:
+                    answer = answer_form.save(commit=False)
+                    answer.question = question
+                    answer.save()
+
+                return redirect('exam_detail', class_id=class_id, class_title=class_title, exam_id=exam.id)
+    else:
+        exam_form = ExamForm()
+        question_forms = [QuestionForm(prefix=str(i)) for i in range(3)]
+        answer_forms = [[AnswerForm(prefix=f'answer-{i}-{j}') for j in range(3)] for i in range(3)]
+
+    question_and_answer_forms = zip(question_forms, answer_forms)
+
+    return render(request, 'create_exam.html', {
+        'class_id': class_id,
+        'class_title': class_title,
+        'exam_form': exam_form,
+        'question_and_answer_forms': question_and_answer_forms,
+    })
+
+def exam_detail(request,  class_id, class_title,exam_id):
+    exam = get_object_or_404(Exam, pk=exam_id)
+    return render(request, 'exam_detail.html', {'exam': exam, 'class_id' : class_id,'class_title' : class_title})
 
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)

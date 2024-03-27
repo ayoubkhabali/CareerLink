@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .models import Student, Enterprise, Teacher,Post,Course,Class,Subject,Comment,SharePost, User, Follow, Announcement,Assignment
+from .models import Exam,Answer,Question,StudentAnswer
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 from django.utils.translation import gettext_lazy as _
@@ -32,6 +33,10 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(User, CustomUserAdmin)
 
+
+admin.site.register(Answer)
+admin.site.register(Question)
+admin.site.register(Exam)
 
 admin.site.register(Student)
 admin.site.register(Assignment)

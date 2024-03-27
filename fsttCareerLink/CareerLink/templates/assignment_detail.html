@@ -28,7 +28,7 @@
                     <div class="already-assigned">
                         {% for submission in my_submissions %}
                         <p>{{ submission.submission_file.url }}</p>
-                        <form method="post" action="{% url 'unsubmit_submission' class_id=class_instance.id class_title=class_instance.title assignment_id=assignment.id %}">
+                        <form method="post" action="{% url 'unsubmit_assignment' class_id=class_instance.id class_title=class_instance.title assignment_id=assignment.id %}">
                             {% csrf_token %}
                             <button type="submit">Unsubmit</button>
                         </form>
@@ -45,7 +45,7 @@
         <h3 class="box-title">Students Work</h3>
             <div class="already-assigned">
                 {% for submission in assignment_submissions %}
-                    <a href="{{submission.submission_file.url}}" download>{{ submission.submission_file.url }}</a>
+                    <a href="{{submission.submission_file.url}}" download>{{ submission.student.username }}</a>
                 {% endfor %}
             </div>
         {% else %}

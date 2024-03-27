@@ -11,7 +11,6 @@ class User(AbstractUser):
         STUDENT = "STUDENT", "student"
         TEACHER = "TEACHER", "teacher"
         ENTERPRISE = "ENTERPRISE", "enterprise"
-    
     base_role = Role.ADMIN
     role = models.CharField(max_length=50, choices=Role.choices)
     bio = models.TextField(blank=True)
@@ -143,13 +142,6 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
-class Exam(models.Model):
-    id = models.AutoField(primary_key=True, serialize=False)
-    professor = models.ForeignKey(User, on_delete=models.CASCADE)
-    exam_date = models.DateField()
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    description = models.TextField()
 
 class Class(models.Model):
     id = models.AutoField(primary_key=True, serialize=False)
@@ -158,6 +150,36 @@ class Class(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     students = models.ManyToManyField(Student, related_name='classes')
     class_cover = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_cover.jpg')
+
+class Exam(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
+    class_instance = models.ForeignKey(Class, on_delete=models.CASCADE, default=None)  # Specify a default value
+    professor = models.ForeignKey(User, on_delete=models.CASCADE)
+    exam_date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    description = models.TextField()
+
+class Question(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    question_text = models.CharField(max_length=255)
+
+class Answer(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answer_text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
+
+
+
+
+class StudentAnswer(models.Model):
+    id = models.AutoField(primary_key=True, serialize=False)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answer_text = models.CharField(max_length=255)
+
 
 class Announcement(models.Model):
     class_instance = models.ForeignKey(Class, on_delete=models.CASCADE)
@@ -194,6 +216,8 @@ class AssignmentSubmission(models.Model):
 
     def __str__(self):
         return f"{self.student.username}'s submission for {self.assignment.title}"
+    
+
 
     
 class ChatMessage(models.Model):
