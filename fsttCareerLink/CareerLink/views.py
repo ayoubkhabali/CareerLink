@@ -257,10 +257,9 @@ from .models import ChatMessage, User
 
 from django.db.models import Q, Max, OuterRef, Subquery
 from .models import ChatMessage, User
-
 def inbox(request):
     # Get the latest message ID for each conversation involving the current user
-    latest_message_id = Subquery(
+    latest_message_ids = Subquery(
         ChatMessage.objects.filter(
             Q(sender=OuterRef('pk'), receiver=request.user) |
             Q(sender=request.user, receiver=OuterRef('pk'))
@@ -269,18 +268,22 @@ def inbox(request):
     
     # Annotate each user with the ID of the latest message from/to the current user
     users = User.objects.exclude(id=request.user.id).annotate(
-        latest_message_id=latest_message_id
+        latest_message_id=latest_message_ids
     )
     
     # Select the actual message content and sender based on the annotated message ID
     for user in users:
-        latest_message = ChatMessage.objects.filter(
-            id=user.latest_message_id
-        ).first()
-        user.latest_message = latest_message
-        if latest_message:
-            # Determine the profile picture to display
-            user.profile_pic_url = latest_message.sender.profile_pic.url if latest_message.sender != request.user else latest_message.receiver.profile_pic.url
+        latest_message_id = user.latest_message_id
+        if latest_message_id:
+            latest_message = ChatMessage.objects.get(id=latest_message_id)
+            user.latest_message = latest_message
+            if latest_message.sender != request.user:
+                user.profile_pic_url = latest_message.sender.profile_pic.url
+            else:
+                user.profile_pic_url = latest_message.receiver.profile_pic.url
+        else:
+            user.latest_message = None
+            user.profile_pic_url = None
     
     return render(request, 'inbox.html', {'users': users})
 
