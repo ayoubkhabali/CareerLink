@@ -23,14 +23,15 @@
             <i class='bx bx-code-alt'></i>
             <div class="logo-name"><span>FSTT</span>Career</div>
         </a>
-        <ul class="side-menu">
-            <li><a href="{% url 'home' %}"><i class='bx bxs-home-alt-2'></i>Home</a></li>
-            <li><a href="{% url 'user_profile' username=request.user.username %}"><i class='bx bxs-user'></i>My Profile</a></li>
-            <li class="active"><a href="{% url 'classes' username=request.user.username %}"><i class='bx bxs-dashboard'></i>Your Classes</a></li>
-            <li><a href="{% url 'inbox' %}"><i class='bx bx-message-square-dots'></i>Messages</a></li>
-            <li><a href="#"><i class='bx bx-group'></i>Users</a></li>
-            <li><a href="#"><i class='bx bx-cog'></i>Settings</a></li>
+        <ul class="side-menu" id="sideMenu">
+            <li><a href="{% url 'home' %}" class="menu-item"><i class='bx bxs-home-alt-2'></i>Home</a></li>
+            <li><a href="{% url 'user_profile' username=request.user.username %}" class="menu-item"><i class='bx bxs-user'></i>My Profile</a></li>
+            <li><a href="{% url 'classes' username=request.user.username %}" class="menu-item"><i class='bx bxs-dashboard'></i>Your Classes</a></li>
+            <li><a href="{% url 'inbox' %}" class="menu-item"><i class='bx bx-message-square-dots'></i>Messages</a></li>
+            <li><a href="#" class="menu-item"><i class='bx bx-group'></i>Users</a></li>
+            <li><a href="#" class="menu-item"><i class='bx bx-cog'></i>Settings</a></li>
         </ul>
+        
         <ul class="side-menu">
             <li>
                 <a href="{% url 'logout' %}" class="logout">
@@ -70,6 +71,21 @@
             {% endblock %}
 
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    var currentUrl = window.location.pathname; // Get the current URL path
+    var sideMenu = document.getElementById('sideMenu'); // Get the side menu element
+    
+    // Loop through the menu items and add the active class if their href matches the current URL
+    var menuItems = sideMenu.getElementsByClassName('menu-item');
+    for (var i = 0; i < menuItems.length; i++) {
+        var menuItem = menuItems[i];
+        if (menuItem.getAttribute('href') === currentUrl) {
+            menuItem.parentElement.classList.add('active'); // Add active class to parent li
+        }
+    }
+});
+    </script>
 
     <script src="{% static 'js/index.js' %}"></script>
 </body>
