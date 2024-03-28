@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard-style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 
-    <title>Responsive Dashboard Design #2 | AsmrProg</title>
+    <title>{{ request.path }}</title>
 </head>
 
 <body>
@@ -48,12 +48,19 @@
         <!-- Navbar -->
         <nav>
             <i class='bx bx-menu'></i>
-            <form action="#">
-                <div class="form-input">
-                    <input type="search" placeholder="Search...">
-                    <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
+            <div class="search-container">
+                <form action="#">
+                    <div class="form-input">
+                        <input type="search" id="searchInput" type="search" placeholder="Search...">
+                        <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
+                    </div>
+                </form>
+                <div class="search-results"  id="searchResults">
+                    {% include 'search_results.html' %}
+                
                 </div>
-            </form>
+            </div>
+
             <input type="checkbox" id="theme-toggle" hidden>
             <label for="theme-toggle" class="theme-toggle"></label>
             <a href="#" class="notif">
@@ -71,7 +78,35 @@
             {% endblock %}
 
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
+
+$(document).ready(function() {
+    // Attach event listener to the search input field
+    $('#searchInput').on('input', function() {
+        // Get the search query
+        var query = $(this).val();
+        
+        // Send an AJAX request to the Django view to search for users
+        $.ajax({
+            url: '/search-users/', // URL of the Django view
+            type: 'GET',
+            data: { query: query }, // Pass the search query as data
+            success: function(response) {
+                // Update the search results div with the returned HTML
+                $('#searchResults').html(response);
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                console.error(error);
+            }
+        });
+    });
+});
+
+
+
         document.addEventListener('DOMContentLoaded', function() {
     var currentUrl = window.location.pathname; // Get the current URL path
     var sideMenu = document.getElementById('sideMenu'); // Get the side menu element

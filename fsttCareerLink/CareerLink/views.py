@@ -8,9 +8,24 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
 from .forms import PostForm  # Import the PostForm
 from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm,AssignmentSubmissionForm
+
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
+
+
+def search_users(request):
+    # Get the search query from the AJAX request
+    query = request.GET.get('query', '')
+
+    # Perform the search query on the User model
+    users = User.objects.filter(username__icontains=query)
+
+    # Render the search results template with the users
+    return render(request, 'search_results.html', {'users': users})
+
 
 def aboutUs(request) :
     return render(request,'about_us.html')
@@ -286,6 +301,8 @@ def inbox(request):
             user.profile_pic_url = None
     
     return render(request, 'inbox.html', {'users': users})
+
+
 
 from .forms import ChatMessageForm
 

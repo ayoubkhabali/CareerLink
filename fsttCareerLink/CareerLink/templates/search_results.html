@@ -1,0 +1,23 @@
+{% if users %}
+{% for user in users %}
+    <a href="{% url 'user_profile' username=user.username %}">
+        <div class="message">
+            <div class="profile-photo">
+                <img src="{{user.profile_pic.url}}">
+            </div>
+            <div class="message-body">
+                <h5>{{ user.username }}</h5>
+                <p class="text-muted">{{ user.role }}</p>
+            </div>
+        </div>
+    </a>
+    <div class="see-more">
+        <a href="" class="see-more-btn">See More</a>
+    </div>
+    
+{% endfor %}
+{% else %}
+
+<div>No users found.</div>
+
+{% endif %}

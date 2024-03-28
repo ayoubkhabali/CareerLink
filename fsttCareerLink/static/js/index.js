@@ -20,6 +20,21 @@ menuBar.addEventListener('click', () => {
 const searchBtn = document.querySelector('.content nav form .form-input button');
 const searchBtnIcon = document.querySelector('.content nav form .form-input button .bx');
 const searchForm = document.querySelector('.content nav form');
+const searchResults = document.querySelector(".content nav .search-results")
+
+
+searchForm.addEventListener("click", () =>{
+    searchResults.classList.add("show-results")
+})
+
+document.addEventListener("click", (event) => {
+    const isClickedInsideSearchForm = searchForm.contains(event.target);
+    const isClickedInsideSearchResults = searchResults.contains(event.target);
+
+    if (!isClickedInsideSearchForm && !isClickedInsideSearchResults) {
+        searchResults.classList.remove("show-results");
+    }
+});
 
 searchBtn.addEventListener('click', function (e) {
     if (window.innerWidth < 576) {

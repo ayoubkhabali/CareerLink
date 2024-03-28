@@ -214,9 +214,54 @@ body{
     color: var(--dark);
 }
 
+.content nav .search-container {
+
+    max-width: 400px;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.content nav .search-container .search-results {
+    background-color: #fff;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+    padding: 1rem ;
+    display: none;
+    min-height: 300px;
+    
+}
+
+.content nav .search-container .search-results .see-more {
+    width: 100%;
+    height: 50px;
+    background-color: var(--primary);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0 0 10px 10px;
+
+
+    
+}
+
+.content nav .search-container .search-results .see-more .see-more-btn {
+    color: #fff;
+
+}
+
+.content nav .search-container  .show-results {display: block;}
+
+
+
 .content nav form{
     max-width: 400px;
-    width: 100%;
     margin-right: auto;
 }
 

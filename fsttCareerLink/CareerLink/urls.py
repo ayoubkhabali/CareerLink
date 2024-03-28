@@ -11,8 +11,6 @@ urlpatterns = [
     path('about_us', views.aboutUs, name='about'),
     path('logout/',views.logoutUser,name="logout"),
     path('login/',views.loginPage,name="login"),
-    path('rooms/',views.rooms,name="rooms"),
-    path('student_profile/',views.student_profile,name="student_profile"),
     path('like/<int:post_id>/', views.like_post, name='like_post'),
     path('comment/<int:post_id>/', views.comment_post, name='comment_post'),
     path('share/<int:post_id>/', views.share_post, name='share_post'),
@@ -34,6 +32,8 @@ urlpatterns = [
     path('exam/<int:class_id>/<str:class_title>/<int:exam_id>/', views.exam_detail, name='exam_detail'),
     path('inbox/', views.inbox, name='inbox'),
     path('conversation/<int:receiver_id>/', views.conversation_detail, name='conversation_detail'),
+    path('search-users/', views.search_users, name='search_users'),
+
 ]
 
 from django.conf import settings
