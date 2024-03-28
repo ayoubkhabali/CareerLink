@@ -185,8 +185,6 @@
             <!------- MESSAGES CATEGORY ------->
             <div class="category">
                 <h6 class="active">Primary</h6>
-                <h6>General</h6>
-                <h6 class="message-requests">Requests (7)</h6>
             </div>
             <!------- MESSAGES ------->
             <div class="message">
@@ -198,58 +196,33 @@
                     <p class="text-muted">Just woke up bruh</p>
                 </div>
             </div>
+                    {% for user_with_message in users_with_messages %}
+                    {% if user_with_message.latest_message %}
+                    <a  href="{% url 'conversation_detail' user_with_message.id %}">
+
+                      <div class="message">
+                        <div class="profile-photo">
+                            <img src="{{ user_with_message.profile_pic_url }}">
+                        </div>
+                        <div class="message-body">
+                            <h5>{{ user_with_message.username }}</h5>
+                            {% if user_with_message.latest_message.sender == user %}
+
+                            <p class="text-muted">You: {{ user_with_message.latest_message.content }}</p>
+                            {% else %}
+                            <p class="text-muted">{{ user_with_message.latest_message.content }}</p>
+                            {% endif %}
+
+                        </div>
+                        </div>
+                    </a>
+
+                    {% endif %}
+                {% empty %}
+                    <p>No messages found.</p>
+                {% endfor %}
             <!------- MESSAGES ------->
-            <div class="message">
-                <div class="profile-photo">
-                    <img src="./images/profile-6.jpg">
-                </div>
-                <div class="message-body">
-                    <h5>Daniella Jackson</h5>
-                    <p class="text-bold">2 new messages</p>
-                </div>
-            </div>
-            <!------- MESSAGES ------->
-            <div class="message">
-                <div class="profile-photo">
-                    <img src="./images/profile-8.jpg">
-                    <div class="active"></div>
-                </div>
-                <div class="message-body">
-                    <h5>Chantel Msiza</h5>
-                    <p class="text-muted">lol u right</p>
-                </div>
-            </div>
-            <!------- MESSAGES ------->
-            <div class="message">
-                <div class="profile-photo">
-                    <img src="./images/profile-10.jpg">
-                </div>
-                <div class="message-body">
-                    <h5>Juliet Makarey</h5>
-                    <p class="text-muted">Birtday Tomorrow</p>
-                </div>
-            </div>
-            <!------- MESSAGES ------->
-            <div class="message">
-                <div class="profile-photo">
-                    <img src="./images/profile-3.jpg">
-                    <div class="active"></div>
-                </div>
-                <div class="message-body">
-                    <h5>Keylie Hadid</h5>
-                    <p class="text-bold">5 new messages</p>
-                </div>
-            </div>
-            <!------- MESSAGES ------->
-            <div class="message">
-                <div class="profile-photo">
-                    <img src="./images/profile-15.jpg">
-                </div>
-                <div class="message-body">
-                    <h5>Benjamin Dwayne</h5>
-                    <p class="text-muted">haha got that!</p>
-                </div>
-            </div>
+
         </div>
         <!------- END OF MESSAGES ------->
 

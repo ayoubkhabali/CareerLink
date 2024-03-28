@@ -54,10 +54,36 @@ def home(request):
     posts = user.posts.all().order_by('-created_at')
     shared_posts = SharePost.objects.filter(user=user)
 
-    return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts})
+    # Get the latest message ID for each conversation involving the current user
+    latest_message_ids = Subquery(
+        ChatMessage.objects.filter(
+            Q(sender=OuterRef('pk'), receiver=user) |
+            Q(sender=user, receiver=OuterRef('pk'))
+        ).order_by('-timestamp').values('id')[:1]
+    )
+    
+    # Annotate each user with the ID of the latest message from/to the current user
+    users_with_messages = User.objects.exclude(id=user.id).annotate(
+        latest_message_id=latest_message_ids
+    )
+    
+    # Select the actual message content and sender based on the annotated message ID
+    for user_with_message in users_with_messages:
+        latest_message_id = user_with_message.latest_message_id
+        if latest_message_id:
+            latest_message = ChatMessage.objects.get(id=latest_message_id)
+            user_with_message.latest_message = latest_message
+            if latest_message.sender != user:
+                user_with_message.profile_pic_url = latest_message.sender.profile_pic.url
+            else:
+                user_with_message.profile_pic_url = latest_message.receiver.profile_pic.url
+        else:
+            user_with_message.latest_message = None
+            user_with_message.profile_pic_url = None
 
-def rooms(request) :
-    return render(request,'rooms.html')
+    return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts, 'users_with_messages': users_with_messages})
+
+
 # In views.py
 @login_required
 def user_profile(request, username):
