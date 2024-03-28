@@ -87,6 +87,8 @@ modalBtn.forEach(btn => {
             modalBox.querySelector(".overlay .announcement-modal").style.display = 'block'
         if (btn.dataset.formType === 'assignment')
             modalBox.querySelector(".overlay .assignment-modal").style.display = 'block'
+        if (btn.dataset.formType === 'class')
+            modalBox.querySelector(".overlay .class-modal").style.display = 'block'
          
 
     })

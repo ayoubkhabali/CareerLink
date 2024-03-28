@@ -1,0 +1,23 @@
+<!-- view_conversation.html -->
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Conversation with {{ receiver.username }}</h2>
+    <ul>
+        {% for message in messages %}
+            <li>
+                {% if message.sender == request.user %}
+                    <strong>You:</strong> {{ message.content }} - {{ message.timestamp }}
+                {% else %}
+                    <strong>{{ message.sender.username }}:</strong> {{ message.content }} - {{ message.timestamp }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <hr>
+    <h3>Send a Message</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Send</button>
+    </form>
+{% endblock %}

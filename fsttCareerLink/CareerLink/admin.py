@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Student, Enterprise, Teacher,Post,Course,Class,Subject,Comment,SharePost, User, Follow, Announcement,Assignment
+from .models import Student, Enterprise, Teacher,Post,Course,Class,Subject,Comment,SharePost, User, Follow, Announcement,Assignment,ChatMessage
 from .models import Exam,Answer,Question,StudentAnswer
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
@@ -39,6 +39,7 @@ admin.site.register(Question)
 admin.site.register(Exam)
 
 admin.site.register(Student)
+admin.site.register(ChatMessage)
 admin.site.register(Assignment)
 admin.site.register(Enterprise)
 admin.site.register(Announcement)

@@ -241,6 +241,75 @@ def exam_detail(request,  class_id, class_title,exam_id):
     exam = get_object_or_404(Exam, pk=exam_id)
     return render(request, 'exam_detail.html', {'exam': exam, 'class_id' : class_id,'class_title' : class_title})
 
+
+
+
+
+
+from .models import ChatMessage
+from django.db.models import Max
+
+from django.db.models import Q
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import ChatMessage, User
+
+from django.db.models import Q, Max, OuterRef, Subquery
+from .models import ChatMessage, User
+
+def inbox(request):
+    # Get the latest message ID for each conversation involving the current user
+    latest_message_id = Subquery(
+        ChatMessage.objects.filter(
+            Q(sender=OuterRef('pk'), receiver=request.user) |
+            Q(sender=request.user, receiver=OuterRef('pk'))
+        ).order_by('-timestamp').values('id')[:1]
+    )
+    
+    # Annotate each user with the ID of the latest message from/to the current user
+    users = User.objects.exclude(id=request.user.id).annotate(
+        latest_message_id=latest_message_id
+    )
+    
+    # Select the actual message content and sender based on the annotated message ID
+    for user in users:
+        latest_message = ChatMessage.objects.filter(
+            id=user.latest_message_id
+        ).first()
+        user.latest_message = latest_message
+        if latest_message:
+            # Determine the profile picture to display
+            user.profile_pic_url = latest_message.sender.profile_pic.url if latest_message.sender != request.user else latest_message.receiver.profile_pic.url
+    
+    return render(request, 'inbox.html', {'users': users})
+
+from .forms import ChatMessageForm
+
+
+def conversation_detail(request, receiver_id):
+    sender = request.user
+    receiver = get_object_or_404(User, pk=receiver_id)  # Define 'receiver' here
+    messages = ChatMessage.objects.filter(sender=sender, receiver=receiver) | ChatMessage.objects.filter(sender=receiver, receiver=sender)
+    messages = messages.order_by('timestamp')
+
+    if request.method == 'POST':
+        form = ChatMessageForm(request.POST)
+        if form.is_valid():
+            new_message = form.save(commit=False)
+            new_message.sender = sender
+            new_message.receiver = receiver
+            new_message.save()
+            # Redirect to the same conversation view to display the new message
+            return redirect('conversation_detail', receiver_id=receiver_id)
+    else:
+        form = ChatMessageForm()
+
+    return render(request, 'conversation_detail.html', {'messages': messages, 'receiver': receiver, 'form': form})
+
+
+
+
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)
     posts_url = request.path == f'/profile/{request.user.username}/'

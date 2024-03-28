@@ -16,7 +16,7 @@
 
             <!-- <a class="post-btn btn" href="#newPost">new post</a> -->
                 {% if user.role == "TEACHER" %}
-            <button class="post-btn btn modal-trigger" >Create Class</button>
+            <button class="post-btn btn modal-trigger" data-form-type="class">Create Class</button>
                 {% endif %}
             
             {% else %}
@@ -283,7 +283,7 @@
 
 
 <div class="overlay">
-    <div class="modal">
+    <div class="modal class-modal ">
         {% include 'create_class.html' %}
     </div>
 </div>

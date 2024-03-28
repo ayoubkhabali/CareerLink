@@ -641,3 +641,8 @@ img {
     border-radius: 5px;
     border: 1px solid var(--dark-grey);
 }
+
+.inbox-box {
+    width: 70%;
+    margin: auto;
+}

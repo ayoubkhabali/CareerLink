@@ -1,10 +1,15 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User,Student, Teacher,Class,Announcement,Assignment,AssignmentSubmission, Exam,Question,Answer
+from .models import User,Student, Teacher,Class,Announcement,Assignment,AssignmentSubmission, Exam,Question,Answer, ChatMessage
 from django.forms.widgets import CheckboxSelectMultiple
 from datetime import date
 
+
+class ChatMessageForm(forms.ModelForm):
+    class Meta:
+        model = ChatMessage
+        fields = ['content']
 
 class ExamForm(forms.ModelForm):
     class Meta:

@@ -32,9 +32,8 @@ urlpatterns = [
     path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/unsubmit/', views.unsubmit_assignment, name='unsubmit_assignment'),
     path('class/<int:class_id>/<str:class_title>/create-exam', views.create_exam, name='create_exam'),
     path('exam/<int:class_id>/<str:class_title>/<int:exam_id>/', views.exam_detail, name='exam_detail'),
-
-
-    
+    path('inbox/', views.inbox, name='inbox'),
+    path('conversation/<int:receiver_id>/', views.conversation_detail, name='conversation_detail'),
 ]
 
 from django.conf import settings

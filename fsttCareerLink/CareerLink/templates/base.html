@@ -27,7 +27,7 @@
             <li><a href="{% url 'home' %}"><i class='bx bxs-home-alt-2'></i>Home</a></li>
             <li><a href="{% url 'user_profile' username=request.user.username %}"><i class='bx bxs-user'></i>My Profile</a></li>
             <li class="active"><a href="{% url 'classes' username=request.user.username %}"><i class='bx bxs-dashboard'></i>Your Classes</a></li>
-            <li><a href="#"><i class='bx bx-message-square-dots'></i>Messages</a></li>
+            <li><a href="{% url 'inbox' %}"><i class='bx bx-message-square-dots'></i>Messages</a></li>
             <li><a href="#"><i class='bx bx-group'></i>Users</a></li>
             <li><a href="#"><i class='bx bx-cog'></i>Settings</a></li>
         </ul>

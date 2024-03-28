@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Conversation with {{ receiver.username }}</h1>
+<ul>
+    <h2>Conversation with {{ receiver.username }}</h2>
+    <div class="inbox-box">
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message">
+                <div class="profile-photo">
+                    <img src="{{ message.sender.profile_pic.url}}">
+                </div>
+                <div class="message-body">
+                    <h5>{{ message.sender.username }}</h5>
+                    <p class="text-muted">{{ message.content }}</p>
+                </div>
+            </div>
+    
+        {% endfor %}
+        </div>
+    </div>
+
+
+    
+</ul>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Send">
+</form>
+
+
+{% endblock %}
