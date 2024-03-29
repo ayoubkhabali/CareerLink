@@ -68,7 +68,8 @@ def home(request):
     else:
         form = PostForm()
 
-    posts = user.posts.all().order_by('-created_at')
+    followed_users = user.following.all()
+    posts = Post.objects.filter(Q(author=user) | Q(author__in=followed_users)).order_by('-created_at')
     shared_posts = SharePost.objects.filter(user=user)
 
     # Get the latest message ID for each conversation involving the current user
@@ -526,16 +527,17 @@ def accept_follow_request(request, username):
     # Get the user sending the follow request
     user_to_accept = get_object_or_404(User, username=username)
     
-    # Add user_to_accept to the current user's following list
-    request.user.following.add(user_to_accept)
+    # Add user_to_accept to the current user's followers list
+    request.user.followers.add(user_to_accept)
     
-    # Optionally, you may want to add the current user to the follower list of user_to_accept
-    user_to_accept.followers.add(request.user)
+    # Optionally, you may want to add the current user to the following list of user_to_accept
+    user_to_accept.following.add(request.user)
     
     # Delete the follow request notification
     Notification.objects.filter(sender=user_to_accept, receiver=request.user, type='follow_request').delete()
     
     return redirect('home')
+
 
 def refuse_follow_request(request, username):
     # Get the user sending the follow request
