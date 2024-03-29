@@ -38,8 +38,12 @@ urlpatterns = [
     path('profile/<str:username>/add-interest-skill/', views.add_interest_skill, name='add_interest_skill'),
     path('profile/<str:username>/add-contact/', views.add_contact, name='add_contact'),
     path('profile/<str:username>/add-experience/', views.add_experience, name='add_experience'),
+    path('notifications/<str:username>/accept/', views.accept_follow_request, name='accept_follow_request'),
+    path('notifications/<str:username>/decline/', views.refuse_follow_request, name='refuse_follow_request'),
 
+   
 ]
+
 
 from django.conf import settings
 from django.conf.urls.static import static

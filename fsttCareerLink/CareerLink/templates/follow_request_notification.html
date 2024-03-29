@@ -1,0 +1,26 @@
+<div class="request">
+    <div class="info">
+        <div class="profile-photo">
+            <img src="{{ notification.sender.profile_pic.url }}">
+        </div>
+        <div>
+            <h5>{{ notification.sender.username }}</h5>
+            <p class="text-muted">wants to follow you.</p>
+        </div>
+    </div>
+    <div class="action">
+        {% if notification.id %}
+        <a href="{% url 'accept_follow_request' notification_id=notification.id %}">
+            <button class="btn btn-primary">Accept</button>
+        </a>
+    {% endif %}
+    
+        
+    {% if notification.id %}
+    <form method="post" action="{% url 'decline_follow_request' notification_id=notification.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn">Decline</button>
+    </form>
+{% endif %}
+    </div>
+</div>

@@ -51,6 +51,8 @@ def welcome(request) :
      else :
         return render(request,'welcome.html')
      
+from django.db.models import Q
+from django.db.models import Subquery, OuterRef
 
 def home(request):
     user = request.user  # Get the currently logged-in user
@@ -96,8 +98,10 @@ def home(request):
             user_with_message.latest_message = None
             user_with_message.profile_pic_url = None
 
-    return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts, 'users_with_messages': users_with_messages})
+    # Filter follow requests for the current user
+    follow_requests = Notification.objects.filter(receiver=user, type='follow_request')
 
+    return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts, 'users_with_messages': users_with_messages, 'follow_requests': follow_requests})
 
 
 
@@ -488,10 +492,49 @@ User = get_user_model()
 
 @login_required
 def follow_user(request, username):
-    user_to_follow = User.objects.get(username=username)
-    request.user.following.add(user_to_follow)
-    user_to_follow.followers.add(request.user)
+    user_to_follow = get_object_or_404(User, username=username)
+    # Create a follow request notification
+    Notification.objects.create(
+        sender=request.user,
+        receiver=user_to_follow,
+        message=f'{request.user.username} wants to follow you.',
+        type='follow_request',  # Set the type to 'follow_request'
+    )
     return redirect('user_profile', username=username)
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import get_user_model
+from .models import Notification
+
+User = get_user_model()
+
+
+def accept_follow_request(request, username):
+    # Get the user sending the follow request
+    user_to_accept = get_object_or_404(User, username=username)
+    
+    # Add user_to_accept to the current user's following list
+    request.user.following.add(user_to_accept)
+    
+    # Optionally, you may want to add the current user to the follower list of user_to_accept
+    user_to_accept.followers.add(request.user)
+    
+    # Delete the follow request notification
+    Notification.objects.filter(sender=user_to_accept, receiver=request.user, type='follow_request').delete()
+    
+    return redirect('home')
+
+def refuse_follow_request(request, username):
+    # Get the user sending the follow request
+    user_to_refuse = get_object_or_404(User, username=username)
+    
+    # Delete the follow request notification
+    Notification.objects.filter(sender=user_to_refuse, receiver=request.user, type='follow_request').delete()
+    
+    return redirect('home')
+
+
 
 @login_required
 def unfollow_user(request, username):

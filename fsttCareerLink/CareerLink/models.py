@@ -116,12 +116,13 @@ class ContactInfo(models.Model):
 
 
 class Notification(models.Model):
+    notification_id = models.AutoField(primary_key=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)
-
+    type = models.CharField(max_length=50, default="normal") 
     def __str__(self):
         return f'Notification from {self.sender.username} to {self.receiver.username}'
 

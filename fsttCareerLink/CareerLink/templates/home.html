@@ -229,63 +229,30 @@
         <!------- FRIEND REQUEST ------->
         <div class="friend-requests">
             <h4>Requests</h4>
+            {% for request in follow_requests %}
             <div class="request">
                 <div class="info">
                     <div class="profile-photo">
-                        <img src="./images/profile-20.jpg">
+                        <img src="{{ request.sender.profile_pic.url }}">
                     </div>
                     <div>
-                        <h5>Hajia Bintu</h5>
-                        <p class="text-muted">8 mutual friends</p>
+                        <h5>{{ request.sender.username }}</h5>
+                        <p class="text-muted">wants to follow you.</p>
                     </div>
                 </div>
                 <div class="action">
-                    <button class="btn btn-primary">
-                        Accept
-                    </button>
-                    <button class="btn">
-                        Decline
-                    </button>
+                    <form action="{% url 'accept_follow_request' request.sender.username %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit">Accept</button>
+                    </form>
+                    <form action="{% url 'refuse_follow_request' request.sender.username %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit">Refuse</button>
+                    </form>
                 </div>
             </div>
-            <div class="request">
-                <div class="info">
-                    <div class="profile-photo">
-                        <img src="./images/profile-18.jpg">
-                    </div>
-                    <div>
-                        <h5>Edelson Mandela</h5>
-                        <p class="text-muted">2 mutual friends</p>
-                    </div>
-                </div>
-                <div class="action">
-                    <button class="btn btn-primary">
-                        Accept
-                    </button>
-                    <button class="btn">
-                        Decline
-                    </button>
-                </div>
-            </div>
-            <div class="request">
-                <div class="info">
-                    <div class="profile-photo">
-                        <img src="./images/profile-17.jpg">
-                    </div>
-                    <div>
-                        <h5>Megan Baldwin</h5>
-                        <p class="text-muted">5 mutual friends</p>
-                    </div>
-                </div>
-                <div class="action">
-                    <button class="btn btn-primary">
-                        Accept
-                    </button>
-                    <button class="btn">
-                        Decline
-                    </button>
-                </div>
-            </div>
+        {% endfor %}
+        
         </div>
     </div>
 
