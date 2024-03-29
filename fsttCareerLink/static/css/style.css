@@ -15,7 +15,7 @@
     --blue-color : #0e59e6;
 
 
-
+    --box-shadow : 4px 4px 16px rgba(0, 0, 0, .1);
     --light: #f6f6f9;
     --primary: #1976D2;
     --light-primary: #CFE8FF;
@@ -488,10 +488,11 @@ img {
     top: 0;
     left: 0;
     z-index: 999;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
-    display: none;
+
+
 }
 
 .overlay::after {
@@ -510,6 +511,9 @@ img {
     position: fixed;
     z-index: 9999;
     display: none;
+    box-shadow:  var(--box-shadow);
+    border-radius: 10px;
+
 }
 
 .overlay.show-modal {
