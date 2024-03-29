@@ -33,6 +33,11 @@ urlpatterns = [
     path('inbox/', views.inbox, name='inbox'),
     path('conversation/<int:receiver_id>/', views.conversation_detail, name='conversation_detail'),
     path('search-users/', views.search_users, name='search_users'),
+    path('search-students/', views.search_students, name='search_students'),
+    path('profile/<str:username>/add-education/', views.add_education, name='add_education'),
+    path('profile/<str:username>/add-interest-skill/', views.add_interest_skill, name='add_interest_skill'),
+    path('profile/<str:username>/add-contact/', views.add_contact, name='add_contact'),
+    path('profile/<str:username>/add-experience/', views.add_experience, name='add_experience'),
 
 ]
 

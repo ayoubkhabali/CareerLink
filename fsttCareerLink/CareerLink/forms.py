@@ -6,6 +6,44 @@ from django.forms.widgets import CheckboxSelectMultiple
 from datetime import date
 
 
+
+
+from django import forms
+from .models import Education, Skill, Experience, Interest, ContactInfo
+
+class EducationForm(forms.ModelForm):
+    class Meta:
+        model = Education
+        fields = ['degree','institution', 'start_date','end_date','description']
+
+class SkillsForm(forms.ModelForm):
+    class Meta:
+        model = Skill
+        fields = ['skills']
+
+
+class ExperienceForm(forms.ModelForm):
+    class Meta:
+        model = Experience
+        fields = ['title', 'company', 'start_date','end_date','description']
+
+class InterestForm(forms.ModelForm):
+    class Meta:
+        model = Interest
+        fields = ['interests']
+
+class ContactInfoForm(forms.ModelForm):
+    class Meta:
+        model = ContactInfo
+        fields = ['address','phone_number','email']
+
+
+
+
+
+
+
+
 class ChatMessageForm(forms.ModelForm):
     class Meta:
         model = ChatMessage

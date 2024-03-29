@@ -27,6 +27,21 @@ def search_users(request):
     return render(request, 'search_results.html', {'users': users})
 
 
+
+def search_students(request):
+    # Get the search query from the AJAX request
+    query = request.GET.get('query', '')
+
+    # Perform the search query on the User model
+    students = Student.objects.filter(user__username__icontains=query)
+
+    # Render the search results template with the users
+    return render(request, 'search_students_results.html', {'students': students})
+
+
+
+
+
 def aboutUs(request) :
     return render(request,'about_us.html')
 
@@ -82,6 +97,83 @@ def home(request):
             user_with_message.profile_pic_url = None
 
     return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts, 'users_with_messages': users_with_messages})
+
+
+
+
+from .forms import EducationForm, SkillsForm, ExperienceForm, InterestForm, ContactInfoForm
+
+@login_required  # Apply login_required decorator to ensure only logged-in users can access these views
+def add_education(request, username):
+    if request.method == 'POST':
+        form = EducationForm(request.POST)
+        if form.is_valid():
+            # Assign the current logged-in user to the submitted data
+            education = form.save(commit=False)
+            education.user = request.user
+            education.save()
+            return redirect('user_profile', username)  # Replace with your success URL
+    else:
+        form = EducationForm()
+    return render(request, 'add_education.html', {'form': form})
+
+
+def add_experience(request, username):
+    if request.method == 'POST':
+        form = ExperienceForm(request.POST)
+        if form.is_valid():
+            # Assign the current logged-in user to the submitted data
+            experience = form.save(commit=False)
+            experience.user = request.user
+            experience.save()
+            return redirect('user_profile', username)  # Replace with your success URL
+    else:
+        form = ExperienceForm()
+    return render(request, 'add_experience.html', {'form': form})
+
+
+from django.forms import formset_factory
+def add_interest_skill(request, username):
+    SkillsFormSet = formset_factory(SkillsForm, extra=1)
+    InterestFormSet = formset_factory(InterestForm, extra=1)
+
+    if request.method == 'POST':
+        skills_formset = SkillsFormSet(request.POST, prefix='skills')
+        interest_formset = InterestFormSet(request.POST, prefix='interest')
+
+        if skills_formset.is_valid() and interest_formset.is_valid():
+            for skills_form in skills_formset:
+                skill = skills_form.save(commit=False)
+                skill.user = request.user
+                skill.save()
+
+            for interest_form in interest_formset:
+                interest = interest_form.save(commit=False)
+                interest.user = request.user
+                interest.save()
+
+            return redirect('user_profile', username)  # Replace with your success URL
+    else:
+        skills_formset = SkillsFormSet(prefix='skills')
+        interest_formset = InterestFormSet(prefix='interest')
+
+    return render(request, 'add_interest_skill.html', {
+        'skills_formset': skills_formset,
+        'interest_formset': interest_formset,
+    })
+
+def add_contact(request, username):
+    if request.method == 'POST':
+        form = ContactInfoForm(request.POST)
+        if form.is_valid():
+            # Assign the current logged-in user to the submitted data
+            contact = form.save(commit=False)
+            contact.user = request.user
+            contact.save()
+            return redirect('user_profile', username)  # Replace with your success URL
+    else:
+        form = ContactInfoForm()
+    return render(request, 'add_contact.html', {'form': form})
 
 
 # In views.py
@@ -390,6 +482,7 @@ def update_profile(request, username):
     return render(request, 'user_profile.html', {'posts_url': posts_url, 'about_url': about_url})
 
 from django.contrib.auth import get_user_model
+from .models import Notification
 
 User = get_user_model()
 

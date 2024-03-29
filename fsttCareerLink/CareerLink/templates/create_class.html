@@ -1,10 +1,55 @@
-
       <h4>Create Class</h4>
-      <form method="post" action="{% url 'create_class' %}">
+      <form id="class-form" method="post" action="{% url 'create_class' %}">
         {% csrf_token %}
         {{  class_form.as_p }}
-        <button type="submit" class="btn">Create</button>
-      </form>
-    </div>
+        <input type="search" id="searchStudentInput" type="search" placeholder="Search...">
 
-  
+        <button type="submit" class="btn search-student">Create</button>
+      </form>
+      <div class="search_students_results" id="searchStudentsResults">
+        {% include 'search_students_results.html' %}
+
+      </div>
+
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+$(document).ready(function() {
+    // Attach event listener to the search input field
+    $('#searchStudentInput').on('input', function() {
+        // Get the search query
+        var query = $(this).val();
+        
+        // Send an AJAX request to the Django view to search for students
+        $.ajax({
+            url: '/search-students/', // URL of the Django view
+            type: 'GET',
+            data: { query: query }, // Pass the search query as data
+            success: function(response) {
+                // Update the search results div with the returned HTML
+                $('#searchStudentsResults').html(response);
+                
+                // Attach event listener to the search results to handle click on students
+                $('.user-founded').on('click', function() {
+                    // Get the student's CNE
+                    var studentCNE = $(this).attr('data-student-cne');
+                    
+                    // Check if the checkbox for this student is already selected
+                    var checkbox = $('#id_students input[type="checkbox"][value="' + studentCNE + '"]');
+                    if (!checkbox.prop('checked')) {
+                        // If not checked, check it
+                        checkbox.prop('checked', true);
+                    }
+                    
+                    // Optionally, you can style the selected student in the search results
+                    $(this).addClass('selected');
+                });
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                console.error(error);
+            }
+        });
+    });
+});
+
+    </script>

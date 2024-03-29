@@ -43,6 +43,7 @@ class Student(models.Model):
     major = models.CharField(max_length=20, default='')
     projects = models.FileField(upload_to='studentProjects/', null=True, blank=True)
 
+
     def save(self, *args, **kwargs):
         # Generate a unique student_id if it's not already set
         if not self.CNE:
@@ -80,6 +81,51 @@ class Enterprise(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class Education(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    degree = models.CharField(max_length=100)
+    institution = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    description = models.TextField()
+
+class Skill(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    skills = models.CharField(max_length=100)
+
+class Experience(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    company = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    description = models.TextField()
+
+class Interest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    interests = models.CharField(max_length=100)
+
+class ContactInfo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField()
+
+
+
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Notification from {self.sender.username} to {self.receiver.username}'
+
+
 
 class Post(models.Model):
     class PostType(models.TextChoices):
@@ -229,3 +275,4 @@ class ChatMessage(models.Model):
 
     class Meta:
         ordering = ['timestamp']
+
