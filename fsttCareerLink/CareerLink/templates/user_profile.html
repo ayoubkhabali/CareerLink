@@ -19,20 +19,25 @@
                 {% endif %}
             
             {% else %}
-
             {% if request.user not in user.followers.all %}
-            <form method="post" action="{% url 'follow_user' user.username %}">
-                {% csrf_token %}
-                <button type="submit">Follow</button>
-            </form>
-            {% else %}
+            {% if follow_request_sent %}
+                <form method="post" action="{% url 'remove_follow_request' user.username %}">
+                    {% csrf_token %}
+                    <button type="submit">Requested</button>
+                </form>
+                {% else %}
+                <form method="post" action="{% url 'follow_user' user.username %}">
+                    {% csrf_token %}
+                    <button type="submit">Follow</button>
+                </form>
+            {% endif %}
+        {% else %}
             <form method="post" action="{% url 'unfollow_user' user.username %}">
                 {% csrf_token %}
                 <button type="submit">Unfollow</button>
             </form>
-
-
-            {% endif %}
+        {% endif %}
+        
             {% endif %}
 
         </div>

@@ -221,6 +221,8 @@ def user_profile(request, username):
         student = request.user.student
         classes = Class.objects.filter(students=student).prefetch_related('students')
     
+    follow_request_sent = Notification.objects.filter(sender=request.user, receiver=user, type='follow_request').exists()
+
     context = {
         'classes_url' : classes_url,
         'classes' : classes,
@@ -230,7 +232,8 @@ def user_profile(request, username):
         'posts': posts,
         'shared_posts': shared_posts,
         'posts_url': posts_url,
-        'about_url': about_url  # Pass the about_url variable to the template
+        'about_url': about_url,
+        'follow_request_sent' :follow_request_sent
     }
     
     return render(request, 'user_profile.html', context)
@@ -469,17 +472,18 @@ def update_profile(request, username):
             user_form = ChangeTeacherInfoForm(request.POST, request.FILES, instance=user)
             teacher_form = TeacherInfoForm(request.POST, request.FILES, instance=user.teacher)
             if user_form.is_valid() and teacher_form.is_valid():
+                # Save the user form first to ensure the instance is updated
                 user_form.save()
                 teacher_form.save()
                 return redirect('user_profile', username=username)
     else:
         if user.role == 'STUDENT':
-            user_form = ChangeStudentInfoForm(instance=user)
+            user_form = ChangeStudentInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
             student_form = StudentInfoForm(instance=user.student)
             context = {'user_form': user_form, 'student_form': student_form, 'posts_url': posts_url, 'about_url': about_url}
             return render(request, 'about_profile.html', context)
         elif user.role == 'TEACHER':
-            user_form = ChangeTeacherInfoForm(instance=user)
+            user_form = ChangeTeacherInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
             teacher_form = TeacherInfoForm(instance=user.teacher)
             context = {'user_form': user_form, 'teacher_form': teacher_form, 'posts_url': posts_url, 'about_url': about_url}
             return render(request, 'user_profile.html', context)
@@ -493,15 +497,23 @@ User = get_user_model()
 @login_required
 def follow_user(request, username):
     user_to_follow = get_object_or_404(User, username=username)
-    # Create a follow request notification
-    Notification.objects.create(
-        sender=request.user,
-        receiver=user_to_follow,
-        message=f'{request.user.username} wants to follow you.',
-        type='follow_request',  # Set the type to 'follow_request'
-    )
+    follow_request_sent = Notification.objects.filter(sender=request.user, receiver=user_to_follow, type='follow_request').exists()
+    if not follow_request_sent:
+        Notification.objects.create(
+            sender=request.user,
+            receiver=user_to_follow,
+            message=f'{request.user.username} wants to follow you.',
+            type='follow_request'
+        )
+    else:
+        # If follow request already sent, remove it
+        Notification.objects.filter(sender=request.user, receiver=user_to_follow, type='follow_request').delete()
     return redirect('user_profile', username=username)
 
+def remove_follow_request(request, username):
+    user_to_unfollow = get_object_or_404(User, username=username)
+    Notification.objects.filter(sender=request.user, receiver=user_to_unfollow, type='follow_request').delete()
+    return redirect('user_profile', username=username)
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
