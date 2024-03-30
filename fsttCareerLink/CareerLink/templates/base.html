@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard-style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 
+
     <title>{{ request.path }}</title>
 </head>
 
@@ -30,7 +31,7 @@
             <li><a href="{% url 'inbox' %}" class="menu-item"><i class='bx bx-message-square-dots'></i>Messages</a></li>
             <li><a  href="" class="menu-item"><i class='bx bx-group'></i>Follow Request</a></li>
             <li><a  href="{% url 'display_offers' %}" class="menu-item"><i class='bx bxs-briefcase'></i> Job offers</a></li>
-            <li><a href="#" class="menu-item"><i class='bx bx-cog'></i>Settings</a></li>
+            <li><a href="{% url 'update_info' username=request.user.username %}?form_type=contact" class="menu-item"><i class='bx bx-cog'></i>Settings</a></li>
         </ul>
         
         <ul class="side-menu">

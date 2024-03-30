@@ -45,6 +45,16 @@
 
 </style>
 
+{% if  request.user.role == 'ENTERPRISE' %}
+
+<form method="get" action="{% url 'display_offers' %}">
+    <select name="filter">
+        <option value="all">All Offers</option>
+        <option value="mine">My Offers</option>
+    </select>
+    <button type="submit">Apply Filter</button>
+</form>
+{% endif %}
 <div class="jobs-list-container">
     {% for offer in offers %}
 

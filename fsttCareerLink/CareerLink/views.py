@@ -252,12 +252,16 @@ def create_offer(request, username):
 
     return render(request, 'create_offer.html', {'offer_form': offer_form})
 
+@login_required
 def display_offers(request):
-    offers = Offer.objects.all()
-
+    filter_option = request.GET.get('filter')
+    
+    if filter_option == 'mine' and request.user.role == 'ENTERPRISE':
+        offers = Offer.objects.filter(creator=request.user)
+    else:
+        offers = Offer.objects.all()
 
     return render(request, 'display_offers.html', {'offers': offers})
-
 
 def apply_for_offer(request, offer_id):
     offer = Offer.objects.get(pk=offer_id)
@@ -493,7 +497,40 @@ def conversation_detail(request, receiver_id):
     return render(request, 'conversation_detail.html', {'messages': messages, 'receiver': receiver, 'form': form})
 
 
+@login_required
+def update_info(request, username):
+    user = get_object_or_404(User, username=username)
 
+    if request.method == 'POST':
+        if user.role == 'STUDENT':
+            user_form = ChangeStudentInfoForm(request.POST, request.FILES, instance=user)
+            student_form = StudentInfoForm(request.POST, request.FILES, instance=user.student)
+            if user_form.is_valid() and student_form.is_valid():
+                user_form.save()
+                student_form.save()
+                return redirect('user_profile', username=username)
+        elif user.role == 'TEACHER':
+            user_form = ChangeTeacherInfoForm(request.POST, request.FILES, instance=user)
+            teacher_form = TeacherInfoForm(request.POST, request.FILES, instance=user.teacher)
+            if user_form.is_valid() and teacher_form.is_valid():
+                user_form.save()
+                teacher_form.save()
+                return redirect('user_profile', username=username)
+    else:
+        if user.role == 'STUDENT':
+            user_form = ChangeStudentInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
+            student_form = StudentInfoForm(instance=user.student)
+            context = {'user_form': user_form, 'student_form': student_form}
+            return render(request, 'update_info.html', context)
+        elif user.role == 'TEACHER':
+            user_form = ChangeTeacherInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
+            teacher_form = TeacherInfoForm(instance=user.teacher)
+            context = {'user_form': user_form, 'teacher_form': teacher_form}
+            return render(request, 'update_info.html', context)
+
+
+
+    return render(request, 'update_info.html')
 
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)

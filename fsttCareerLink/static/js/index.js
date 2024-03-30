@@ -60,10 +60,6 @@ window.addEventListener('resize', () => {
     }
 });
 
-
-
-
-
 const profile = document.querySelector('nav .profile');
 const imgProfile = profile.querySelector('img');
 const dropdownProfile = profile.querySelector('.profile-link');
@@ -71,13 +67,6 @@ const dropdownProfile = profile.querySelector('.profile-link');
 imgProfile.addEventListener('click', function () {
 	dropdownProfile.classList.toggle('show');
 })
-
-
-
-
-
-
-
 
 const modalBtn = document.querySelectorAll(".modal-trigger")
 const modalBox = document.querySelector(".overlay")
@@ -138,20 +127,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const messages = document.querySelector('.messages');
 const message = messages.querySelectorAll('.message');
 const messageSearch = document.querySelector('#message-search');
@@ -169,7 +144,3 @@ const searchMessage = () => {
 }
 
 messageSearch.addEventListener('keyup', searchMessage);
-
-
-
-
