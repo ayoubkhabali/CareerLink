@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Applications for {{ offer.title }}</h1>
+<ul>
+    {% for application in applications %}
+        <li>
+            {{ application.applicant.username }} - {{ application.cover_letter }} - <a href="{{application.cv.url}}" download="">download</a>
+            <!-- Add a contact option -->
+            <a href="{% url 'conversation_detail' receiver_id=application.applicant.id %}" class="btn btn-primary">Contact</a>
+        </li>
+    {% empty %}
+        <li>No applications found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -62,6 +62,53 @@ window.addEventListener('resize', () => {
 
 
 
+
+
+const profile = document.querySelector('nav .profile');
+const imgProfile = profile.querySelector('img');
+const dropdownProfile = profile.querySelector('.profile-link');
+
+imgProfile.addEventListener('click', function () {
+	dropdownProfile.classList.toggle('show');
+})
+
+
+
+
+
+
+
+
+const modalBtn = document.querySelectorAll(".modal-trigger")
+const modalBox = document.querySelector(".overlay")
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    modalBtn.forEach(btn => {
+        btn.addEventListener("click", ()=> {
+            modalBox.classList.toggle("show-modal")
+            if (btn.dataset.formType === 'announcement')
+                modalBox.querySelector(".overlay .announcement-modal").style.display = 'block'
+            if (btn.dataset.formType === 'assignment')
+                modalBox.querySelector(".overlay .assignment-modal").style.display = 'block'
+            if (btn.dataset.formType === 'application')
+                modalBox.querySelector(".overlay .application-modal").style.display = 'block'
+             
+    
+        })
+    })});
+
+modalBox.addEventListener("click", (event) => {
+  if (event.target === modalBox) {
+    modalBox.classList.remove("show-modal"); // Remove the class
+    modalBox.querySelectorAll(".overlay .modal").forEach(modal => {modal.style.display ='none'})  }
+});
+
+
+
+
 const actionBtns = document.querySelectorAll(".post-actions .btn");
 actionBtns.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -90,32 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
-const modalBtn = document.querySelectorAll(".modal-trigger")
-const modalBox = document.querySelector(".overlay")
-
-
-modalBtn.forEach(btn => {
-    btn.addEventListener("click", ()=> {
-        modalBox.classList.toggle("show-modal")
-        if (btn.dataset.formType === 'announcement')
-            modalBox.querySelector(".overlay .announcement-modal").style.display = 'block'
-        if (btn.dataset.formType === 'assignment')
-            modalBox.querySelector(".overlay .assignment-modal").style.display = 'block'
-        if (btn.dataset.formType === 'class')
-            modalBox.querySelector(".overlay .class-modal").style.display = 'block'
-         
-
-    })
-})
-
-modalBox.addEventListener("click", (event) => {
-  if (event.target === modalBox) {
-    modalBox.classList.remove("show-modal"); // Remove the class
-    modalBox.querySelectorAll(".overlay .modal").forEach(modal => {modal.style.display ='none'})  }
-});
-
-
 
 
 
@@ -148,3 +169,7 @@ const searchMessage = () => {
 }
 
 messageSearch.addEventListener('keyup', searchMessage);
+
+
+
+

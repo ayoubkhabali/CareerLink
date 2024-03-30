@@ -24,7 +24,6 @@ urlpatterns = [
     path('profile/<str:username>/classes/', views.user_profile, name='classes'),
     path('profile/<str:username>/classes', RedirectView.as_view(url='/profile/%(username)s/classes/')),
     path('classes/create-class', views.create_class,name="create_class"),
-    # path('class/<int:class_id>/', views.class_detail, name='class_detail'),
     path('class/<int:class_id>/<str:class_title>/', views.class_detail, name='class_detail'),
     path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/', views.assignment_detail, name='assignment_detail'),
     path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/unsubmit/', views.unsubmit_assignment, name='unsubmit_assignment'),
@@ -38,11 +37,15 @@ urlpatterns = [
     path('profile/<str:username>/add-interest-skill/', views.add_interest_skill, name='add_interest_skill'),
     path('profile/<str:username>/add-contact/', views.add_contact, name='add_contact'),
     path('profile/<str:username>/add-experience/', views.add_experience, name='add_experience'),
+    path('profile/<str:username>/create-offer/', views.create_offer, name='create_offer'),
     path('notifications/<str:username>/accept/', views.accept_follow_request, name='accept_follow_request'),
     path('notifications/<str:username>/decline/', views.refuse_follow_request, name='refuse_follow_request'),
     path('remove_follow_request/<str:username>/', views.remove_follow_request, name='remove_follow_request'),
+    path('display-offers/', views.display_offers, name='display_offers'),
+    path('display-offers/apply/<int:offer_id>/', views.apply_for_offer, name='apply_for_offer'),
+    path('display-offers/applications-lists/<int:offer_id>/', views.applications_list, name='applications_list'),
 
-   
+
 ]
 
 

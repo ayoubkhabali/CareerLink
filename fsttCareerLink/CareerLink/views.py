@@ -2,14 +2,14 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement,Assignment,AssignmentSubmission
+from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement,Assignment,AssignmentSubmission, Offer, Application
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from .forms import PostForm  # Import the PostForm
-from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm,AssignmentSubmissionForm
+from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm,AssignmentSubmissionForm, CreateOffer,ApplicationForm
 
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -239,6 +239,46 @@ def user_profile(request, username):
     
     return render(request, 'user_profile.html', context)
 
+def create_offer(request, username):
+    if request.method == 'POST':
+        offer_form = CreateOffer(request.POST)
+        if offer_form.is_valid():
+            new_offer = offer_form.save(commit=False)
+            new_offer.creator = request.user
+            new_offer.save()
+            return redirect('user_profile', username=username)
+    else:
+        offer_form = CreateOffer()  # Create an empty form for GET requests
+
+    return render(request, 'create_offer.html', {'offer_form': offer_form})
+
+def display_offers(request):
+    offers = Offer.objects.all()
+
+
+    return render(request, 'display_offers.html', {'offers': offers})
+
+
+def apply_for_offer(request, offer_id):
+    offer = Offer.objects.get(pk=offer_id)
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.offer = offer
+            application.applicant = request.user
+            application.save()
+            return redirect('display_offers')  # Redirect to a success page or offer details page
+    else:
+        form = ApplicationForm()
+    return render(request, 'application_form.html', {'form': form, 'offer': offer})
+
+def applications_list(request, offer_id):
+    offer = get_object_or_404(Offer, pk=offer_id)
+    applications = offer.applications.all()
+    return render(request, 'applications_list.html', {'offer': offer, 'applications': applications})
+
+
 def create_class(request):
 
     if request.method == 'POST':
@@ -247,10 +287,10 @@ def create_class(request):
             new_class = class_form.save(commit=False)
             new_class.teacher = request.user.teacher
             new_class.save()
-            class_form.save_m2m()  # Save many-to-many relationships
+            class_form.save_m2m() 
             return redirect('user_profile', username=request.user.username)
     else:
-        class_form = ClassForm()  # Use the same variable name here
+        class_form = ClassForm() 
     return render(request, 'create_class.html', {'class_form': class_form})
 
 
@@ -327,7 +367,6 @@ def assignment_detail(request, class_id, class_title, assignment_id):
 def unsubmit_assignment(request, class_id, class_title, assignment_id):
     assignment_submission = get_object_or_404(AssignmentSubmission, student=request.user, assignment_id=assignment_id)
     assignment_submission.delete()
-    # Redirect back to the assignment detail page
     return redirect('assignment_detail', class_id=class_id, class_title=class_title, assignment_id=assignment_id)
 
 from .models import Exam, Question, Answer
@@ -524,16 +563,12 @@ User = get_user_model()
 
 
 def accept_follow_request(request, username):
-    # Get the user sending the follow request
     user_to_accept = get_object_or_404(User, username=username)
     
-    # Add user_to_accept to the current user's followers list
     request.user.followers.add(user_to_accept)
     
-    # Optionally, you may want to add the current user to the following list of user_to_accept
     user_to_accept.following.add(request.user)
     
-    # Delete the follow request notification
     Notification.objects.filter(sender=user_to_accept, receiver=request.user, type='follow_request').delete()
     
     return redirect('home')
@@ -611,6 +646,10 @@ def like_post(request, post_id):
     
     # Redirect back to the homepage
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+
 
 
 def comment_post(request, post_id):

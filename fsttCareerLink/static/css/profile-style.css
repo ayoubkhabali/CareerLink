@@ -2,7 +2,7 @@
 :root {
     --grey-color :#535353;
     --blue-color : #0e59e6;
-    --light-shadow :  2px 2px 5px rgb(214, 214, 214);
+    --light-shadow :  4px 4px 16px rgba(0, 0, 0, .1);
 
 
 }

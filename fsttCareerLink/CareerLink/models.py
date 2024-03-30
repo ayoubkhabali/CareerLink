@@ -14,6 +14,7 @@ class User(AbstractUser):
     base_role = Role.ADMIN
     role = models.CharField(max_length=50, choices=Role.choices)
     bio = models.TextField(blank=True)
+    location = models.CharField(max_length=50, default= '')
     posts = models.ManyToManyField('Post', related_name='authors')
     followers = models.ManyToManyField('self', related_name='user_followers_set', symmetrical=False)
     following = models.ManyToManyField('self', related_name='user_following_set', symmetrical=False)
@@ -277,3 +278,33 @@ class ChatMessage(models.Model):
     class Meta:
         ordering = ['timestamp']
 
+
+
+class Offer(models.Model):
+    class Type(models.TextChoices):
+        JOB = 'job', 'Job'
+        INTERNSHIP = 'internship', 'Internship'
+
+    type = models.CharField(max_length=20, choices=Type.choices)
+    offer_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    skills_required = models.CharField(max_length=200)
+    location = models.CharField(max_length=200, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='offers_created')
+    salary = models.FloatField(default=0.00)
+
+    def __str__(self):
+        return self.title
+    
+class Application(models.Model):
+    offer = models.ForeignKey(Offer, on_delete=models.CASCADE, related_name='applications')
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    cv = models.FileField(upload_to='applications/cv/')
+    cover_letter = models.TextField(blank=True)
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Application for {self.offer.title} by {self.applicant.username}'

@@ -1,7 +1,7 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User,Student, Teacher,Class,Announcement,Assignment,AssignmentSubmission, Exam,Question,Answer, ChatMessage
+from .models import User,Student, Teacher,Class,Announcement,Assignment,AssignmentSubmission, Exam,Question,Answer, ChatMessage, Offer, Application
 from django.forms.widgets import CheckboxSelectMultiple
 from datetime import date
 
@@ -120,6 +120,9 @@ class PostForm(forms.ModelForm):
         fields = ['content', 'post_type', 'attachment', 'post_media']  # Add 'post_type' and 'attachment' fields
         widgets = {
             'content': forms.Textarea(attrs={'class': 'main-post', 'placeholder': 'Tell us something...'}),
+            'attachment': forms.FileInput(attrs={'class': 'attachment-post'}),
+            'post_media': forms.FileInput(attrs={'class': 'media-post'}),
+        
         }
         labels = {
             'content': '',
@@ -149,4 +152,15 @@ class ChangeStudentInfoForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'bio','profile_pic','profile_cover']  # Fields specific to User model
+
+
+class CreateOffer(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields = ['type', 'title', 'description', 'skills_required','location','salary']
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['cv', 'cover_letter']
 

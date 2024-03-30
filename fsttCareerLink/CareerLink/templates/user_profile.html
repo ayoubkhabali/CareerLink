@@ -13,7 +13,6 @@
         
         <div class="profile-func">
             {% if user.is_authenticated and user == request.user %}
-            <!-- <a class="post-btn btn" href="#newPost">new post</a> -->
                 {% if user.role == "TEACHER" %}
             <button class="post-btn btn modal-trigger" data-form-type="class">Create Class</button>
                 {% endif %}
@@ -113,6 +112,7 @@
             {{ form.content }}
             {% if request.user.role == "TEACHER" %}
             {{ form.post_type }}  <!-- Add post_type field -->
+            <button class="btn" onclick="document.getElementById('id_post_media').click()">media</button>
             {% endif %}
          </div>
          <div class="bottom-part">
@@ -287,7 +287,7 @@
 
 
 <div class="overlay">
-    <div class="modal class-modal ">
+    <div class="modal class-modal">
         {% include 'create_class.html' %}
     </div>
 </div>
