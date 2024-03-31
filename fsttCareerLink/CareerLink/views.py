@@ -29,13 +29,10 @@ def search_users(request):
 
 
 def search_students(request):
-    # Get the search query from the AJAX request
     query = request.GET.get('query', '')
 
-    # Perform the search query on the User model
     students = Student.objects.filter(user__username__icontains=query)
 
-    # Render the search results template with the users
     return render(request, 'search_students_results.html', {'students': students})
 
 
@@ -58,7 +55,7 @@ def home(request):
     user = request.user  # Get the currently logged-in user
 
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)  # Include request.FILES for file uploads
+        form = PostForm(request.POST, request.FILES)  
         if form.is_valid():
             post = form.save(commit=False)
             post.author = user
@@ -75,8 +72,7 @@ def home(request):
     # Get the latest message ID for each conversation involving the current user
     latest_message_ids = Subquery(
         ChatMessage.objects.filter(
-            Q(sender=OuterRef('pk'), receiver=user) |
-            Q(sender=user, receiver=OuterRef('pk'))
+            Q(sender=user, receiver=OuterRef('pk')) | Q(sender=OuterRef('pk'), receiver=user)
         ).order_by('-timestamp').values('id')[:1]
     )
     
@@ -104,6 +100,14 @@ def home(request):
 
     return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts, 'users_with_messages': users_with_messages, 'follow_requests': follow_requests})
 
+
+def delete_post(request, post_id):
+    if request.method == 'POST':
+        post = Post.objects.get(pk=post_id)
+        # Check if the user is authorized to delete the post (optional)
+        if post.author == request.user:
+            post.delete()
+    return redirect('home')
 
 
 from .forms import EducationForm, SkillsForm, ExperienceForm, InterestForm, ContactInfoForm
@@ -182,14 +186,44 @@ def add_contact(request, username):
 
 
 # In views.py
+from django.core.exceptions import ObjectDoesNotExist
+
 @login_required
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
     posts_url = request.path == f'/profile/{request.user.username}/'
-    about_url = request.path == f'/profile/{request.user.username}/update/'  # Check if the URL corresponds to the about section
-    classes_url = request.path == f'/profile/{request.user.username}/classes/'  # Check if the URL corresponds to the about section
+    about_url = request.path == f'/profile/{request.user.username}/update/'
+    classes_url = request.path == f'/profile/{request.user.username}/classes/'
     classes = None
-   
+    educations = None
+    experiences = None
+    skills = None
+    interests = None
+    contact_info = None
+
+    try:
+        contact_info = ContactInfo.objects.get(user=user)
+    except ObjectDoesNotExist:
+        pass
+
+    if request.user.role == 'STUDENT':
+        try:
+            educations = Education.objects.filter(user=user)
+        except ObjectDoesNotExist:
+            pass
+        try:
+            experiences = Experience.objects.filter(user=user)
+        except ObjectDoesNotExist:
+            pass
+        try:
+            skills = Skill.objects.filter(user=user)
+        except ObjectDoesNotExist:
+            pass
+        try:
+            interests = Interest.objects.filter(user=user)
+        except ObjectDoesNotExist:
+            pass
+
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -200,44 +234,55 @@ def user_profile(request, username):
             return redirect('user_profile', username=username)
     else:
         form = PostForm()
-    
+
     posts = user.posts.all().order_by('-created_at')
     shared_posts = SharePost.objects.filter(user=user)
 
     if request.method == 'POST':
         class_form = ClassForm(request.POST)
-        if  class_form.is_valid():
+        if class_form.is_valid():
             new_class = form.save(commit=False)
-            new_class.teacher = request.user.teacher  # Assuming the user is a teacher
+            new_class.teacher = request.user.teacher
             new_class.save()
             return redirect('user_profile', username=request.user.username)
     else:
         class_form = ClassForm()
 
-    if request.user.role == 'TEACHER' :
+    if request.user.role == 'TEACHER':
         teacher = request.user.teacher
-        classes = Class.objects.filter(teacher=teacher).prefetch_related('students')
-
+        try:
+            classes = Class.objects.filter(teacher=teacher).prefetch_related('students')
+        except ObjectDoesNotExist:
+            pass
     elif request.user.role == 'STUDENT':
         student = request.user.student
-        classes = Class.objects.filter(students=student).prefetch_related('students')
-    
+        try:
+            classes = Class.objects.filter(students=student).prefetch_related('students')
+        except ObjectDoesNotExist:
+            pass
+
     follow_request_sent = Notification.objects.filter(sender=request.user, receiver=user, type='follow_request').exists()
 
     context = {
-        'classes_url' : classes_url,
-        'classes' : classes,
-        'class_form' : class_form,
+        'classes_url': classes_url,
+        'classes': classes,
+        'class_form': class_form,
         'user': user,
         'form': form,
         'posts': posts,
         'shared_posts': shared_posts,
         'posts_url': posts_url,
         'about_url': about_url,
-        'follow_request_sent' :follow_request_sent
+        'follow_request_sent': follow_request_sent,
+        'educations': educations,
+        'experiences': experiences,
+        'skills': skills,
+        'interests': interests,
+        'contact_info': contact_info
     }
-    
+
     return render(request, 'user_profile.html', context)
+
 
 def create_offer(request, username):
     if request.method == 'POST':
@@ -378,11 +423,75 @@ from .models import Exam, Question, Answer
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Class, Exam
-
-
 from .forms import ExamForm, QuestionForm, AnswerForm
+from .models import Class, Exam, Question, Answer
+
+from .models import Exam
+
+# views.py
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Exam, Question, StudentAnswer
+from .forms import StudentAnswerForm
+
+def take_exam(request, exam_id):
+    exam = Exam.objects.get(pk=exam_id)
+    questions = Question.objects.filter(exam=exam)
+    return render(request, 'take_exam.html', {'exam': exam, 'questions': questions})
+
+
+def submit_exam(request, exam_id):
+    if request.method == 'POST':
+        for question_id, answer_id in request.POST.items():
+            if question_id.startswith('answer_'):
+                question_id = question_id.split('_')[1]
+                correct_answer = Answer.objects.get(question_id=question_id, is_correct=True)
+                student_answer_text = Answer.objects.get(id=answer_id).answer_text
+                is_correct = (student_answer_text == correct_answer.answer_text)
+                student_answer = StudentAnswer.objects.create(
+                    student=request.user,
+                    question_id=question_id,
+                    answer_text=student_answer_text,
+                    is_correct=is_correct
+                )
+                if is_correct:
+                    student_answer.correct_answers_count += 1
+                    student_answer.save()
+        # Redirect to exam results page after submitting the exam
+        return redirect('exam_results')
+    else:
+        # Handle GET request if needed.
+        pass
+
+
+
+def calculate_correct_answers(student):
+    # Get all the student's answers
+    student_answers = StudentAnswer.objects.filter(student=student)
+    
+    # Initialize a variable to count the correct answers
+    correct_answers_count = 0
+    
+    # Loop through each student's answer
+    for student_answer in student_answers:
+        # Get the corresponding correct answer for the question
+        correct_answer = Answer.objects.get(question=student_answer.question, is_correct=True)
+        
+        # Compare the student's answer with the correct answer
+        if student_answer.answer_text == correct_answer.answer_text:
+            correct_answers_count += 1
+    
+    return correct_answers_count
+
+
+
+
+@login_required
+def view_exam_results(request):
+    student = request.user
+    total_correct_answers = calculate_correct_answers(student)
+    return render(request, 'exam_results.html', {'total_correct_answers': total_correct_answers})
+
 def create_exam(request, class_id, class_title):
-    # Retrieve the class instance
     class_instance = get_object_or_404(Class, pk=class_id)
 
     if request.method == 'POST':
@@ -390,9 +499,9 @@ def create_exam(request, class_id, class_title):
         question_forms = [QuestionForm(request.POST, prefix=str(i)) for i in range(3)]
         answer_forms = [[AnswerForm(request.POST, prefix=f'answer-{i}-{j}') for j in range(3)] for i in range(3)]
 
-        if exam_form.is_valid() and all([q.is_valid() for q in question_forms]) and all([all([a.is_valid() for a in ans]) for ans in answer_forms]):
+        if exam_form.is_valid() and all(q.is_valid() for q in question_forms) and all(all(a.is_valid() for a in ans) for ans in answer_forms):
             exam = exam_form.save(commit=False)
-            exam.class_instance = class_instance  # Assign the class instance to the exam
+            exam.class_instance = class_instance
             exam.professor = request.user
             exam.save()
 
@@ -406,7 +515,7 @@ def create_exam(request, class_id, class_title):
                     answer.question = question
                     answer.save()
 
-                return redirect('exam_detail', class_id=class_id, class_title=class_title, exam_id=exam.id)
+            return redirect('exam_detail', class_id=class_id, class_title=class_title, exam_id=exam.id)
     else:
         exam_form = ExamForm()
         question_forms = [QuestionForm(prefix=str(i)) for i in range(3)]
@@ -777,34 +886,19 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from .models import Post, Like
 
-def like_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
+
+@login_required
+def like_post(request):
+    post_id = request.POST.get('id')
+    post = Post.objects.get(id=post_id)
     user = request.user
-    
-    # Check if the user has already liked the post
-    existing_like = Like.objects.filter(post=post, user=user).first()
-    if existing_like:
-        # If the user already liked the post, remove the like
-        existing_like.delete()
-        # Decrement the likes count in the Post model
-        post.likes -= 1
-        post.save()
+    liked = False
+    if user in post.likes.all():
+        post.likes.remove(user)
     else:
-        # If the user hasn't liked the post, create a new like instance
-        like = Like(post=post, user=user)
-        like.save()
-        # Increment the likes count in the Post model
-        post.likes += 1
-        post.save()
-    
-    # Redirect back to the homepage
-    return redirect(request.META.get('HTTP_REFERER', '/'))
-
-
-
-
-
-
+        post.likes.add(user)
+        liked = True
+    return JsonResponse({'liked': liked, 'likes_count': post.likes.count()})
 def comment_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     

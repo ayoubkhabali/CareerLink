@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/all.min.css'  %}" />
+<link rel="stylesheet" href="{% static 'css/framework.css' %}" />
+<link rel="stylesheet" href="{% static 'css/master.css'%}" />
 
 <div class="profile-section">
     <div class="main-profile">
@@ -73,21 +76,21 @@
         <ul>
 
             {% if about_url %}
-            <li class="profile-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
-            <li class="profile-tab  current-tab" ><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
-            <li class="profile-tab"><a href="{% url 'classes' username=request.user.username %}">classes</a></li>
+            <li class="profile-tab" ><a href="{% url 'user_profile' username=user.username %}">Posts</a></li>
+            <li class="profile-tab  current-tab" ><a href="{% url 'update_profile' username=user.username %}">About</a></li>
+            <li class="profile-tab"><a href="{% url 'classes' username=user.username %}">classes</a></li>
 
             {% elif posts_url %}
 
-            <li class="profile-tab current-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
-            <li class="profile-tab"><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
-            <li class="profile-tab"><a href="{% url 'classes' username=request.user.username %}">classes</a></li>
+            <li class="profile-tab current-tab" ><a href="{% url 'user_profile' username=user.username %}">Posts</a></li>
+            <li class="profile-tab"><a href="{% url 'update_profile' username=user.username %}">About</a></li>
+            <li class="profile-tab"><a href="{% url 'classes' username=user.username %}">classes</a></li>
 
             {% else %}
 
-            <li class="profile-tab" ><a href="{% url 'user_profile' username=request.user.username %}">Posts</a></li>
-            <li class="profile-tab"><a href="{% url 'update_profile' username=request.user.username %}">About</a></li>
-            <li class="profile-tab current-tab"><a href="{% url 'classes' username=request.user.username %}">classes</a></li>
+            <li class="profile-tab" ><a href="{% url 'user_profile' username=user.username %}">Posts</a></li>
+            <li class="profile-tab"><a href="{% url 'update_profile' username=user.username %}">About</a></li>
+            <li class="profile-tab current-tab"><a href="{% url 'classes' username=user.username %}">classes</a></li>
             {% endif %}
 
         </ul>
@@ -102,154 +105,138 @@
     {% endif %}
 
     {% elif posts_url %}
-    <div class="new-post">
-        <div class="img-icon">
-            <img src="{{user.profile_pic.url}}" alt="">
+    <div class="profile-page m-20">
+      <!-- Start Overview -->
+      <div class="overview bg-white rad-10 d-flex align-center" style="width: 90%;margin: auto;" >
+        <div class="avatar-box txt-c p-20"  style="display: flex;flex-direction: column;align-items: center;">
+          <img class="rad-half mb-10" src="{{user.profile_pic.url}}" alt="" />
+          <h3 class="m-0">{{user.username}}</h3>
+          <p class="c-grey mt-10">{{user.role}}</p>
+
         </div>
-        <form method="post" enctype="multipart/form-data">  <!-- Add enctype for file uploads -->
-            {% csrf_token %}
-         <div class="upper-part">
-            {{ form.content }}
-            {% if request.user.role == "TEACHER" %}
-            {{ form.post_type }}  <!-- Add post_type field -->
-            <button class="btn" onclick="document.getElementById('id_post_media').click()">media</button>
-            {% endif %}
-         </div>
-         <div class="bottom-part">
-            <div class="file-input">
-                {{ form.post_media }}  <!-- Add post_type field -->
-
+        <div class="info-box w-full txt-c-mobile">
+          <!-- Start Information Row -->
+          <div class="box p-20 d-flex align-center">
+            <h4 class="c-grey fs-15 m-0 w-full">General Information</h4>
+            <div class="fs-14">
+              <span class="c-grey">Full Name</span>
+              <span>{{user.first_name}} {{user.last_name}}</span>
             </div>
-            <div class="file-input">
-                {{ form.attachment }}  <!-- Add attachment field -->
+            <div class="fs-14">
+              <span class="c-grey">Gender:</span>
+              <span>{{user.gender}}</span>
             </div>
-         </div>
-         <input type="submit" value="Publish">
-        </form>
-        
-
-    </div>
-
-    <div class="recent-posts">
-
-        <h2>Recent Posts:</h2>      
-        <nav class="profile-nav-tabs filtering-posts">
-            <ul>
-                <li class="profile-tab current-tab" data-filter="all">All</li>
-                <li class="profile-tab" data-filter="POST">Regular Posts</li>
-                <li class="profile-tab" data-filter="PEDAGOGICAL">Pedagogical Activities</li>
-                <li class="profile-tab" data-filter="RESEARCH">Research Activities</li>
-            </ul>
-        </nav>
-        <div class="your-posts">
-
-            {% for post in posts %}
-            <div class="post" data-type="{{ post.post_type}}">
-                <div class="post-info">
-                    <div class="img-icon">
-                        <img src="{{user.profile_pic.url}}" alt="">
-                    </div>
-                    <div>
-                        <h3 class="author-post">{{ post.author.username }}</h3>
-                        <p class="time-since">{{ post.created_at }}</p>
-                        <p class="time-since">{{ post.id }}</p>
-                        <p class="time-since">{{ post.post_type }}</p>
-
-                    </div>
-    
-                </div>
-                <div class="post-text">
-                    {{ post.content }}   
-
-                 </div>
-                 <div class="post-img">
-                    {% if post.post_media %}
-                        <img src="{{ post.post_media.url }}" alt="Post Image">
-                    {% endif %}
-                </div>
-                <div class="post-img">
-                    {% if post.attachment %}
-                        <img src="{{ post.attachment.url }}" alt="Post Image">
-                    {% endif %}
-                </div>
-                
-
-                 <div class="post-actions">
-                    <ul>
-                        <li><a href="{% url 'like_post' post_id=post.id %}"><i class='bx bxs-message-alt-dots'></i>  {{ post.likes }} Like</a></li>
-
-                        <li><a href=""><i class='bx bxs-message-alt-dots'></i> Comment</a></li>
-                        <li><a href="{% url 'share_post' post_id=post.id %}"><i class='bx bxs-share'></i> Share</a></li>
-                    </ul>
-                    <div class="comments-section">
-                        {% for comment in post.comments.all %}
-                        <div class="comment">
-                            <div class="author-info">
-                                <div class="img-icon">
-                                    <!-- Display user avatar or profile picture -->
-                                    <img src="https://t3.ftcdn.net/jpg/02/43/12/34/240_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="">
-                                </div>
-                                <span class="author-name">{{ comment.author }}</span>
-                                <!-- <span class="author-name">{{ comment.created_at }}</span> -->
-                            </div>
-
-                            <div class="comment-text">
-                                {{ comment.content }}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <div class="add-comment">
-                        <form method="post" action="{% url 'comment_post' post_id=post.id %}">
-                            {% csrf_token %}
-                            <input type="text" name="content" placeholder="Write a comment...">
-                            <button type="submit">Post Comment</button>
-                        </form>
-                    </div>
-                </div>
-                
-    
-            </div>     
-            {% endfor %}
-
-            {% for share_post in shared_posts %}
-            <div class="post">
-                <span class="you-shared"><i class='bx bx-share' ></i> You shared :</span>
-
-                <div class="post-info">
-                    <div class="img-icon">
-                        <img src="{{ share_post.post.author.profile_pic.url }}" alt="">
-                    </div>
-                    <div class="user-span">
-                        <h5 class="username">{{ share_post.post.author.username }}</h5>
-                        <span class="datetime" >29 min</span>  
-                    </div>
-
-                </div>
-                <div class="post-content">
-                    {{ share_post.post.content }}
-                </div>
-                <div class="post-img">
-                    {% if share_.post.post_media %}
-                        <img src="{{ share_post.post.post_media.url }}" alt="Post Image">
-                    {% endif %}
-                </div>
-                <div class="post-img">
-                    {% if share_post.post.attachment %}
-                        <img src="{{ share_post.post.attachment.url }}" alt="Post Image">
-                    {% endif %}
-                </div>
-                
-                <div class="post-actions">
-                    <div class="icon-actions">
-                        <a href="{% url 'like_post' post_id=share_post.post.id %}"class="like-btn btn" > {{ share_post.post.likes }}  <i class='bx bx-heart'></i></a>
-                        <button class="comment-btn btn">0 <i class='bx bxs-comment-detail'></i></button>
-                        <button class="share-btn btn btn-active"><i class='bx bxs-share'></i></button>
-                    </div>
-                </div>
+            <div class="fs-14">
+              <span class="c-grey">Country:</span>
+              <span>{{user.country}}</span>
             </div>
-            {% endfor %}
+
+          </div>
+          <!-- End Information Row -->
+          <!-- Start Information Row -->
+          <div class="box p-20 d-flex align-center">
+            <h4 class="c-grey w-full fs-15 m-0">Personal Information</h4>
+            <div class="fs-14">
+              <span class="c-grey">Email:</span>
+              <span>{{user.email}}</span>
+            </div>
+            <div class="fs-14">
+              <span class="c-grey">Phone:</span>
+              <span>{{contact_info.phone_number}}</span>
+            </div>
+            <div class="fs-14">
+                <span class="c-grey">Address:</span>
+                <span>{{contact_info.address}}</span>
+              </div>
+            <div class="fs-14">
+              <span class="c-grey">Date Of Birth:</span>
+              <span>{{user.birth_date}}</span>
+            </div>
+          </div>
+          <!-- End Information Row -->
+          <!-- Start Information Row -->
+          {% for education in educations %}
+
+          <div class="box p-20 d-flex align-center">
+            <h4 class="c-grey w-full fs-15 m-0">Education Information</h4>
+            <div class="fs-14">
+              <span class="c-grey">Degree:</span>
+              <span>{{ education.degree }}</span>
+            </div>
+            <div class="fs-14">
+              <span class="c-grey">Institution:</span>
+              <span>{{education.institution}}</span>
+            </div>
+            <div class="fs-14">
+                <span class="c-grey">Start Date:</span>
+                <span>{{ education.start_date }}</span>
+              </div>
+              <div class="fs-14">
+                <span class="c-grey">Enf Date:</span>
+                <span>{{ education.end_date }}</span>
+              </div>
+
+          </div>
+          {% endfor %}
+          <!-- End Information Row -->
+          <!-- Start Information Row -->
+          {% for experience in experiences %}
+          <div class="box p-20 d-flex align-center">
+            <h4 class="c-grey w-full fs-15 m-0">Experiences Information</h4>
+            <div class="fs-14">
+              <span class="c-grey">Title:</span>
+              <span>{{ experience.title }}</span>
+            </div>
+            <div class="fs-14">
+              <span class="c-grey">Company:</span>
+              <span>{{experience.company}}</span>
+            </div>
+            <div class="fs-14">
+              <span class="c-grey">Start date:</span>
+              <span> {{ experience.start_date }}</span>
+            </div>
+            <div class="fs-14">
+                <span class="c-grey">End date:</span>
+                <span> {{ experience.end_date }}</span>
+            </div>
+          </div>
+        {% endfor %}
+          <!-- End Information Row -->
         </div>
+      </div>
+      <!-- End Overview -->
+      <!-- Start Other Data -->
+      <div class="other-data d-flex gap-20"  style="width: 90%;margin: auto;">
+        <div class="skills-card p-20 bg-white rad-10 mt-20">
+          <h2 class="mt-0 mb-10">My Skills & Interests</h2>
+          <ul class="m-0 txt-c-mobile">
+            <li><span>HTML</span><span>Pugjs</span><span>HAML</span></li>
+            <li><span>CSS</span><span>SASS</span><span>Stylus</span></li>
+            <li><span>JavaScript</span><span>TypeScript</span></li>
+            <li><span>Vuejs</span><span>Reactjs</span></li>
+            <li><span>Jest</span><span>Jasmine</span></li>
+            <li><span>PHP</span><span>Laravel</span></li>
+            <li><span>Python</span><span>Django</span></li>
+          </ul>
+        </div>
+        <div class="activities p-20 bg-white rad-10 mt-20">
+          <h2 class="mt-0 mb-10">Latest Posts</h2>
+          <p class="mt-0 mb-20 c-grey fs-15">Latest Posts Done By The {{user.username}}</p>
+          {% for post in posts %}
+          <div class="activity d-flex align-center txt-c-mobile">
+            <img src="{{user.profile_pic.url}}" alt="" />
+            <div class="info">
+              <span class="d-block mb-10">{{post.post_type}}</span>
+              <span class="c-grey">{{post.content}}</span>
+            </div>
+            <div class="date">
+              <span class="d-block mb-10">{{post.create_at}}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <!-- End Other Data -->
     </div>
 
     {% elif classes_url %}

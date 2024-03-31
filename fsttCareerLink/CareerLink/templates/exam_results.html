@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Your Exam Results</h1>
+<p>Total Correct Answers: {{ total_correct_answers }}</p>
+<h2>Questions:</h2>
+<ul>
+    {% if student_answers %}
+    {% for student_answer in student_answers %}
+        <li>
+            <strong>Question:</strong> {{ student_answer.question.question_text }}<br>
+            <strong>Your Answer:</strong> {{ student_answer.answer_text }}<br>
+            {% if student_answer.is_correct %}
+                <strong>Result:</strong> Correct<br>
+            {% else %}
+                <strong>Result:</strong> Incorrect<br>
+            {% endif %}
+        </li>
+    {% endfor %}
+{% else %}
+    <li>No answers found.</li>
+{% endif %}
+</ul>
+
+{% endblock %}

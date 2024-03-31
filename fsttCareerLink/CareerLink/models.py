@@ -4,8 +4,13 @@ from django.contrib.postgres.fields import ArrayField
 from datetime import datetime,timezone
 import uuid
 
+from datetime import date
 
 class User(AbstractUser):
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+    ]
     class Role(models.TextChoices):
         ADMIN = "ADMIN", 'admin'
         STUDENT = "STUDENT", "student"
@@ -20,6 +25,12 @@ class User(AbstractUser):
     following = models.ManyToManyField('self', related_name='user_following_set', symmetrical=False)
     profile_pic = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_pic.jpg')
     profile_cover = models.FileField(upload_to='media/', null=True, blank=True, default='media/default_profile_cover.jpg')
+    birth_date = models.DateField(default=date(2000, 1, 1))
+    country = models.CharField(max_length=50, default='undefined')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,default='M')
+
+
+
 
     def save(self, *args, **kwargs):
         creating = not self.pk
@@ -141,7 +152,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     post_media = models.FileField(upload_to='posts-files/', null=True, blank=True)  # Add attachment field
     attachment = models.FileField(upload_to='posts-files/', null=True, blank=True)  # Add attachment field
-    likes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     post_type = models.CharField(max_length=50, choices=PostType.choices, default=PostType.REGULAR)
 
 class Comment(models.Model):
@@ -208,6 +219,19 @@ class Exam(models.Model):
     end_time = models.TimeField()
     description = models.TextField()
 
+class LiveStream(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    class_room = models.ForeignKey('Class', on_delete=models.CASCADE)
+    stream_key = models.CharField(max_length=100)
+    stream_url = models.URLField(blank=True, null=True)
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
 class Question(models.Model):
     id = models.AutoField(primary_key=True, serialize=False)
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
@@ -219,14 +243,13 @@ class Answer(models.Model):
     answer_text = models.CharField(max_length=255)
     is_correct = models.BooleanField(default=False)
 
-
-
-
 class StudentAnswer(models.Model):
     id = models.AutoField(primary_key=True, serialize=False)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer_text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
+    correct_answers_count = models.IntegerField(default=0)
 
 
 class Announcement(models.Model):

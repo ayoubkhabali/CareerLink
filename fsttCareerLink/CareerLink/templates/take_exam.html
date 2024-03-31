@@ -1,0 +1,23 @@
+<!-- take_exam.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ exam.description }}</h1>
+<form method="post" action="{% url 'submit_exam' exam.id %}">
+    {% csrf_token %}
+    <ul>
+        {% for question in questions %}
+        <li>{{ question.question_text }}</li>
+        <ul>
+            {% for answer in question.answer_set.all %}
+            <li>
+                <input type="radio" name="answer_{{ question.id }}" value="{{ answer.id }}"> {{ answer.answer_text }}
+              
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </ul>
+    <button type="submit">Submit Exam</button>
+</form>
+{% endblock %}

@@ -88,6 +88,28 @@ class AnswerForm(forms.ModelForm):
         model = Answer
         fields = ['answer_text', 'is_correct']
 
+from .models import StudentAnswer
+class StudentAnswerForm(forms.ModelForm):
+    class Meta:
+        model = StudentAnswer
+        fields = ['answer_text']
+
+    def __init__(self, *args, **kwargs):
+        exam = kwargs.pop('exam')
+        super(StudentAnswerForm, self).__init__(*args, **kwargs)
+        for question in exam.question_set.all():
+            choices = Answer.objects.filter(question=question).values_list('id', 'answer_text')
+            self.fields[f'answer_{question.id}'] = forms.ChoiceField(label=question.question_text, choices=choices, widget=forms.RadioSelect)
+
+    def save(self, commit=True):
+        exam = self.cleaned_data['exam']
+        student = self.cleaned_data['student']
+        for field_name, field_value in self.cleaned_data.items():
+            if field_name.startswith('answer_'):
+                question_id = field_name.replace('answer_', '')
+                StudentAnswer.objects.create(exam=exam, student=student, question_id=question_id, answer_text=field_value)
+
+
 class AssignmentSubmissionForm(forms.ModelForm):
     class Meta:
         model = AssignmentSubmission

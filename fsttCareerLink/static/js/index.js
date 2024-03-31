@@ -68,6 +68,18 @@ imgProfile.addEventListener('click', function () {
 	dropdownProfile.classList.toggle('show');
 })
 
+
+const allMenu = document.querySelectorAll('.feed .head .menu');
+
+allMenu.forEach(item=> {
+	const icon = item.querySelector('.icon');
+	const menuLink = item.querySelector('.menu-link');
+
+	icon.addEventListener('click', function () {
+		menuLink.classList.toggle('show');
+	})
+})
+
 const modalBtn = document.querySelectorAll(".modal-trigger")
 const modalBox = document.querySelector(".overlay")
 
@@ -84,7 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalBox.querySelector(".overlay .assignment-modal").style.display = 'block'
             if (btn.dataset.formType === 'application')
                 modalBox.querySelector(".overlay .application-modal").style.display = 'block'
-             
+            if (btn.dataset.formType === 'class')
+            modalBox.querySelector(".overlay .class-modal").style.display = 'block'
+            if (btn.dataset.formType === 'edit')
+            modalBox.querySelector(".overlay .edit-modal").style.display = 'block'             
     
         })
     })});
@@ -94,6 +109,8 @@ modalBox.addEventListener("click", (event) => {
     modalBox.classList.remove("show-modal"); // Remove the class
     modalBox.querySelectorAll(".overlay .modal").forEach(modal => {modal.style.display ='none'})  }
 });
+
+
 
 
 

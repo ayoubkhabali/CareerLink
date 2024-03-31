@@ -38,6 +38,7 @@ admin.site.register(Answer)
 admin.site.register(Question)
 admin.site.register(Exam)
 admin.site.register(Notification)
+admin.site.register(StudentAnswer)
 
 admin.site.register(Skill)
 admin.site.register(Interest)

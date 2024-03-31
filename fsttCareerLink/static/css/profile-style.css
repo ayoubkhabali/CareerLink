@@ -246,7 +246,7 @@ textarea {
     border-radius: 5px; /* Add border radius to input fields and textarea */
     box-sizing: border-box; /* Include padding and border in the width */
 }
-button {
+/* button {
 
     padding: 10px 20px;
     background-color: #FFF;
@@ -256,7 +256,7 @@ button {
     font-size: 1.2rem;
     background-color: #fff;
 
-}
+} */
 
     .file-input input[type="file"]::-webkit-file-upload-button {
 visibility: hidden;

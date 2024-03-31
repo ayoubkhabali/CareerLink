@@ -11,7 +11,7 @@ urlpatterns = [
     path('about_us', views.aboutUs, name='about'),
     path('logout/',views.logoutUser,name="logout"),
     path('login/',views.loginPage,name="login"),
-    path('like/<int:post_id>/', views.like_post, name='like_post'),
+    path('like_post/', views.like_post, name='like_post'),
     path('comment/<int:post_id>/', views.comment_post, name='comment_post'),
     path('share/<int:post_id>/', views.share_post, name='share_post'),
     path('profile/about/', views.profile, name='profile-edit'),
@@ -28,6 +28,11 @@ urlpatterns = [
     path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/', views.assignment_detail, name='assignment_detail'),
     path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/unsubmit/', views.unsubmit_assignment, name='unsubmit_assignment'),
     path('class/<int:class_id>/<str:class_title>/create-exam', views.create_exam, name='create_exam'),
+    path('take_exam/<int:exam_id>/', views.take_exam, name='take_exam'),
+    path('exam/<int:exam_id>/submit/', views.submit_exam, name='submit_exam'),
+    path('exam/results/', views.view_exam_results, name='exam_results'),
+
+
     path('exam/<int:class_id>/<str:class_title>/<int:exam_id>/', views.exam_detail, name='exam_detail'),
     path('inbox/', views.inbox, name='inbox'),
     path('conversation/<int:receiver_id>/', views.conversation_detail, name='conversation_detail'),
@@ -42,12 +47,12 @@ urlpatterns = [
     path('display-offers/apply/<int:offer_id>/', views.apply_for_offer, name='apply_for_offer'),
     path('display-offers/applications-lists/<int:offer_id>/', views.applications_list, name='applications_list'),
     
-    
     path('profile/<str:username>/add-education/', views.add_education, name='add_education'),
     path('profile/<str:username>/add-interest-skill/', views.add_interest_skill, name='add_interest_skill'),
     path('profile/<str:username>/add-contact/', views.add_contact, name='add_contact'),
     path('profile/<str:username>/add-experience/', views.add_experience, name='add_experience'),
     path('update-info/<str:username>/', views.update_info, name='update_info'),
+    path('delete_post/<int:post_id>/', views.delete_post, name='delete_post'),
 
 
 ]

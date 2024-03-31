@@ -9,6 +9,7 @@
         <div class="container">
         <h3 class="greetings">Welcome,  {{ request.user.username }}</h3>
         <style>
+
                 input[type="text"],
                 textarea {
                     width: 500px; /* Make input fields and textarea full width */
@@ -18,17 +19,6 @@
                     border: 1px solid #ccc; /* Add border to input fields and textarea */
                     border-radius: 5px; /* Add border radius to input fields and textarea */
                     box-sizing: border-box; /* Include padding and border in the width */
-                }
-                button {
-
-                    padding: 10px 20px;
-                    background-color: #FFF;
-                    color: #000;
-                    border: 1px solid #fff;
-                    cursor: pointer;
-                    font-size: 1.2rem;
-                    background-color: #fff;
-            
                 }
 
                     .file-input input[type="file"]::-webkit-file-upload-button {
@@ -88,9 +78,7 @@
                 {% csrf_token %}
              <div class="upper-part">
                 {{ form.content }}
-                {% if request.user.role == "TEACHER" %}
-                {{ form.post_type }}  <!-- Add post_type field -->
-                {% endif %}
+                {{ form.post_type }} 
              </div>
              <div class="bottom-part">
                 <div class="file-input">
@@ -127,15 +115,26 @@
                                 <small>{{post.created_at}}</small>
                             </div>
                         </div>
-                        <span class="edit">
-                            <i class="uil uil-ellipsis-h"></i>
-                        </span>
+                        {% if post.author.username == request.user.username %}
+						<div class="menu  edit">
+							<i class='bx bx-dots-horizontal-rounded icon'></i>
+							<ul class="menu-link">
+								<li>
+                                    <form action="{% url 'delete_post' post.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="">Remove</button>
+                                    </form>
+                                </li>
+							</ul>
+						</div>
+                        {% endif %}
+
+
                     </div>
 
                     <div class="caption">
                         <br>
-                        <p> {{post.content}}
-                        <span class="harsh-tag">#lifestyle</span></p>
+                        <p> {{post.content}}</p>
                     </div>
                     {% if post.post_media %}
 
@@ -147,15 +146,18 @@
 
                     <div class="action-buttons">
                         <div class="interaction-buttons">
-                            <span><a href="{% url 'like_post' post_id=post.id %}"> <i class="uil uil-heart"></i> </a></span>
-                            <span><i class="uil uil-comment-dots"></i></span>
+                            <span class="like-button" data-post-id="{{ post.id }}">
+                                <i class="uil uil-heart"></i>
+                            </span>
+                            
+                                                        <span><i class="uil uil-comment-dots"></i></span>
                             <span><a href="{% url 'share_post' post_id=post.id %}"><i class="uil uil-share-alt"></i></a></span>
                         </div>
 
                     </div>
 
                     <div class="liked-by">
-                        <p>Liked by {{post.likes}} people</b></p>
+                        <p>Liked by {{ post.likes.count }} people</b></p>
                     </div>
 
                     <div class="comments text-muted">
@@ -258,31 +260,44 @@
 
 </div>
 
+
+
+
+
 </main>
 {% endif %}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$('.like-button').click(function(e) {
-    e.preventDefault();
-    var post_id = $(this).data('post-id');
-    var likeButton = $(this);  // Store the like button element
-    $.ajax({
-        type: 'POST',
-        url: '/home/' + post_id + '/like/',
-        data: {
-            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-        },
-        success: function(data) {
-            if (data.success) {
-                // Update the like count on the page
-                likeButton.closest('.post-actions').find('.likes-count').text(data.likes_count);
-            }
-        }
+    document.addEventListener('DOMContentLoaded', function() {
+        var likeButtons = document.querySelectorAll('.like-button');
+        likeButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var postId = this.dataset.postId;
+                var likedByElement = this.closest('.action-buttons').nextElementSibling.querySelector('.liked-by p');
+                var heartIcon = this.querySelector('i'); // Select the heart icon within the like button
+                $.ajax({
+                    url: '{% url "like_post" %}',
+                    type: 'POST',
+                    data: {
+                        'id': postId,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if(response.liked) {
+                            heartIcon.classList.add('liked'); // Add a class to change the icon's appearance
+                        } else {
+                            heartIcon.classList.remove('liked'); // Remove the class if the post is unliked
+                        }
+                        likedByElement.textContent = 'Liked by ' + response.likes_count + ' people'; // Update the likes count display
+                    }
+                });
+            });
+        });
     });
-});
+    </script>
+    
+    
 
-
-</script>
 
 {% endblock %}
