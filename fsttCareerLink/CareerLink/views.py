@@ -478,7 +478,7 @@ from .forms import ChatMessageForm
 
 def conversation_detail(request, receiver_id):
     sender = request.user
-    receiver = get_object_or_404(User, pk=receiver_id)  # Define 'receiver' here
+    receiver = get_object_or_404(User, pk=receiver_id)  
     messages = ChatMessage.objects.filter(sender=sender, receiver=receiver) | ChatMessage.objects.filter(sender=receiver, receiver=sender)
     messages = messages.order_by('timestamp')
 
@@ -494,7 +494,7 @@ def conversation_detail(request, receiver_id):
     else:
         form = ChatMessageForm()
 
-    return render(request, 'conversation_detail.html', {'messages': messages, 'receiver': receiver, 'form': form})
+    return render(request, 'conversation_detail.html', {'messages': messages, 'receiver': receiver, 'form': form, 'sender' : sender})
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm

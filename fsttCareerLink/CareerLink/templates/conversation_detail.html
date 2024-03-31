@@ -1,34 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Conversation with {{ receiver.username }}</h1>
-<ul>
-    <h2>Conversation with {{ receiver.username }}</h2>
-    <div class="inbox-box">
-        <div class="messages">
+<h1 style="text-align: center;" >Conversation with {{ receiver.username }}</h1>
+
+    <div class="content-data">
+        <div class="head">
+            <h3>Chatbox</h3>
+            <div class="menu">
+                <i class='bx bx-dots-horizontal-rounded icon'></i>
+                <ul class="menu-link">
+                    <li><a href="#">Edit</a></li>
+                    <li><a href="#">Save</a></li>
+                    <li><a href="#">Remove</a></li>
+                </ul>
+            </div>
+        </div>
+    <div class="chat-box">
             {% for message in messages %}
-            <div class="message">
-                <div class="profile-photo">
-                    <img src="{{ message.sender.profile_pic.url}}">
-                </div>
-                <div class="message-body">
-                    <h5>{{ message.sender.username }}</h5>
-                    <p class="text-muted">{{ message.content }}</p>
+            {% if message.sender.username == request.user.username %}
+            <div class="msg me">
+                <div class="chat">
+                    <div class="profile">
+                        <span class="time">{{message.timestamp}}</span>
+                    </div>
+                    <p>{{ message.content }}</p>
                 </div>
             </div>
-    
+            {% else %}
+            <div class="msg">
+                <img src="{{ message.sender.profile_pic.url}}" alt="">
+                <div class="chat">
+                    <div class="profile">
+                        <span class="username">{{ message.sender.username }}</span>
+                        <span class="time">{{message.timestamp}}</span>
+                    </div>
+                    <p>{{ message.content }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            
         {% endfor %}
-        </div>
     </div>
+    <form method="POST">
+        <div class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-send"><i class='bx bxs-send' ></i></button>
+        </div>
+    </form>
+</div>
 
 
-    
-</ul>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Send">
-</form>
+
 
 
 {% endblock %}
