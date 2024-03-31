@@ -11,10 +11,27 @@ from datetime import date
 from django import forms
 from .models import Education, Skill, Experience, Interest, ContactInfo
 
+
+# forms.py
+from django.contrib.auth.forms import PasswordChangeForm
+
+class ChangePasswordForm(PasswordChangeForm):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        self.fields['old_password'].widget.attrs.update({'class': 'form-control'})
+        self.fields['new_password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['new_password2'].widget.attrs.update({'class': 'form-control'})
+
+
 class EducationForm(forms.ModelForm):
     class Meta:
         model = Education
-        fields = ['degree','institution', 'start_date','end_date','description']
+        fields = ['degree', 'institution', 'start_date', 'end_date', 'description']
+class ChangeEducationForm(forms.ModelForm):
+    class Meta:
+        model = Education
+        fields = ['degree', 'institution', 'start_date', 'end_date', 'description']
+
 
 class SkillsForm(forms.ModelForm):
     class Meta:
@@ -147,12 +164,21 @@ class ChangeTeacherInfoForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'bio', 'profile_pic', 'profile_cover']
+        widgets = {
+            'profile_pic': forms.FileInput(attrs={'class': 'profile-pic'}),
+            'profile_cover': forms.FileInput(attrs={'class': 'profile-cover'}),
+        
+        }
 
 class ChangeStudentInfoForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'bio','profile_pic','profile_cover']  # Fields specific to User model
-
+        widgets = {
+                'profile_pic': forms.FileInput(attrs={'class': 'profile-pic'}),
+                'profile_cover': forms.FileInput(attrs={'class': 'profile-cover'}),
+            
+            }
 
 class CreateOffer(forms.ModelForm):
     class Meta:

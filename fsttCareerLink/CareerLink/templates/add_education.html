@@ -1,7 +1,7 @@
 
-<form method="post">
+<form method="post" action="{% url 'update_info' username=user.username %}">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ education_form.as_p }}
     <button type="submit">Submit</button>
 </form>
 

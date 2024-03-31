@@ -2,15 +2,8 @@
 
 <form method="post">
     {% csrf_token %}
-    {{ skills_formset.management_form }}
-    {% for skills_form in skills_formset %}
-        {{ skills_form.as_p }}
-    {% endfor %}
-
-    {{ interest_formset.management_form }}
-    {% for interest_form in interest_formset %}
-        {{ interest_form.as_p }}
-    {% endfor %}
+    {{ skills_form.as_p }}
+    {{ interests_form.as_p }}
 
     <button type="submit">Submit</button>
 </form>
