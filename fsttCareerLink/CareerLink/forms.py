@@ -218,4 +218,14 @@ class ApplicationForm(forms.ModelForm):
     class Meta:
         model = Application
         fields = ['cv', 'cover_letter']
+        widgets = {
+        'cv': forms.FileInput(attrs={'class': 'cv-btn'}),
+    
+           }
+        
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            self.fields[field_name].label = ''
 

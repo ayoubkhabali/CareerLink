@@ -1,10 +1,56 @@
 {% extends 'base.html' %}
 
+{% load static %}
 {% block content %}
-<h2>Apply for {{ offer.title }}</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit Application</button>
-</form>
+<style>
+    .cv-btn {
+        display: none;
+    }
+</style>
+<link rel="stylesheet" href="{% static 'css/all.min.css'  %}" />
+<link rel="stylesheet" href="{% static 'css/framework.css' %}" />
+<link rel="stylesheet" href="{% static 'css/master.css'%}" />
+
+<h2 style="margin:2rem 3rem;" >Apply for {{ offer.title }}</h2>
+
+<div class="project bg-white p-20 rad-6 p-relative" style="width: 85%;margin: auto;">
+    <span class="date fs-13 c-grey">{{offer.create_at}}</span>
+    <h4 class="m-0">{{offer.creator}}</h4>
+    <p class="c-grey mt-10 mb-10 fs-14">{{offer.salary}}</p>
+
+    <div class="do d-flex">
+        {{offer.skills_required}}
+      <!-- <span class="fs-13 rad-6 bg-eee">Programming</span>
+      <span class="fs-13 rad-6 bg-eee">Design</span>
+      <span class="fs-13 rad-6 bg-eee">Hosting</span>
+      <span class="fs-13 rad-6 bg-eee">Marketing</span> -->
+    </div>
+    <div class="do d-flex">
+        {{offer.description}}
+
+    </div>
+    <div class="info between-flex">
+      <div class="prog bg-eee">
+        <span class="bg-red" style="width: 50%"></span>
+      </div>
+      <div class="fs-14 c-grey">
+        <i class="fa-solid fa-dollar-sign"></i>
+        {{offer.salary}}
+      </div>
+    </div>
+  </div>
+
+
+
+<div class="quick-draft p-20 bg-white rad-10"  style="width: 85%;margin:2rem auto;">
+    <h2 class="mt-0 mb-10">Application Form</h2>
+    <p class="mt-0 mb-20 c-grey fs-15">Write A Draft For Your Ideas</p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button style="font-size: 1.05rem;margin-bottom: 1rem;display: flex;align-items: center;color:#1976D2;" onclick="document.getElementById('id_cv').click()" ><i class='bx bx-file'></i> upload your cv</button>
+        {{ form.as_p }}
+      <button class="save d-block fs-14 bg-blue c-white b-none w-fit btn-shape" type="submit"> Submit Application </button>
+    </form>
+</div>
+
 {% endblock %}

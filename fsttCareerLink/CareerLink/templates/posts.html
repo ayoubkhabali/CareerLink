@@ -96,10 +96,13 @@
                     {% endfor %}
                 </div>
                 <div class="add-comment">
-                    <form method="post" action="{% url 'comment_post' post_id=post.id %}">
+                    <div class="profile-photo">
+                        <img src="{{comment.author.profile_pic.url}}">
+                    </div>
+                    <form method="post" class="create-post" action="{% url 'comment_post' post_id=post.id %}">
                         {% csrf_token %}
                         <input type="text" name="content" placeholder="Write a comment...">
-                        <button type="submit">Post Comment</button>
+                        <button type="submit" class="btn btn-primary">Post Comment</button>
                     </form>
                 </div>
             </div>

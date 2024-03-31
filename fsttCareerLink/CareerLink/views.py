@@ -191,9 +191,9 @@ from django.core.exceptions import ObjectDoesNotExist
 @login_required
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
-    posts_url = request.path == f'/profile/{request.user.username}/'
-    about_url = request.path == f'/profile/{request.user.username}/update/'
-    classes_url = request.path == f'/profile/{request.user.username}/classes/'
+    posts_url = request.path == f'/profile/{user.username}/'
+    about_url = request.path == f'/profile/{user.username}/about/'
+    classes_url = request.path == f'/profile/{user.username}/classes/'
     classes = None
     educations = None
     experiences = None
@@ -248,19 +248,16 @@ def user_profile(request, username):
     else:
         class_form = ClassForm()
 
-    if request.user.role == 'TEACHER':
-        teacher = request.user.teacher
+    if user.role == 'TEACHER':
         try:
-            classes = Class.objects.filter(teacher=teacher).prefetch_related('students')
+            classes = Class.objects.filter(teacher=user.teacher).prefetch_related('students')
         except ObjectDoesNotExist:
             pass
-    elif request.user.role == 'STUDENT':
-        student = request.user.student
+    elif user.role == 'STUDENT':
         try:
-            classes = Class.objects.filter(students=student).prefetch_related('students')
+            classes = Class.objects.filter(students=user.student).prefetch_related('students')
         except ObjectDoesNotExist:
             pass
-
     follow_request_sent = Notification.objects.filter(sender=request.user, receiver=user, type='follow_request').exists()
 
     context = {

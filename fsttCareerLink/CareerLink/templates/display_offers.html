@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/all.min.css'  %}" />
+<link rel="stylesheet" href="{% static 'css/framework.css' %}" />
+<link rel="stylesheet" href="{% static 'css/master.css'%}" />
 
 
 <style>
@@ -55,7 +58,7 @@
     <button type="submit">Apply Filter</button>
 </form>
 {% endif %}
-<div class="jobs-list-container">
+<!-- <div class="jobs-list-container">
     {% for offer in offers %}
 
     <div class="job-offer">
@@ -86,7 +89,40 @@
 
     </div>
     {% endfor %}
-  </div>
+  </div> -->
+  {% for offer in offers %}
+  <div class="friends-page d-grid m-20 gap-20" style="width: 90%; margin: 3rem auto;">
 
+    <div class="friend bg-white rad-6 p-20 p-relative">
+        <div class="txt-c" style="display: flex;flex-direction: column;align-items: center;gap: 1rem;">
+        <img class="rad-half mt-10 mb-10 w-100 h-100" src="{{ offer.creator.profile_pic.url }}" alt="" />
+        <h4 class="m-0">{{ offer.creator.username }}</h4>
+        <p class="c-grey fs-13 mt-5 mb-0">{{ offer.title }}</p>
+        </div>
+        <div class="icons fs-14 p-relative">
+        <div class="mb-10" >
+            <i class='bx bxs-location-plus'></i>
+                <span>{{offer.location}}</span>
+        </div>
+
+        <div>
+            <i class='bx bx-dollar'></i>
+            <span>{{offer.salary}}</span>
+        </div>
+        </div>
+        <div class="info between-flex fs-13">
+        <span class="c-grey">{{offer.created_at}}</span>
+        <div>
+            {% if request.user.role == 'ENTERPRISE' %}
+            <a class="bg-blue c-white btn-shape" href="{% url  'applications_list' offer_id=offer.offer_id %}">See Details</a>
+            {% else %}
+            <a class="bg-blue c-white btn-shape" href="{% url 'apply_for_offer' offer_id=offer.offer_id %}">Apply</a>
+            {% endif %}
+
+        </div>
+        </div>
+    </div>
+    </div>
+{% endfor %}
 
 {% endblock %}

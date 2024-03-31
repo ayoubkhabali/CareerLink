@@ -280,7 +280,7 @@ img {
     color: var(--color-primary);
 }
 
-.right .messages .message,
+ .message,
 .inbox-box .messages .message,
 .search-results .message {
     display: flex;
@@ -289,28 +289,28 @@ img {
     align-items: start;
 }
 
-.right .message .profile-photo,
+.message .profile-photo,
 .search-results .message .profile-photo {
     position: relative;
     overflow: visible;
 }
 
-.right .profile-photo img,
+.profile-photo img,
 .search-results .profile-photo img {
     border-radius: 50%;
 }
 
-.right .messages .message:last-child,
+.message:last-child,
 .search-results .message:last-child {
     margin: 0;
 }
 
-.right .messages .message p,
+ .message p,
 .search-results .message p {
     font-size:0.8rem;
 }
 
-.right .messages .message .profile-photo .active,
+ .message .profile-photo .active,
 .search-results .message .profile-photo .active {
     width: 0.8rem;
     height: 0.8rem;

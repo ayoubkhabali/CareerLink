@@ -70,6 +70,8 @@
         </style>
 
 
+
+
         <div class="new-post">
             <div class="img-icon">
                 <img src="{{user.profile_pic.url}}" alt="">
@@ -146,7 +148,7 @@
 
                     <div class="action-buttons">
                         <div class="interaction-buttons">
-                            <span class="like-button" data-post-id="{{ post.id }}">
+                            <span class="like-button {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
                                 <i class="uil uil-heart"></i>
                             </span>
                             
@@ -160,8 +162,33 @@
                         <p>Liked by {{ post.likes.count }} people</b></p>
                     </div>
 
-                    <div class="comments text-muted">
-                        View all 277 comments
+                    <div class="comments text-muted" >
+                        View all the comments
+                    </div>
+                    <div class="comments-section" style="display: none;">
+                        {% for comment in post.comments.all %}
+                        <div class="message" style="margin: 1rem 0;" >
+                            <div class="profile-photo">
+                                <img src="{{comment.author.profile_pic.url}}">
+                            </div>
+                            <div class="message-body">
+                                <h5>{{comment.author.username}}</h5>
+                                <p class="text-muted">{{comment.content}}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="add-comment">
+ 
+                            <form method="post" class="create-post" action="{% url 'comment_post' post_id=post.id %}">
+                                <div class="profile-photo">
+                                    <img src="{{request.user.profile_pic.url}}">
+                                </div>
+                              
+                                {% csrf_token %}
+                                <input type="text" name="content" placeholder="Write a comment...">
+                                <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 

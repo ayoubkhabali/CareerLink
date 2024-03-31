@@ -43,6 +43,30 @@
 
 
 
+    --primary-color-hue: 252;
+    --dark-color-lightness: 17%;
+    --light-color-lightness: 95%;
+    --white-color-lightness: 100%;
+
+    --color-white: hsl(252, 30%, var(--white-color-lightness));
+    --color-light: hsl(252, 30%, var(--light-color-lightness));
+    --color-grey: hsl(252, 15%, 65%);
+    --color-primary: hsl(var(--primary-color-hue), 75%, 60%);
+    --color-secondary: hsl(252, 100%, 90%);
+    --color-success: hsl(120, 95%, 65%);
+    --color-danger: hsl(0, 95%, 65%);
+    --color-dark: hsl(252, 30%, var(--dark-color-lightness));
+    --color-black: hsl(252, 30%, 10%);
+
+    --border-radius: 2rem;
+    --card-border-radius: 1rem;
+    --btn-padding: 0.6rem 2rem;
+    --search-padding: 0.6rem 1rem;
+    --card-padding: 1rem;
+
+    --sticky-top-left: 5.4rem;
+    --sticky-top-right: -18rem;
+
 
 
 
@@ -57,6 +81,26 @@ button {
     cursor: pointer;
 }
 
+
+
+.btn {
+    display: inline-block;
+    padding: var(--btn-padding);
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 300ms ease;
+    font-size: 0.9rem;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
 
 
 .invite-section {
@@ -733,6 +777,39 @@ img {
 
 .liked {
     color: red; /* Change the color to red when liked */
+}
+
+
+
+
+.create-post {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--color-white);
+    padding: 0.4rem var(--card-padding);
+    gap: 1rem;
+}
+
+ .create-post input[type="text"] {
+    width: 100%;
+    justify-self: start;
+    padding-left: 1rem;
+    background: transparent;
+    color: var(--color-dark);
+    border: none;
+}
+
+.create-post .btn {
+    margin: 0;
+    padding: .5rem;
+    border-radius: .5rem;
+    background-color: var(--primary);
+    color: #fff;
+    box-shadow: none;
+    border: none;
+
 }
 
 

@@ -97,14 +97,9 @@
     </nav>
 
     {% if about_url %}
-    {% if user.is_authenticated and user == request.user %}
+    <!-- {% if user.is_authenticated and user == request.user %} -->
 
 
-    {% include 'about_profile.html' %}
-
-    {% endif %}
-
-    {% elif posts_url %}
     <div class="profile-page m-20">
       <!-- Start Overview -->
       <div class="overview bg-white rad-10 d-flex align-center" style="width: 90%;margin: auto;" >
@@ -238,27 +233,132 @@
       </div>
       <!-- End Other Data -->
     </div>
+    {% endif %}
+
+    {% elif posts_url %}
+
+    <div class="feeds" style="width: 70%;margin: auto;">
+
+      {% for post in posts %}
+
+
+          <div class="feed">
+              <div class="head">
+                  <div class="user">
+                      <div class="profile-photo">
+                          <img src="{{ request.user.profile_pic.url }}">
+                      </div>
+                      <div class="info">
+                          <h3>{{post.author.username}}</h3>
+                          <small>{{post.created_at}}</small>
+                      </div>
+                  </div>
+                  {% if post.author.username == request.user.username %}
+      <div class="menu  edit">
+        <i class='bx bx-dots-horizontal-rounded icon'></i>
+        <ul class="menu-link">
+          <li>
+                              <form action="{% url 'delete_post' post.id %}" method="post">
+                                  {% csrf_token %}
+                                  <button type="submit" class="">Remove</button>
+                              </form>
+                          </li>
+        </ul>
+      </div>
+                  {% endif %}
+
+
+              </div>
+
+              <div class="caption">
+                  <br>
+                  <p> {{post.content}}</p>
+              </div>
+              {% if post.post_media %}
+
+              <div class="photo">
+                  <img src="{{post.post_media.url}}">
+              </div>
+              {% endif%}
+
+
+              <div class="action-buttons">
+                  <div class="interaction-buttons">
+                      <span class="like-button {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
+                          <i class="uil uil-heart"></i>
+                      </span>
+                      
+                                                  <span><i class="uil uil-comment-dots"></i></span>
+                      <span><a href="{% url 'share_post' post_id=post.id %}"><i class="uil uil-share-alt"></i></a></span>
+                  </div>
+
+              </div>
+
+              <div class="liked-by">
+                  <p>Liked by {{ post.likes.count }} people</b></p>
+              </div>
+
+              <div class="comments text-muted" >
+                  View all the comments
+              </div>
+              <div class="comments-section" style="display: none;">
+                  {% for comment in post.comments.all %}
+                  <div class="message" style="margin: 1rem 0;" >
+                      <div class="profile-photo">
+                          <img src="{{comment.author.profile_pic.url}}">
+                      </div>
+                      <div class="message-body">
+                          <h5>{{comment.author.username}}</h5>
+                          <p class="text-muted">{{comment.content}}</p>
+                      </div>
+                  </div>
+                  {% endfor %}
+                  <div class="add-comment">
+
+                      <form method="post" class="create-post" action="{% url 'comment_post' post_id=post.id %}">
+                          <div class="profile-photo">
+                              <img src="{{request.user.profile_pic.url}}">
+                          </div>
+                        
+                          {% csrf_token %}
+                          <input type="text" name="content" placeholder="Write a comment...">
+                          <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+
+      {% endfor %}
+      </div>
+
 
     {% elif classes_url %}
-        {% if request.user.role == 'TEACHER' %}
-            <h1>Classes Taught by {{ request.user.username }}</h1>
-            <ul>
+            <div class="courses-page d-grid m-20 gap-20" style="margin: 3rem auto;width: 90%;">
+
                 {% for class_instance in classes %}
-                <li>
-                     <a href="{% url 'class_detail' class_instance.id class_instance.title %}">{{ class_instance.title }}</a> 
-                </li>
+
+                <div class="course bg-white rad-6 p-relative">
+                  <img class="cover" src="{{class_instance.class_cover.url}}" alt="" />
+                  <img class="instructor" src="{{class_instance.teacher.user.profile_pic.url}}" alt="" />
+                  <div class="p-20">
+                    <a class="m-0" href="{%  url 'class_detail' class_instance.id class_instance.title %}" style="font-weight:700">{{class_instance.title}}</a>
+                    <p class="description c-grey mt-15 fs-14">
+                      {{class_instance.description}}
+                    </p>
+                  </div>
+                  <div class="info p-15 p-relative between-flex">
+                    <span class="title bg-blue c-white btn-shape">Course Info</span>
+                    <span class="c-grey" style="display: flex;align-items: center;gap: .5rem;" >
+                      <i class='bx bxs-graduation'></i>
+                      {{class_instance.students.count}}
+                    </span>
+                  </div>
+                </div>
+
                 {% endfor %}
-            </ul>
-        {% elif request.user.role == 'STUDENT' %}
-        <h4>My Classes</h4>
-        <ul>
-            {% for class_instance in classes %}
-            <li>            <a href="{% url 'class_detail' class_instance.id class_instance.title %}">{{ class_instance.title }}</a>            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <div></div>
-        {% endif %}
+              </div>
+
+              
 
     {% else %}
     <div>

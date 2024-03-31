@@ -80,6 +80,15 @@ allMenu.forEach(item=> {
 	})
 })
 
+const comments = document.querySelectorAll(".comments")
+
+comments.forEach(btn => {
+    btn.addEventListener("click", () => {
+        btn.parentElement.querySelector(".comments-section").style.display = 'block'
+        
+    })
+})
+
 const modalBtn = document.querySelectorAll(".modal-trigger")
 const modalBox = document.querySelector(".overlay")
 
