@@ -55,11 +55,14 @@
                 <form method="post" action="{% url 'remove_follow_request' user.username %}">
                     {% csrf_token %}
                     <button type="submit">Requested</button>
-                </form>
+                    <button class="modal-trigger" data-form-type="message" ><i class='bx bxs-envelope'></i></button>
+                  </form>
                 {% else %}
                 <form method="post" action="{% url 'follow_user' user.username %}">
                     {% csrf_token %}
                     <button type="submit"><i class='bx bxs-user-plus'></i></button>
+                    <button class="modal-trigger" data-form-type="message" ><i class='bx bxs-envelope'></i></button>
+
                 </form>
             {% endif %}
         {% else %}
@@ -67,6 +70,8 @@
                 {% csrf_token %}
                 <button type="submit">Unfollow</button>
             </form>
+            <button class="modal-trigger" data-form-type="message" ><i class='bx bxs-envelope'></i></button>
+
         {% endif %}
         
             {% endif %}
@@ -444,6 +449,13 @@
 <div class="overlay">
     <div class="modal class-modal">
         {% include 'create_class.html' %}
+    </div>
+    <div class="modal message-modal">
+        <form method="post" id="send-message-form">
+            {% csrf_token %}
+            {{ send_form.as_p }}
+            <button type="submit">Send</button>
+        </form>
     </div>
 </div>
 

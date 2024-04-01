@@ -24,19 +24,15 @@
     <script>
 
 $(document).ready(function() {
-    // Attach event listener to the search input field
     $('#searchStudentInput').on('input', function() {
         // Get the search query
         var query = $(this).val();
         
-        // Check if the search query is empty
         if (query.trim() === '') {
-            // Clear or hide the search results
             $('#searchStudentsResults').empty(); // Empty the search results
-            return; // Exit early, no need to make AJAX request
+            return;
         }
         
-        // Send an AJAX request to the Django view to search for students
         $.ajax({
             url: '/search-students/', // URL of the Django view
             type: 'GET',

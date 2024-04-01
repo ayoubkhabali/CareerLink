@@ -111,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             modalBox.querySelector(".overlay .edit-modal").style.display = 'block'             
             if (btn.dataset.formType === 'addUser')
             modalBox.querySelector(".overlay .addUser-modal").style.display = 'block'      
+            if (btn.dataset.formType === 'message')
+            modalBox.querySelector(".overlay .message-modal").style.display = 'block'  
         })
     })});
 

@@ -21,10 +21,12 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect('home') 
+            login(request, user) 
+            return redirect(reverse('update_info', kwargs={'username': user.username})) 
     else:
         form = SignUpForm()
     return render(request, 'authentification.html', {'form': form})
+
 
 def search_users(request):
     # Get the search query from the AJAX request
@@ -93,6 +95,7 @@ def welcome(request) :
      
 from django.db.models import Q
 from django.db.models import Subquery, OuterRef
+from .forms import SendMessageForm
 
 
 @login_required
@@ -109,6 +112,17 @@ def home(request):
             return redirect('home')
     else:
         form = PostForm()
+
+
+    if request.method == 'POST':
+        send_form = SendMessageForm(request.POST)
+        if send_form.is_valid():
+            message = send_form.save(commit=False)
+            message.sender = user  # Set the sender to the current user
+            message.save()
+            return redirect('home')
+    else:
+        send_form = SendMessageForm()
 
     followed_users = user.following.all()
     posts = Post.objects.filter(Q(author=user) | Q(author__in=followed_users)).order_by('-created_at')
@@ -143,7 +157,7 @@ def home(request):
     # Filter follow requests for the current user
     follow_requests = Notification.objects.filter(receiver=user, type='follow_request')
 
-    return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts, 'users_with_messages': users_with_messages, 'follow_requests': follow_requests})
+    return render(request, 'home.html', {'form': form, 'posts': posts, 'user': user, 'shared_posts': shared_posts, 'users_with_messages': users_with_messages, 'follow_requests': follow_requests, 'send_form' : send_form})
 
 
 def delete_post(request, post_id):
@@ -269,6 +283,20 @@ def user_profile(request, username):
         except ObjectDoesNotExist:
             pass
 
+
+    if request.method == 'POST':
+        send_form = SendMessageForm(request.POST)
+        if send_form.is_valid():
+            message = send_form.save(commit=False)
+            message.sender = request.user
+            message.receiver = user  # Set the receiver to the profile user
+            message.save()
+            return redirect('home')
+    else:
+        # Set the initial receiver value to the profile user
+        send_form = SendMessageForm(initial={'receiver': user})
+
+
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -320,7 +348,8 @@ def user_profile(request, username):
         'experiences': experiences,
         'skills': skills,
         'interests': interests,
-        'contact_info': contact_info
+        'contact_info': contact_info,
+        'send_form' : send_form
     }
 
     return render(request, 'user_profile.html', context)
@@ -646,6 +675,34 @@ def conversation_detail(request, receiver_id):
         form = ChatMessageForm()
 
     return render(request, 'conversation_detail.html', {'messages': messages, 'receiver': receiver, 'form': form, 'sender' : sender})
+
+
+def send_message(request):
+    if request.method == 'POST':
+        receiver_id = request.POST.get('receiver_id')
+        receiver = get_object_or_404(User, pk=receiver_id)
+        form = ChatMessageForm(request.POST)
+        if form.is_valid():
+            new_message = form.save(commit=False)
+            new_message.sender = request.user
+            new_message.receiver = receiver
+            new_message.save()
+            messages.success(request, 'Message sent successfully.')
+        else:
+            messages.error(request, 'Failed to send message. Please try again.')
+    return redirect('home') 
+
+
+
+
+
+
+
+
+
+
+
+
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm

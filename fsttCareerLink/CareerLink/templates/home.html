@@ -233,7 +233,7 @@
         <div class="messages">
             <div class="heading">
                 <h4>Messages</h4>
-                <i class="uil uil-edit"></i>
+                <i class="uil uil-edit modal-trigger" id="send-message-icon"  data-form-type="message" ></i>
             </div>
             <!------- SEARCH BAR ------->
             <div class="search-bar">
@@ -282,7 +282,8 @@
             <!------- MESSAGES ------->
 
         </div>
-        <!------- END OF MESSAGES ------->
+        <!------- END OF MESSAGES ------->   
+        
 
         <!------- FRIEND REQUEST ------->
         <div class="friend-requests">
@@ -323,8 +324,22 @@
 </main>
 {% endif %}
 
+    <div class="overlay">
+        <div class="modal message-modal">
+            <form method="post" id="send-message-form">
+                {% csrf_token %}
+                {{ send_form.as_p }}
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+document.getElementById('send-message-icon').onclick = function() {
+    document.getElementById('send-message-form').style.display = 'block';
+    document.getElementById('recipient-id').value = 'recipient_id_here';
+}
     document.addEventListener('DOMContentLoaded', function() {
         var likeButtons = document.querySelectorAll('.like-button');
         likeButtons.forEach(function(button) {

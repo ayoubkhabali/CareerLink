@@ -168,6 +168,14 @@ class CustomUserChangeForm(UserChangeForm):
         model = User
         fields = '__all__'
 
+class SendMessageForm(forms.ModelForm):
+    class Meta:
+        model = ChatMessage
+        fields = ['receiver', 'content']
+        widgets = {
+            'receiver': forms.Select(attrs={'class': 'form-control'}),  # You can adjust the widget as needed
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Type your message...'}),
+        }
 
 class PostForm(forms.ModelForm):
     class Meta:
