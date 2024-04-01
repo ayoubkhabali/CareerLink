@@ -29,24 +29,5 @@
         <button type="submit">Create Exam</button>
     </form>
 
-    <button id="add-question">Add Question</button>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const addButton = document.getElementById('add-question');
-        addButton.addEventListener('click', function() {
-            const numQuestions = document.querySelectorAll('fieldset').length;
-            const newQuestion = document.querySelector('fieldset').cloneNode(true);
-            const labels = newQuestion.querySelectorAll('label');
-            labels.forEach(label => {
-                const labelText = label.innerText.split(' ')[0];
-                label.innerText = labelText + ' ' + (numQuestions + 1);
-            });
-            newQuestion.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
-            newQuestion.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-            document.querySelector('form').appendChild(newQuestion);
-        });
-    });
-    </script>
 </div>
 {% endblock %}

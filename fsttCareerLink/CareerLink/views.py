@@ -49,6 +49,10 @@ def search_students(request):
 
 
 
+def video_lecture(request) :
+    return render(request,'lecture.html', {'name' : request.user.username})
+
+
 def admin_dashboard(request) :
     users = User.objects.all()
     students = Student.objects.all()
@@ -423,6 +427,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def class_detail(request, class_id, class_title):
     class_instance = get_object_or_404(Class, pk=class_id)
+
     class_form = AnnouncementForm()
     assignment_form = AssignmentForm()
 
@@ -445,12 +450,14 @@ def class_detail(request, class_id, class_title):
 
     announcements = Announcement.objects.filter(class_instance=class_instance).order_by('-created_at')
     assignments = Assignment.objects.filter(class_instance=class_instance).order_by('-created_at')
+    exams = Exam.objects.filter(class_instance=class_instance)
     context = {
         'class_instance': class_instance,
         'class_form': class_form,
         'assignment_form': assignment_form,
         'announcements': announcements,
-        'assignments': assignments
+        'assignments': assignments,
+        'exams' : exams
     }
     return render(request, 'class_detail.html', context)
 
@@ -562,13 +569,14 @@ def view_exam_results(request):
     total_correct_answers = calculate_correct_answers(student)
     return render(request, 'exam_results.html', {'total_correct_answers': total_correct_answers})
 
+
 def create_exam(request, class_id, class_title):
     class_instance = get_object_or_404(Class, pk=class_id)
 
     if request.method == 'POST':
         exam_form = ExamForm(request.POST)
-        question_forms = [QuestionForm(request.POST, prefix=str(i)) for i in range(3)]
-        answer_forms = [[AnswerForm(request.POST, prefix=f'answer-{i}-{j}') for j in range(3)] for i in range(3)]
+        question_forms = [QuestionForm(request.POST, prefix=str(i)) for i in range(20)]
+        answer_forms = [[AnswerForm(request.POST, prefix=f'answer-{i}-{j}') for j in range(3)] for i in range(20)]
 
         if exam_form.is_valid() and all(q.is_valid() for q in question_forms) and all(all(a.is_valid() for a in ans) for ans in answer_forms):
             exam = exam_form.save(commit=False)
@@ -589,8 +597,8 @@ def create_exam(request, class_id, class_title):
             return redirect('exam_detail', class_id=class_id, class_title=class_title, exam_id=exam.id)
     else:
         exam_form = ExamForm()
-        question_forms = [QuestionForm(prefix=str(i)) for i in range(3)]
-        answer_forms = [[AnswerForm(prefix=f'answer-{i}-{j}') for j in range(3)] for i in range(3)]
+        question_forms = [QuestionForm(prefix=str(i)) for i in range(20)]
+        answer_forms = [[AnswerForm(prefix=f'answer-{i}-{j}') for j in range(3)] for i in range(20)]
 
     question_and_answer_forms = zip(question_forms, answer_forms)
 
@@ -599,7 +607,9 @@ def create_exam(request, class_id, class_title):
         'class_title': class_title,
         'exam_form': exam_form,
         'question_and_answer_forms': question_and_answer_forms,
+        
     })
+
 
 def exam_detail(request,  class_id, class_title,exam_id):
     exam = get_object_or_404(Exam, pk=exam_id)

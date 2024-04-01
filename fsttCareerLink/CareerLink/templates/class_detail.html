@@ -63,23 +63,58 @@
 </div>
 
 <div class="class-detail-container">
-    <div class="assignments-box">
-        <h3 class="assignments-title">Upcoming</h3>
-        <ul>
-        {% if assignments %}
-        {% if request.user.role == 'TEACHER' or  request.user.role == 'STUDENT' %}
 
-            {% for assignment in assignments %}
-            <li>
-                <a href="{% url 'assignment_detail' class_instance.id class_instance.title assignment.id %}">{{ assignment.title }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>Woohoo, no work due soon!        </p>
-        {% endif %}
-        {% endif %}
+    <div class="side-info">
+        <div class="assignments-box">
+            <h3 class="assignments-title">Upcoming</h3>
+            <ul>
+            {% if assignments %}
+            {% if request.user.role == 'TEACHER' or  request.user.role == 'STUDENT' %}
+    
+                {% for assignment in assignments %}
+                <li>
+                    <a href="{% url 'assignment_detail' class_instance.id class_instance.title assignment.id %}">{{ assignment.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Woohoo, no work due soon!        </p>
+            {% endif %}
+            {% endif %}
+        </div>
+    
+        <div class="assignments-box" style="margin: 1rem 0;">
+            <h3 class="assignments-title" >Exams</h3>
+            <ul>
+            {% if assignments %}
+            {% if request.user.role == 'TEACHER' or  request.user.role == 'STUDENT' %}
+    
+                {% for exam in exams %}
+                        {% if request.user.role == 'TEACHER' %}
+
+                            <li>
+                                <a href="{% url 'exam_detail' class_instance.id class_instance.title exam.id %}">{{ exam.start_time }}  - {{ exam.end_time }} </a>
+                            </li>
+                        {% elif  request.user.role == 'STUDENT'  %}
+                        <li>
+                            <a href="{% url 'exam_detail' class_instance.id class_instance.title exam.id %}">{{ exam.start_time }}  - {{ exam.end_time }} </a>
+                        </li>
+                        {% else %} 
+                        <li>
+
+                        </li>
+                        {% endif %}
+                                                
+
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>no exams available Right now!       </p>
+            {% endif %}
+            {% endif %}
+        </div>
     </div>
+
     <div class="feeds">
         {% if request.user.role == 'TEACHER' %}
 

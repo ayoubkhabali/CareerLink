@@ -56,6 +56,7 @@ urlpatterns = [
     path('profile/<str:username>/add-experience/', views.add_experience, name='add_experience'),
     path('update-info/<str:username>/', views.update_info, name='update_info'),
     path('delete_post/<int:post_id>/', views.delete_post, name='delete_post'),
+    path('lecture/', views.video_lecture, name='video_lecture'),
 
 
 ]
