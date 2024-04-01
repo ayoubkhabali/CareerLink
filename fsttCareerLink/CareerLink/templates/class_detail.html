@@ -57,6 +57,7 @@
         <button type="button" class="modal-trigger btn" data-form-type="assignment">Create Assignment</button>
         <button type="button" class="modal-trigger btn" data-form-type="announcement">Create Announcement</button>
         <a class="btn " href="{% url 'create_exam' class_instance.id class_instance.title %}">start exam</a>
+        <a class="btn " href="{% url 'video_lecture' class_instance.id class_instance.title %}">start lecture</a>
     </div>
     {% endif %}
 
@@ -93,11 +94,11 @@
                         {% if request.user.role == 'TEACHER' %}
 
                             <li>
-                                <a href="{% url 'exam_detail' class_instance.id class_instance.title exam.id %}">{{ exam.start_time }}  - {{ exam.end_time }} </a>
+                                <a href="{% url 'take_exam' class_instance.id class_instance.title exam.id %}">{{ exam.start_time }}  - {{ exam.end_time }} </a>
                             </li>
                         {% elif  request.user.role == 'STUDENT'  %}
                         <li>
-                            <a href="{% url 'exam_detail' class_instance.id class_instance.title exam.id %}">{{ exam.start_time }}  - {{ exam.end_time }} </a>
+                            <a href="{% url 'take_exam' class_instance.id class_instance.title exam.id %}">{{ exam.start_time }}  - {{ exam.end_time }} </a>
                         </li>
                         {% else %} 
                         <li>

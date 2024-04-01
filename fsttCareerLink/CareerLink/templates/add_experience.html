@@ -1,10 +1,8 @@
 
 
-<form method="post">
+<form method="post" id="experience-form" >
     {% csrf_token %}
     {{ experience_form.as_p }}
-    <button type="submit">Submit</button>
+    <button type="submit" name="submit_experience">Submit</button>
 </form>
-
-
 

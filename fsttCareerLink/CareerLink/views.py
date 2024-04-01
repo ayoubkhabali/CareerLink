@@ -49,7 +49,17 @@ def search_students(request):
 
 
 
-def video_lecture(request) :
+def video_lecture(request,class_id, class_title) :
+    class_instance = get_object_or_404(Class, pk=class_id)
+
+    
+    # if not (request.user.role == User.Role.STUDENT or request.user.role == User.Role.TEACHER):
+    #     raise Http404("You are not authorized to view this page.")
+
+    if not (class_instance.teacher.user == request.user or request.user in class_instance.students.all()):
+        raise Http404("You are not authorized to view this page.")
+
+
     return render(request,'lecture.html', {'name' : request.user.username})
 
 
@@ -423,11 +433,26 @@ from .models import Class, Announcement
 from .forms import AnnouncementForm
 
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 @login_required
 def class_detail(request, class_id, class_title):
     class_instance = get_object_or_404(Class, pk=class_id)
 
+
+    # if not (request.user.role == User.Role.STUDENT or request.user.role == User.Role.TEACHER):
+    #     raise Http404("You are not authorized to view this page.")
+
+    if class_instance.teacher.user == request.user:
+        is_authorized = True
+    # Check if the user is one of the students enrolled in the class
+    elif request.user.role == User.Role.STUDENT and class_instance.students.filter(user=request.user).exists():
+        is_authorized = True
+    else:
+        is_authorized = False
+
+    if not is_authorized:
+       return render(request, '404.html')
     class_form = AnnouncementForm()
     assignment_form = AssignmentForm()
 
@@ -465,7 +490,12 @@ def assignment_detail(request, class_id, class_title, assignment_id):
     class_instance = get_object_or_404(Class, pk=class_id)
     assignment = get_object_or_404(Assignment, pk=assignment_id)
 
+    if not (request.user.role == User.Role.STUDENT or request.user.role == User.Role.TEACHER):
+        raise Http404("You are not authorized to view this page.")
 
+    if not (class_instance.teacher.user == request.user or request.user in class_instance.students.all()):
+        raise Http404("You are not authorized to view this page.")
+    
     if request.method == 'POST':
         assign_submit_form = AssignmentSubmissionForm(request.POST, request.FILES)
         if assign_submit_form.is_valid():
@@ -511,7 +541,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Exam, Question, StudentAnswer
 from .forms import StudentAnswerForm
 
-def take_exam(request, exam_id):
+def take_exam(request, class_id,class_title ,exam_id):
+
     exam = Exam.objects.get(pk=exam_id)
     questions = Question.objects.filter(exam=exam)
     return render(request, 'take_exam.html', {'exam': exam, 'questions': questions})
@@ -645,6 +676,9 @@ def inbox(request):
         latest_message_id=latest_message_ids
     )
     
+    # Filter out users with no conversations with the current user
+    users = users.filter(latest_message_id__isnull=False)
+    
     # Select the actual message content and sender based on the annotated message ID
     for user in users:
         latest_message_id = user.latest_message_id
@@ -660,7 +694,6 @@ def inbox(request):
             user.profile_pic_url = None
     
     return render(request, 'inbox.html', {'users': users})
-
 
 
 from .forms import ChatMessageForm
@@ -727,6 +760,8 @@ from .forms import (ChangeStudentInfoForm, ChangeTeacherInfoForm,
                     ContactInfoForm, ExperienceForm, SkillsForm, InterestForm)
 from .models import Education, ContactInfo, Experience, Skill, Interest
 
+
+
 def update_info(request, username):
     user = get_object_or_404(User, username=username)
     teacher_form = None
@@ -735,6 +770,10 @@ def update_info(request, username):
     user_form = None
     education_form = None
     enterprise_form = None
+    contact_form = None
+    experience_form = None
+    skills_form = None
+    interests_form = None
     
     try:
         education_instance = Education.objects.get(user=user)
@@ -762,88 +801,88 @@ def update_info(request, username):
         interest_instance = None
 
     if request.method == 'POST':
-        # Handle contact form
-        contact_form = ContactInfoForm(request.POST, instance=contact_instance) 
-        if contact_form.is_valid():
-            contact = contact_form.save(commit=False)
-            contact.user = request.user
-            contact.save()
-            return redirect('user_profile', username=username)
+        if 'submit_contact' in request.POST:
+            contact_form = ContactInfoForm(request.POST, instance=contact_instance) 
+            if contact_form.is_valid():
+                contact = contact_form.save(commit=False)
+                contact.user = request.user
+                contact.save()
+                return redirect(request.META.get('HTTP_REFERER', '/')) 
 
-        # Handle password change logic
-        password_form = ChangePasswordForm(request.user, request.POST)
         if 'change_password' in request.POST:
+            password_form = ChangePasswordForm(request.user, request.POST)
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)  
                 messages.success(request, 'Your password was successfully updated!')
-                return redirect('user_profile', username=username)
+                return redirect(request.META.get('HTTP_REFERER', '/')) 
             else:
                 messages.error(request, 'Please correct the error below.')
 
-        # Update user info and education based on user role
-        if user.role == 'STUDENT':
-            user_form = ChangeStudentInfoForm(request.POST, request.FILES, instance=user)
-            student_form = StudentInfoForm(request.POST, request.FILES, instance=user.student)
-            education_form = ChangeEducationForm(request.POST, instance=education_instance)
-            
-            if user_form.is_valid() and student_form.is_valid() and education_form.is_valid():
-                user_form.save()
-                student_form.save()
-                if education_instance:
-                    education_instance = education_form.save(commit=False)
-                else:
-                    education_instance = education_form.save(commit=False)
-                    education_instance.user = user
-                education_instance.save()
-                return redirect('user_profile', username=username)
+        if 'update_info' in request.POST:
+            # Update user info and education based on user role
+            if user.role == 'STUDENT':
+                user_form = ChangeStudentInfoForm(request.POST, request.FILES, instance=user)
+                student_form = StudentInfoForm(request.POST, request.FILES, instance=user.student)
+                education_form = ChangeEducationForm(request.POST, instance=education_instance)
 
-        elif user.role == 'TEACHER':
-            user_form = ChangeTeacherInfoForm(request.POST, request.FILES, instance=user)
-            teacher_form = TeacherInfoForm(request.POST, request.FILES, instance=user.teacher)
-            education_form = ChangeEducationForm(request.POST, instance=education_instance)
-            
-            if user_form.is_valid() and teacher_form.is_valid():
-                user_form.save()
-                teacher_form.save()
-                if education_instance:
-                    education_instance = education_form.save(commit=False)
-                else:
-                    education_instance = education_form.save(commit=False)
-                    education_instance.user = user
-                education_instance.save()
-                return redirect('user_profile', username=username)
-        elif user.role == 'ENTERPRISE':
-            enterprise_form = ChangeEnterpriseInfoForm(request.POST, request.FILES, instance=user.enterprise)
-            if enterprise_form.is_valid():
-                enterprise = enterprise_form.save(commit=False)
-                enterprise.user = user
-                enterprise.save()
-                return redirect('user_profile', username=username)
-        
-        # Handle experience form
-        experience_form = ExperienceForm(request.POST, instance=experience_instance)
-        if experience_form.is_valid():
-            experience = experience_form.save(commit=False)
-            experience.user = request.user
-            experience.save()
-            return redirect('user_profile', username=username)
+                if user_form.is_valid() and student_form.is_valid() and education_form.is_valid():
+                    user_form.save()
+                    student_form.save()
+                    if education_instance:
+                        education_instance = education_form.save(commit=False)
+                    else:
+                        education_instance = education_form.save(commit=False)
+                        education_instance.user = user
+                    education_instance.save()
+                    return redirect(request.META.get('HTTP_REFERER', '/')) 
 
-        # Handle skills form
-        skills_form = SkillsForm(request.POST, instance=skill_instance)
-        if skills_form.is_valid():
-            skills = skills_form.save(commit=False)
-            skills.user = request.user
-            skills.save()
-            return redirect('user_profile', username=username)
+            elif user.role == 'TEACHER':
+                user_form = ChangeTeacherInfoForm(request.POST, request.FILES, instance=user)
+                teacher_form = TeacherInfoForm(request.POST, request.FILES, instance=user.teacher)
+                education_form = ChangeEducationForm(request.POST, instance=education_instance)
 
-        # Handle interests form
-        interests_form = InterestForm(request.POST, instance=interest_instance)
-        if interests_form.is_valid():
-            interests = interests_form.save(commit=False)
-            interests.user = request.user
-            interests.save()
-            return redirect('user_profile', username=username)
+                if user_form.is_valid() and teacher_form.is_valid():
+                    user_form.save()
+                    teacher_form.save()
+                    if education_instance:
+                        education_instance = education_form.save(commit=False)
+                    else:
+                        education_instance = education_form.save(commit=False)
+                        education_instance.user = user
+                    education_instance.save()
+                    return redirect(request.META.get('HTTP_REFERER', '/')) 
+            elif user.role == 'ENTERPRISE':
+                enterprise_form = ChangeEnterpriseInfoForm(request.POST, request.FILES, instance=user.enterprise)
+                if enterprise_form.is_valid():
+                    enterprise = enterprise_form.save(commit=False)
+                    enterprise.user = user
+                    enterprise.save()
+                    return redirect(request.META.get('HTTP_REFERER', '/')) 
+
+        if 'submit_experience' in request.POST:
+            experience_form = ExperienceForm(request.POST, instance=experience_instance)
+            if experience_form.is_valid():
+                experience = experience_form.save(commit=False)
+                experience.user = request.user
+                experience.save()
+                return redirect(request.META.get('HTTP_REFERER', '/')) 
+
+        if 'update_skills' in request.POST:
+            skills_form = SkillsForm(request.POST, instance=skill_instance)
+            if skills_form.is_valid():
+                skills = skills_form.save(commit=False)
+                skills.user = request.user
+                skills.save()
+                return redirect(request.META.get('HTTP_REFERER', '/')) 
+
+        if 'update_interests' in request.POST:
+            interests_form = InterestForm(request.POST, instance=interest_instance)
+            if interests_form.is_valid():
+                interests = interests_form.save(commit=False)
+                interests.user = request.user
+                interests.save()
+                return redirect(request.META.get('HTTP_REFERER', '/')) 
 
     else:
         # Instantiate forms with instances for current values
@@ -851,8 +890,8 @@ def update_info(request, username):
         experience_form = ExperienceForm(instance=experience_instance)
         skills_form = SkillsForm(instance=skill_instance)
         interests_form = InterestForm(instance=interest_instance)
+        education_form = EducationForm(instance=interest_instance)
 
-    # Render forms for updating user info, education, experience, skills, and interests
     if user.role == 'STUDENT':
         user_form = ChangeStudentInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
         student_form = StudentInfoForm(instance=user.student)
@@ -877,7 +916,6 @@ def update_info(request, username):
         'interests_form': interests_form,
     }
     return render(request, 'update_info.html', context)
-
 
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)

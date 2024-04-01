@@ -30,18 +30,16 @@ urlpatterns = [
     path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/', views.assignment_detail, name='assignment_detail'),
     path('class/<int:class_id>/<str:class_title>/assignment/<int:assignment_id>/unsubmit/', views.unsubmit_assignment, name='unsubmit_assignment'),
     path('class/<int:class_id>/<str:class_title>/create-exam', views.create_exam, name='create_exam'),
-    path('take_exam/<int:exam_id>/', views.take_exam, name='take_exam'),
+    path('class/<int:class_id>/<str:class_title>/lecture/', views.video_lecture, name='video_lecture'),
+    path('class/<int:class_id>/<str:class_title>/take_exam/<int:exam_id>/', views.take_exam, name='take_exam'),
     path('exam/<int:exam_id>/submit/', views.submit_exam, name='submit_exam'),
     path('exam/results/', views.view_exam_results, name='exam_results'),
     path('send_message/', views.send_message, name='send_message'),
-
-
     path('exam/<int:class_id>/<str:class_title>/<int:exam_id>/', views.exam_detail, name='exam_detail'),
     path('inbox/', views.inbox, name='inbox'),
     path('conversation/<int:receiver_id>/', views.conversation_detail, name='conversation_detail'),
     path('search-users/', views.search_users, name='search_users'),
     path('search-students/', views.search_students, name='search_students'),
-
     path('profile/<str:username>/create-offer/', views.create_offer, name='create_offer'),
     path('notifications/<str:username>/accept/', views.accept_follow_request, name='accept_follow_request'),
     path('notifications/<str:username>/decline/', views.refuse_follow_request, name='refuse_follow_request'),
@@ -56,7 +54,6 @@ urlpatterns = [
     path('profile/<str:username>/add-experience/', views.add_experience, name='add_experience'),
     path('update-info/<str:username>/', views.update_info, name='update_info'),
     path('delete_post/<int:post_id>/', views.delete_post, name='delete_post'),
-    path('lecture/', views.video_lecture, name='video_lecture'),
 
 
 ]
