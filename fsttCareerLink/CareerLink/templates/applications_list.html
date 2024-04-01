@@ -1,16 +1,31 @@
 {% extends 'base.html' %}
-
+{%  load static %}
 {% block content %}
-<h1>Applications for {{ offer.title }}</h1>
-<ul>
-    {% for application in applications %}
-        <li>
-            {{ application.applicant.username }} - {{ application.cover_letter }} - <a href="{{application.cv.url}}" download="">download</a>
-            <!-- Add a contact option -->
-            <a href="{% url 'conversation_detail' receiver_id=application.applicant.id %}" class="btn btn-primary">Contact</a>
-        </li>
-    {% empty %}
-        <li>No applications found.</li>
-    {% endfor %}
+<link rel="stylesheet" href="{% static 'css/all.min.css'  %}" />
+<link rel="stylesheet" href="{% static 'css/framework.css' %}" />
+<link rel="stylesheet" href="{% static 'css/master.css'%}" />
+
+    <div class="tasks p-20 bg-white rad-10" style="width: 80%;margin: 2rem auto;">
+        <h2 class="mt-0 mb-20">Applications for {{ offer.title }}</h2>
+
+        {% for application in applications %}
+
+        <div class="task-row between-flex">
+          <div class="info">
+            <h3 class="mt-0 mb-5 fs-15">{{ application.applicant.username }}</h3>
+            <p class="m-0 c-grey">{{ application.cover_letter }}</p>
+          </div>
+          <a href="{{application.cv.url}}" download=""><i class='bx bxs-download'></i></a> 
+        </div>
+        {% empty %}
+        <p>No one has applied yet.</p>
+      {% endfor %}
+      </div>
+
+
+
+
+
+
 </ul>
 {% endblock %}

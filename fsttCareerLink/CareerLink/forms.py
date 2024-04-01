@@ -1,7 +1,7 @@
 from django import forms
 from .models import Post
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import User,Student, Teacher,Class,Announcement,Assignment,AssignmentSubmission, Exam,Question,Answer, ChatMessage, Offer, Application
+from .models import User,Student, Teacher,Class,Announcement,Assignment,AssignmentSubmission, Exam,Question,Answer, ChatMessage, Offer, Application, Enterprise
 from django.forms.widgets import CheckboxSelectMultiple
 from datetime import date
 
@@ -14,6 +14,11 @@ from .models import Education, Skill, Experience, Interest, ContactInfo
 
 # forms.py
 from django.contrib.auth.forms import PasswordChangeForm
+
+class SignUpForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'email', 'password1', 'password2', 'role', 'bio', 'location', 'profile_pic', 'profile_cover', 'birth_date', 'country', 'gender']
 
 class ChangePasswordForm(PasswordChangeForm):
     def __init__(self, user, *args, **kwargs):
@@ -183,10 +188,17 @@ class StudentInfoForm(forms.ModelForm):
         model = Student
         fields = ['university', 'major']  # Fields specific to Student model
 
+
+
 class TeacherInfoForm(forms.ModelForm):
     class Meta:
         model = Teacher
         fields = ['department']  # Fields specific to Student model
+
+class EnterpriseInfoForm(forms.ModelForm):
+    class Meta:
+        model = Enterprise
+        fields = ['company_name'] 
 
 
 class ChangeTeacherInfoForm(forms.ModelForm):
@@ -200,6 +212,17 @@ class ChangeTeacherInfoForm(forms.ModelForm):
         }
 
 class ChangeStudentInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'bio','profile_pic','profile_cover']  # Fields specific to User model
+        widgets = {
+                'profile_pic': forms.FileInput(attrs={'class': 'profile-pic'}),
+                'profile_cover': forms.FileInput(attrs={'class': 'profile-cover'}),
+            
+            }
+        
+
+class ChangeEnterpriseInfoForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'bio','profile_pic','profile_cover']  # Fields specific to User model

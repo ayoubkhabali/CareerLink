@@ -27,7 +27,9 @@
         <ul class="side-menu" id="sideMenu">
             <li><a href="{% url 'home' %}" class="menu-item"><i class='bx bxs-home-alt-2'></i>Home</a></li>
             <li><a href="{% url 'user_profile' username=request.user.username %}" class="menu-item"><i class='bx bxs-user'></i>My Profile</a></li>
+            {% if request.user.role != 'ENTERPRISE' %}
             <li><a href="{% url 'classes' username=request.user.username %}" class="menu-item"><i class='bx bxs-dashboard'></i>Your Classes</a></li>
+            {% endif %}
             <li><a href="{% url 'inbox' %}" class="menu-item"><i class='bx bx-message-square-dots'></i>Messages</a></li>
             <li><a  href="" class="menu-item"><i class='bx bx-group'></i>Follow Request</a></li>
             <li><a  href="{% url 'display_offers' %}" class="menu-item"><i class='bx bxs-briefcase'></i> Job offers</a></li>

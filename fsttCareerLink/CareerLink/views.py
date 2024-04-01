@@ -9,12 +9,23 @@ from django.http import HttpResponseRedirect,HttpResponseNotAllowed
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from .forms import PostForm  # Import the PostForm
-from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm,AssignmentSubmissionForm, CreateOffer,ApplicationForm,ChangeEducationForm
-
+from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm,AssignmentSubmissionForm, CreateOffer,ApplicationForm,ChangeEducationForm, ChangeEnterpriseInfoForm, EnterpriseInfoForm
+from .forms import SignUpForm
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
 
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # You may choose to log in the user automatically here
+            return redirect('home')  # Redirect to the home page after successful signup
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form': form})
 
 def search_users(request):
     # Get the search query from the AJAX request
@@ -51,6 +62,8 @@ def welcome(request) :
 from django.db.models import Q
 from django.db.models import Subquery, OuterRef
 
+
+@login_required
 def home(request):
     user = request.user  # Get the currently logged-in user
 
@@ -620,6 +633,8 @@ def update_info(request, username):
     teacher_form = None
     student_form = None
     password_form = None
+    user_form = None
+    education_form = None
     
     try:
         education_instance = Education.objects.get(user=user)
@@ -698,6 +713,13 @@ def update_info(request, username):
                     education_instance.user = user
                 education_instance.save()
                 return redirect('user_profile', username=username)
+        elif user.role == 'ENTERPRISE':
+            enterprise_form = ChangeEnterpriseInfoForm(request.POST, request.FILES, instance=user.enterprise)
+            if enterprise_form.is_valid():
+                enterprise = enterprise_form.save(commit=False)
+                enterprise.user = user
+                enterprise.save()
+                return redirect('user_profile', username=username)
         
         # Handle experience form
         experience_form = ExperienceForm(request.POST, instance=experience_instance)
@@ -739,11 +761,14 @@ def update_info(request, username):
         user_form = ChangeTeacherInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
         teacher_form = TeacherInfoForm(instance=user.teacher)
         education_form = ChangeEducationForm(instance=education_instance) if education_instance else ChangeEducationForm()
-    
+    elif user.role == 'ENTERPRISE' :
+        user_form =  ChangeTeacherInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
+        enterprise_form = TeacherInfoForm(instance=user.enterprise)
     context = {
         'user_form': user_form,
         'student_form': student_form,
         'teacher_form': teacher_form,
+        'enterprise_form' : enterprise_form,
         'education_form': education_form,
         'password_form': password_form,
         'contact_form': contact_form,
