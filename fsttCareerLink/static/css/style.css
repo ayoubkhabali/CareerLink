@@ -364,7 +364,6 @@ img {
 }
 
 .hero-section {
-    background-image: url("./hero.jpg");
     background-size: cover;
     background-position: center;
     min-height: 100vh;
@@ -372,8 +371,12 @@ img {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    z-index: 1;
+    z-index: 2;
 
+}
+
+.hero-section .container {
+    z-index: 3;
 }
 
 .hero-section .highlight-title {
@@ -389,8 +392,8 @@ img {
     position: absolute;
     content: '';
     background-color: #000;
-    opacity: .6;
-    z-index: -1;
+    opacity: .3;
+    z-index: 2;
 }
 
 .intro-section {

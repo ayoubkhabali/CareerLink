@@ -64,38 +64,59 @@
                     .new-post .bottom-part {
                         display: grid;
                         grid-template-columns: 1fr 1fr 1fr;
-                    }                  
+                    }     
+                    
+                        .attachment-post, .media-post {
+                            display: none;
+                        }
+                        .attachment-box {
+                            display: flex;
+                            gap: 1rem;
+                            margin: .5rem ;
+                        }
+                        .attachment-box button i {
+                            font-size: .7rem;
+                        }
 
+                        form .top-bottom {
+                          display: flex;
+                          flex-direction: column;
+                          align-items: flex-start;
+                          gap: 1rem;
+                        }
 
         </style>
 
-
-
-
-        <div class="new-post">
-            <div class="img-icon">
+{% if request.user.role != 'TEACHER' %}
+<style>
+  #id_post_type {
+    display: none;
+  }
+</style>
+{% endif %}
+<form method="post" enctype="multipart/form-data" class="create-post">
+    {% csrf_token %}
+    <div class="top-bottom">
+        {{form.post_type}}
+        <div class="top-part" style="display: flex;gap: 1rem;align-items: center;">
+            <div class="profile-photo">
                 <img src="{{user.profile_pic.url}}" alt="">
             </div>
-            <form method="post" enctype="multipart/form-data">  <!-- Add enctype for file uploads -->
-                {% csrf_token %}
-             <div class="upper-part">
-                {{ form.content }}
-                {{ form.post_type }} 
-             </div>
-             <div class="bottom-part">
-                <div class="file-input">
-                    {{ form.post_media }}  <!-- Add post_type field -->
-
-                </div>
-                <div class="file-input">
-                    {{ form.attachment }}  <!-- Add attachment field -->
-                </div>
-             </div>
-             <input type="submit" value="Publish">
-            </form>
-            
-
+            {{form.content}}
+            <input type="submit" value="Post" class="btn btn-primary">
         </div>
+        <div class="attachment-box">
+            {{form.attachment}}
+            {{form.post_media}}               
+            <button type="button" onclick="document.getElementById('id_attachment').click()">
+                <i class='bx bxs-file'></i> attach file
+            </button>
+            <button type="button" onclick="document.getElementById('id_post_media').click()">
+                <i class='bx bxs-file-image'></i> upload media
+            </button>
+        </div>
+    </div>
+</form>
 
 
 
@@ -110,11 +131,13 @@
                     <div class="head">
                         <div class="user">
                             <div class="profile-photo">
-                                <img src="{{ request.user.profile_pic.url }}">
+                                <img src="{{ post.author.profile_pic.url }}">
                             </div>
                             <div class="info">
                                 <h3>{{post.author.username}}</h3>
                                 <small>{{post.created_at}}</small>
+                                <span style="color: #1976D2;" >{{post.post_type}}</span>
+
                             </div>
                         </div>
                         {% if post.author.username == request.user.username %}
@@ -138,6 +161,12 @@
                         <br>
                         <p> {{post.content}}</p>
                     </div>
+                    {% if post.attachment %}
+                    <div class="assign-attachment" style="margin: .5rem 0;">
+                        <a href="{{ post.attachment.url }}" style="color: #1976D2;"  download><i class='bx bxs-file-archive'></i> {{ post.attachment }}</a>
+                    </div>
+                    {% endif %}
+
                     {% if post.post_media %}
 
                     <div class="photo">

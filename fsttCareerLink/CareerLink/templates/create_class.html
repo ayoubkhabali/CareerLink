@@ -1,23 +1,40 @@
       <h4>Create Class</h4>
-      <form id="class-form" method="post" action="{% url 'create_class' %}">
-        {% csrf_token %}
-        {{  class_form.as_p }}
-        <input type="search" id="searchStudentInput" type="search" placeholder="Search...">
-
-        <button type="submit" class="btn search-student">Create</button>
-      </form>
       <div class="search_students_results" id="searchStudentsResults">
         {% include 'search_students_results.html' %}
 
       </div>
+      <form id="class-form" method="post" action="{% url 'create_class' %}">
+        {% csrf_token %}
+
+        {{  class_form.as_p }}
+
+        <div class="search-container">
+            <form action="#">
+                <div class="form-input">
+                    <input type="search" id="searchStudentInput" type="search" placeholder="Search...">
+                    <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
+                </div>
+            </form>
+        </div>
+        <button type="submit" class="btn search-student">Create</button>
+      </form>
+
 
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
 $(document).ready(function() {
     // Attach event listener to the search input field
     $('#searchStudentInput').on('input', function() {
         // Get the search query
         var query = $(this).val();
+        
+        // Check if the search query is empty
+        if (query.trim() === '') {
+            // Clear or hide the search results
+            $('#searchStudentsResults').empty(); // Empty the search results
+            return; // Exit early, no need to make AJAX request
+        }
         
         // Send an AJAX request to the Django view to search for students
         $.ajax({
@@ -27,22 +44,6 @@ $(document).ready(function() {
             success: function(response) {
                 // Update the search results div with the returned HTML
                 $('#searchStudentsResults').html(response);
-                
-                // Attach event listener to the search results to handle click on students
-                $('.user-founded').on('click', function() {
-                    // Get the student's CNE
-                    var studentCNE = $(this).attr('data-student-cne');
-                    
-                    // Check if the checkbox for this student is already selected
-                    var checkbox = $('#id_students input[type="checkbox"][value="' + studentCNE + '"]');
-                    if (!checkbox.prop('checked')) {
-                        // If not checked, check it
-                        checkbox.prop('checked', true);
-                    }
-                    
-                    // Optionally, you can style the selected student in the search results
-                    $(this).addClass('selected');
-                });
             },
             error: function(xhr, status, error) {
                 // Handle errors
@@ -50,6 +51,22 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Attach event listener to the search results to handle click on students
+    $(document).on('click', '.user-founded', function() {
+        // Get the student's CNE from the data-student-cne attribute
+        var studentCNE = $(this).attr('data-student-cne');
+        
+        // Find the checkbox for this student
+        var checkbox = $('#id_students input[type="checkbox"][value="' + studentCNE + '"]');
+        
+        // Toggle the checkbox state
+        checkbox.prop('checked', !checkbox.prop('checked'));
+        
+        // Optionally, you can style the selected student in the search results
+        $(this).toggleClass('selected', checkbox.prop('checked'));
+    });
 });
+
 
     </script>

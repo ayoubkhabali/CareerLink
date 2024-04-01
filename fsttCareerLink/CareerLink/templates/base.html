@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard-style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 
+    <link rel="icon" href="{% static 'images/icon.png' %}" type="image/x-icon">
 
     <title>{{ request.path }}</title>
 </head>
@@ -26,11 +27,18 @@
         </a>
         <ul class="side-menu" id="sideMenu">
             <li><a href="{% url 'home' %}" class="menu-item"><i class='bx bxs-home-alt-2'></i>Home</a></li>
+            {% if request.user.role == 'ADMIN' %}
+            <li><a href="{% url 'admin_dashboard' %}" class="menu-item"> <i class='bx bx-stats'></i> Admin dashboard</a></li>
+            {% endif %}
+    
             <li><a href="{% url 'user_profile' username=request.user.username %}" class="menu-item"><i class='bx bxs-user'></i>My Profile</a></li>
-            {% if request.user.role != 'ENTERPRISE' %}
+            {% if request.user.role != 'ENTERPRISE' and request.user.role != 'ADMIN' %}
             <li><a href="{% url 'classes' username=request.user.username %}" class="menu-item"><i class='bx bxs-dashboard'></i>Your Classes</a></li>
             {% endif %}
             <li><a href="{% url 'inbox' %}" class="menu-item"><i class='bx bx-message-square-dots'></i>Messages</a></li>
+
+
+           
             <li><a  href="" class="menu-item"><i class='bx bx-group'></i>Follow Request</a></li>
             <li><a  href="{% url 'display_offers' %}" class="menu-item"><i class='bx bxs-briefcase'></i> Job offers</a></li>
             <li><a href="{% url 'update_info' username=request.user.username %}" class="menu-item"><i class='bx bx-cog'></i>Settings</a></li>
@@ -97,6 +105,12 @@ $(document).ready(function() {
         // Get the search query
         var query = $(this).val();
         
+        if (query.trim() === '') {
+            // Clear or hide the search results
+            $('#searchResults').empty(); // Empty the search results
+            return; // Exit early, no need to make AJAX request
+        }
+
         // Send an AJAX request to the Django view to search for users
         $.ajax({
             url: '/search-users/', // URL of the Django view

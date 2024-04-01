@@ -18,7 +18,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'role', 'bio', 'location', 'profile_pic', 'profile_cover', 'birth_date', 'country', 'gender']
+        fields = ['username', 'email', 'password1', 'password2', 'role', 'bio']
 
 class ChangePasswordForm(PasswordChangeForm):
     def __init__(self, user, *args, **kwargs):
@@ -144,7 +144,11 @@ class AssignmentForm(forms.ModelForm):
 
 
 class ClassForm(forms.ModelForm):
-    students = forms.ModelMultipleChoiceField(queryset=Student.objects.all(), required=False, widget=CheckboxSelectMultiple)
+    students = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
 
     class Meta:
         model = Class

@@ -8,8 +8,8 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('home/', views.home, name='home'),
     path('', views.welcome, name='welcome'),
-    path('signup/', views.signup, name='signup'),
-
+    path('authentification/', views.signup, name='signup'),
+    path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('about_us', views.aboutUs, name='about'),
     path('logout/',views.logoutUser,name="logout"),
     path('login/',views.loginPage,name="login"),

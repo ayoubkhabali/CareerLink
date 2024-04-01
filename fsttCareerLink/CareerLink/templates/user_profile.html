@@ -5,6 +5,35 @@
 <link rel="stylesheet" href="{% static 'css/framework.css' %}" />
 <link rel="stylesheet" href="{% static 'css/master.css'%}" />
 
+<style>
+                      .new-post .bottom-part {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr;
+                    }   
+                    
+                    
+                        .attachment-post, .media-post {
+                            display: none;
+                        }
+                        .attachment-box {
+                            display: flex;
+                            gap: 1rem;
+                            margin: .5rem ;
+                        }
+                        .attachment-box button i {
+                            font-size: .7rem;
+                        }
+
+                        form .top-bottom {
+                          display: flex;
+                          flex-direction: column;
+                          align-items: flex-start;
+                          gap: 1rem;
+                        }
+
+
+</style>
+
 <div class="profile-section">
     <div class="main-profile">
     <div class="top-section">
@@ -30,7 +59,7 @@
                 {% else %}
                 <form method="post" action="{% url 'follow_user' user.username %}">
                     {% csrf_token %}
-                    <button type="submit">Follow</button>
+                    <button type="submit"><i class='bx bxs-user-plus'></i></button>
                 </form>
             {% endif %}
         {% else %}
@@ -97,7 +126,6 @@
     </nav>
 
     {% if about_url %}
-    <!-- {% if user.is_authenticated and user == request.user %} -->
 
 
     <div class="profile-page m-20">
@@ -233,9 +261,42 @@
       </div>
       <!-- End Other Data -->
     </div>
-    {% endif %}
 
     {% elif posts_url %}
+
+
+      {% if request.user.username == user.username %}
+              {% if request.user.role != 'TEACHER' %}
+                  <style>
+                    #id_post_type {
+                      display: none;
+                    }
+                  </style>
+              {% endif %}
+    <form method="post" enctype="multipart/form-data" class="create-post" style="width: 65%;margin: 1rem auto;" >
+      {% csrf_token %}
+      <div class="top-bottom">
+          {{form.post_type}}
+          <div class="top-part" style="display: flex;gap: 1rem;align-items: center;">
+              <div class="profile-photo">
+                  <img src="{{user.profile_pic.url}}" alt="">
+              </div>
+              {{form.content}}
+              <input type="submit" value="Post" class="btn btn-primary">
+          </div>
+          <div class="attachment-box">
+              {{form.attachment}}
+              {{form.post_media}}               
+              <button type="button" onclick="document.getElementById('id_attachment').click()">
+                  <i class='bx bxs-file'></i> attach file
+              </button>
+              <button type="button" onclick="document.getElementById('id_post_media').click()">
+                  <i class='bx bxs-file-image'></i> upload media
+              </button>
+          </div>
+      </div>
+  </form>
+  {% endif %}
 
     <div class="feeds" style="width: 70%;margin: auto;">
 
@@ -251,6 +312,7 @@
                       <div class="info">
                           <h3>{{post.author.username}}</h3>
                           <small>{{post.created_at}}</small>
+                          <span style="color: #1976D2;" >{{post.post_type}}</span>
                       </div>
                   </div>
                   {% if post.author.username == request.user.username %}
@@ -274,6 +336,12 @@
                   <br>
                   <p> {{post.content}}</p>
               </div>
+              {% if post.attachment %}
+              <div class="assign-attachment" style="margin: .5rem 0;">
+                  <a href="{{ post.attachment.url }}" style="color: #1976D2;"  download><i class='bx bxs-file-archive'></i> {{ post.attachment }}</a>
+              </div>
+              {% endif %}
+
               {% if post.post_media %}
 
               <div class="photo">
@@ -379,5 +447,35 @@
     </div>
 </div>
 
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var likeButtons = document.querySelectorAll('.like-button');
+      likeButtons.forEach(function(button) {
+          button.addEventListener('click', function() {
+              var postId = this.dataset.postId;
+              var likedByElement = this.closest('.action-buttons').nextElementSibling.querySelector('.liked-by p');
+              var heartIcon = this.querySelector('i'); // Select the heart icon within the like button
+              $.ajax({
+                  url: '{% url "like_post" %}',
+                  type: 'POST',
+                  data: {
+                      'id': postId,
+                      'csrfmiddlewaretoken': '{{ csrf_token }}'
+                  },
+                  success: function(response) {
+                      if(response.liked) {
+                          heartIcon.classList.add('liked'); // Add a class to change the icon's appearance
+                      } else {
+                          heartIcon.classList.remove('liked'); // Remove the class if the post is unliked
+                      }
+                      likedByElement.textContent = 'Liked by ' + response.likes_count + ' people'; // Update the likes count display
+                  }
+              });
+          });
+      });
+  });
+  </script>
+  
 
 {% endblock %}

@@ -1,65 +1,139 @@
-{% extends 'index.html' %}
-
+{% extends 'index.html'  %}
 {% load static %}
-
-
 {% block content %}
 {% include 'navbar.html' %}
-<section class="invite-section">
+<style>
+
+    .video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+#video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+</style>
+<section class="hero-section  .video-container ">
+    <video autoplay muted loop id="video-background">
+        <source src="{% static 'images/video.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     <div class="container">
+        <h1 class="highlight-title">
+            Fostering Careers, <br> Connecting Futures.</h1>
+    </div>
+</section>
+<section class="intro-section ">
+    <div class="container">
+        <div class="righ-side">
+            <h1>Welcome to FSTT Career: <br> Empowering Education, Igniting Futures.</h1>
+        </div>
         <div class="left-side">
-            <h1 class="highlight-title">Welcome to your professional community</h1>
-            <form action="{% url 'login' %}" method="POST">
-                {% csrf_token %}
-                <label for="email">Enter your username</label>
-                <input type="text" name="username" id="email">
-                <label for="password">Enter your password</label>
-                <input type="password" name="password" id="password">
-                <button type="submit" class="btn login-btn">Sign in</button>
-                <span class="or">---------------- or ----------------</span>
-                <a href="{% url 'logout' %}" class="signup-btn btn">Sign up</a>
-            </form>
-            
-        </div>
-        <div class="right-side">
-            <div class="img-bx">
-                <img src="{% static 'images/invite-img.png' %}" alt="">
-           </div>
+            <p>Explore profiles, classes, jobs—unlock your potential with seamless functionality.</p>
+            <div class="intro-btns">
+                <a href="{% url 'signup' %}" style="background-color: #1976D2;" class="btn">Start now</a>
+                <a href="" style="background-color: #1976D2;"  class="btn">Discover</a>
+            </div>
         </div>
     </div>
 </section>
-
-
-<section class="footer">
+<section class="func-section">
     <div class="container">
-        <ul>
-            <h4 class="col-title">General</h4>
-            <li><a href="" class="list-link">Sign up</a></li>
-            <li><a href="" class="list-link">Help center</a></li>
-            <li><a href="" class="list-link">About</a></li>
-            <li><a href="" class="list-link">Press</a></li>
-        </ul>
-        <ul>
-            <h4 class="col-title">Browse Linkedin</h4>
-            <li><a href="" class="list-link">Learning</a></li>
-            <li><a href="" class="list-link">Jobs</a></li>
-            <li><a href="" class="list-link">Salary</a></li>
-            <li><a href="" class="list-link">Services</a></li>
-        </ul>
-        <ul>
-            <h4 class="col-title">Business Solution</h4>
-            <li><a href="" class="list-link">Talent</a></li>
-            <li><a href="" class="list-link">Marketing</a></li>
-            <li><a href="" class="list-link">Sales</a></li>
-            <li><a href="" class="list-link">Learning</a></li>
-        </ul>
-        <ul>
-            <h4 class="col-title">Directories</h4>
-            <li><a href="" class="list-link">Members</a></li>
-            <li><a href="" class="list-link">Jobs</a></li>
-            <li><a href="" class="list-link">Companies</a></li>
-            <li><a href="" class="list-link">Featured</a></li>
-        </ul>
+        <div class="section-row">
+            <div class="left-side">
+                <span>Welcome</span>
+                <h3>Discover the  features <br>  & fonctionnalities  we provide to teachers</h3>
+                <p>Create your professional page, resume and manage your private classes</p>
+                <div class="teacher-btns">
+                    <a href="" class="btn" style="background-color: #1976D2;">see more</a>
+                    <a href="{% url 'signup' %}" class="btn" style="background-color: #1976D2;">sign up now</a>
+                </div>
+
+            </div>
+            <div class="right-side">
+                <div class="imgBx">
+                    <img src="{% static 'images/professor.jpg' %}" alt="">
+                </div>
+            </div>
+
+        </div>
+        <div class="section-row">
+            <div class="right-side">
+                <div class="imgBx">
+                    <img src="{% static 'images/studentt.jpg' %}" alt="">
+                </div>
+            </div>
+            <div class="left-side">
+                <span>Welcome</span>
+                <h3>Discover the  features <br>  & fonctionnalities  we provide to students</h3>
+                <p>Create your professional page, resume, academics projects</p>
+                <ul class="student-list">
+                    <li><i class='bx bxs-package'></i> Create your professional page</li>
+                    <li><i class='bx bxs-package'></i> push your academic projects</li>
+                    <li><i class='bx bxs-package'></i> ensure your projects safety and privacy</li>
+                </ul>
+
+            </div>
+
+        </div>
+        <div class="section-row">
+            <div class="left-side">
+                <span>Welcome</span>
+                <h3>Discover the  features <br>  & fonctionnalities  we provide to Entreprises</h3>
+                <p>Navigate students profiles and contact Teachers and professors to collaborate</p>
+               <div class="professor-columns">
+                <div class="professor-column">
+                    <i class='bx bxs-package'></i>
+                    <h4>Collaborations</h4>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, iure.</p>
+                </div>
+                <div class="professor-column">
+                    <i class='bx bxs-package'></i>
+                    <h4>Consultation</h4>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, iure.</p>
+                </div>
+               </div>
+
+            </div>
+            <div class="right-side">
+                <div class="imgBx">
+                    <img src="{% static 'images/business.jpg' %}" alt="">
+                </div>
+            </div>
+
+        </div>
     </div>
 </section>
+<section class="join-section">
+    <h1>Join us now and create an account</h1>
+    <p>discover now our useful functionalities whether you are student, teacher, or an entrepreneur</p>
+    <div class="join-btns">
+        <a href="{% url 'signup' %}" style="background-color: #1976D2;border: none;"  class="btn btn-solid">sign up</a>
+        <a href="" style="background-color: #1976D2;color: #fff;border: none;"  class="btn ">see more</a>
+    </div>
+</section>
+<script>
+    const navbar = document.querySelector(".header")
+
+
+
+window.addEventListener('scroll', ()=> {
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+</script>
 {% endblock %}

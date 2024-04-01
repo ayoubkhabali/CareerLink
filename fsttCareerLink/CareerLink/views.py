@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement,Assignment,AssignmentSubmission, Offer, Application, Education
+from .models import Student, User,Post,Like,Comment,SharePost, Follow, Class, Announcement,Assignment,AssignmentSubmission, Offer, Application, Education, Teacher,Enterprise
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponseNotAllowed
@@ -21,11 +21,10 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # You may choose to log in the user automatically here
-            return redirect('home')  # Redirect to the home page after successful signup
+            return redirect('home') 
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'authentification.html', {'form': form})
 
 def search_users(request):
     # Get the search query from the AJAX request
@@ -47,6 +46,39 @@ def search_students(request):
     return render(request, 'search_students_results.html', {'students': students})
 
 
+
+def admin_dashboard(request) :
+    users = User.objects.all()
+    students = Student.objects.all()
+    teachers = Teacher.objects.all()
+    enterprises = Enterprise.objects.all()
+    posts = Post.objects.all()
+    classes = Class.objects.all()
+    offers = Post.objects.all()
+
+
+
+    if request.method == 'POST':
+            add_form = SignUpForm(request.POST)
+            if add_form.is_valid():
+                new_user = add_form.save()
+                return redirect('admin_dashboard') 
+    else:
+        add_form = SignUpForm()
+
+
+    context = {
+        'users': users,
+        'students' : students,
+        'teachers' :teachers,
+        'enterprises' : enterprises,
+        'posts' : posts,
+        'classes' : classes,
+        'offers' :offers,
+        'add_form' : add_form
+               }
+
+    return render(request, 'admin_dashboard.html', context)
 
 
 
@@ -635,6 +667,7 @@ def update_info(request, username):
     password_form = None
     user_form = None
     education_form = None
+    enterprise_form = None
     
     try:
         education_instance = Education.objects.get(user=user)
