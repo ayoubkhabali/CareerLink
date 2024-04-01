@@ -9,7 +9,7 @@ from datetime import date
 
 
 from django import forms
-from .models import Education, Skill, Experience, Interest, ContactInfo
+from .models import Education, Skill, Experience, ContactInfo
 
 
 # forms.py
@@ -31,11 +31,11 @@ class ChangePasswordForm(PasswordChangeForm):
 class EducationForm(forms.ModelForm):
     class Meta:
         model = Education
-        fields = ['degree', 'institution', 'start_date', 'end_date', 'description']
+        fields = ['degree', 'institution', 'field_of_study' ,'start_date', 'end_date']
 class ChangeEducationForm(forms.ModelForm):
     class Meta:
         model = Education
-        fields = ['degree', 'institution', 'start_date', 'end_date', 'description']
+        fields = ['degree', 'institution', 'start_date', 'end_date']
 
 
 class SkillsForm(forms.ModelForm):
@@ -45,14 +45,14 @@ class SkillsForm(forms.ModelForm):
 
 
 class ExperienceForm(forms.ModelForm):
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
     class Meta:
         model = Experience
         fields = ['title', 'company', 'start_date','end_date','description']
 
-class InterestForm(forms.ModelForm):
-    class Meta:
-        model = Interest
-        fields = ['interests']
+
 
 class ContactInfoForm(forms.ModelForm):
     class Meta:
@@ -211,6 +211,31 @@ class EnterpriseInfoForm(forms.ModelForm):
     class Meta:
         model = Enterprise
         fields = ['company_name'] 
+
+
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email' ,'role', 'bio', 'location', 'birth_date', 'profile_pic', 'profile_cover' ,'country', 'gender']
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['university', 'major']
+
+class TeacherForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['department']
+
+class EnterpriseForm(forms.ModelForm):
+    class Meta:
+        model = Enterprise
+        fields = ['company_name']
+
+
 
 
 class ChangeTeacherInfoForm(forms.ModelForm):

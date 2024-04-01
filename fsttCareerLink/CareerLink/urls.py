@@ -49,12 +49,12 @@ urlpatterns = [
     path('display-offers/applications-lists/<int:offer_id>/', views.applications_list, name='applications_list'),
     
     path('profile/<str:username>/add-education/', views.add_education, name='add_education'),
-    path('profile/<str:username>/add-interest-skill/', views.add_interest_skill, name='add_interest_skill'),
+    path('profile/<str:username>/add-skill/', views.add_skill, name='add-skill'),
     path('profile/<str:username>/add-contact/', views.add_contact, name='add_contact'),
     path('profile/<str:username>/add-experience/', views.add_experience, name='add_experience'),
     path('update-info/<str:username>/', views.update_info, name='update_info'),
     path('delete_post/<int:post_id>/', views.delete_post, name='delete_post'),
-
+    
 
 ]
 

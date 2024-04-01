@@ -1,0 +1,44 @@
+<!-- profile.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>User Profile</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- User Profile Info -->
+        <!-- You can add fields for username, email, etc. here -->
+
+        <!-- Student Form -->
+        {{ student_form.as_p }}
+
+        <!-- Teacher Form -->
+        {{ teacher_form.as_p }}
+
+        <!-- Enterprise Form -->
+        {{ enterprise_form.as_p }}
+
+        <!-- Education Form -->
+        {{ education_form.as_p }}
+
+        <!-- Skill Form -->
+        {{ skill_form.as_p }}
+
+        <!-- Experience Form -->
+        {{ experience_form.as_p }}
+
+        <!-- Interest Form -->
+        {{ interest_form.as_p }}
+
+        <!-- Contact Info Form -->
+        {{ contact_info_form.as_p }}
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

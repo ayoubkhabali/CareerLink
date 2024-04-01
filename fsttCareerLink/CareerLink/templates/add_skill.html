@@ -1,0 +1,10 @@
+
+
+<form method="post">
+    {% csrf_token %}
+    {{ skill_form.as_p }}
+
+    <button type="submit" name="submit_skill">Submit</button>
+</form>
+
+

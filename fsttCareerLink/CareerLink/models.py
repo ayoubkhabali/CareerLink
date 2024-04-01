@@ -99,9 +99,9 @@ class Education(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     degree = models.CharField(max_length=100)
     institution = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    description = models.TextField()
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    field_of_study = models.CharField(max_length=100, default='')
 
 class Skill(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -111,13 +111,9 @@ class Experience(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
     description = models.TextField()
-
-class Interest(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    interests = models.CharField(max_length=100)
 
 class ContactInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

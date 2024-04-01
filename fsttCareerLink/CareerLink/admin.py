@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import Student, Enterprise, Teacher,Post,Class,Comment,SharePost, User, Follow, Announcement,Assignment,ChatMessage
 from .models import Exam,Answer,Question,StudentAnswer
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import Education,Skill,ContactInfo,Interest,Experience, Notification
+from .models import Education,Skill,ContactInfo,Experience, Notification
 from django.utils.translation import gettext_lazy as _
 
 from django.contrib import admin
@@ -41,7 +41,6 @@ admin.site.register(Notification)
 admin.site.register(StudentAnswer)
 
 admin.site.register(Skill)
-admin.site.register(Interest)
 admin.site.register(Experience)
 admin.site.register(ContactInfo)
 admin.site.register(Student)

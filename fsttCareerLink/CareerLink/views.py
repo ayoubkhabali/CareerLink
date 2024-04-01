@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect,HttpResponseNotAllowed
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from .forms import PostForm  # Import the PostForm
-from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm,AssignmentSubmissionForm, CreateOffer,ApplicationForm,ChangeEducationForm, ChangeEnterpriseInfoForm, EnterpriseInfoForm
+from .forms import PostForm, ChangeStudentInfoForm, StudentInfoForm, TeacherInfoForm, ChangeTeacherInfoForm,ClassForm,AnnouncementForm,AssignmentForm,AssignmentSubmissionForm, CreateOffer,ApplicationForm,ChangeEducationForm, ChangeEnterpriseInfoForm, EnterpriseInfoForm,UserForm
 from .forms import SignUpForm
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -183,80 +183,83 @@ def delete_post(request, post_id):
     return redirect('home')
 
 
-from .forms import EducationForm, SkillsForm, ExperienceForm, InterestForm, ContactInfoForm
+from .forms import EducationForm, SkillsForm, ExperienceForm, ContactInfoForm
 
 @login_required  # Apply login_required decorator to ensure only logged-in users can access these views
 def add_education(request, username):
     if request.method == 'POST':
-        form = EducationForm(request.POST)
-        if form.is_valid():
-            # Assign the current logged-in user to the submitted data
-            education = form.save(commit=False)
-            education.user = request.user
+        education_form = EducationForm(request.POST)
+        if education_form.is_valid():
+            education, created = Education.objects.get_or_create(user=request.user)
+            education.institution = education_form.cleaned_data['institution']
+            education.degree = education_form.cleaned_data['degree']
+            education.field_of_study = education_form.cleaned_data['field_of_study']
+            education.start_date = education_form.cleaned_data.get('start_date')  # Nullable start_date
+            education.end_date = education_form.cleaned_data['end_date']
             education.save()
-            return redirect('user_profile', username)  # Replace with your success URL
+            return redirect('user_profile', username)
     else:
-        form = EducationForm()
-    return render(request, 'add_education.html', {'form': form})
+        previous_education = Education.objects.filter(user=request.user).first()
+        education_form = EducationForm(instance=previous_education)
+    return render(request, 'add_education.html', {'education_form': education_form})
 
 
 def add_experience(request, username):
     if request.method == 'POST':
-        form = ExperienceForm(request.POST)
-        if form.is_valid():
-            # Assign the current logged-in user to the submitted data
-            experience = form.save(commit=False)
-            experience.user = request.user
+        experience_form = ExperienceForm(request.POST)
+        if experience_form.is_valid():
+            # Retrieve or create the experience for the current user
+            experience, created = Experience.objects.get_or_create(user=request.user)
+            # Update the experience with the submitted data
+            experience.title = experience_form.cleaned_data['title']
+            experience.company = experience_form.cleaned_data['company']
+            experience.start_date = experience_form.cleaned_data['start_date']
+            experience.end_date = experience_form.cleaned_data['end_date']
+            experience.description = experience_form.cleaned_data['description']
             experience.save()
             return redirect('user_profile', username)  # Replace with your success URL
     else:
-        form = ExperienceForm()
-    return render(request, 'add_experience.html', {'form': form})
+        # Retrieve previous experience for the user (if exists)
+        previous_experience = Experience.objects.filter(user=request.user).first()
+        # Initialize the form with previous data if available, otherwise use empty form
+        experience_form = ExperienceForm(instance=previous_experience)
+    return render(request, 'add_experience.html', {'experience_form': experience_form})
 
 
 from django.forms import formset_factory
-def add_interest_skill(request, username):
-    SkillsFormSet = formset_factory(SkillsForm, extra=1)
-    InterestFormSet = formset_factory(InterestForm, extra=1)
 
+def add_skill(request, username):
     if request.method == 'POST':
-        skills_formset = SkillsFormSet(request.POST, prefix='skills')
-        interest_formset = InterestFormSet(request.POST, prefix='interest')
-
-        if skills_formset.is_valid() and interest_formset.is_valid():
-            for skills_form in skills_formset:
-                skill = skills_form.save(commit=False)
-                skill.user = request.user
-                skill.save()
-
-            for interest_form in interest_formset:
-                interest = interest_form.save(commit=False)
-                interest.user = request.user
-                interest.save()
-
-            return redirect('user_profile', username)  # Replace with your success URL
+        skill_form = SkillsForm(request.POST)
+        if skill_form.is_valid():
+            skill, created = Skill.objects.get_or_create(user=request.user)
+            skill.skills = skill_form.cleaned_data['skills']
+            skill.save()
+            return redirect('user_profile', username)
     else:
-        skills_formset = SkillsFormSet(prefix='skills')
-        interest_formset = InterestFormSet(prefix='interest')
+        previous_skill = Skill.objects.filter(user=request.user).first()
+        skill_form = SkillsForm(instance=previous_skill)
+    return render(request, 'add_skill.html', {'skill_form': skill_form})
 
-    return render(request, 'add_interest_skill.html', {
-        'skills_formset': skills_formset,
-        'interest_formset': interest_formset,
-    })
 
 def add_contact(request, username):
     if request.method == 'POST':
-        form = ContactInfoForm(request.POST)
-        if form.is_valid():
-            # Assign the current logged-in user to the submitted data
-            contact = form.save(commit=False)
-            contact.user = request.user
+        contact_form = ContactInfoForm(request.POST)
+        if contact_form.is_valid():
+            # Retrieve or create the contact info for the current user
+            contact, created = ContactInfo.objects.get_or_create(user=request.user)
+            # Update the contact info with the submitted data
+            contact.address = contact_form.cleaned_data['address']
+            contact.phone_number = contact_form.cleaned_data['phone_number']
+            contact.email = contact_form.cleaned_data['email']
             contact.save()
             return redirect('user_profile', username)  # Replace with your success URL
     else:
-        form = ContactInfoForm()
-    return render(request, 'add_contact.html', {'form': form})
-
+        # Retrieve previous contact info for the user (if exists)
+        previous_contact = ContactInfo.objects.filter(user=request.user).first()
+        # Initialize the form with previous data if available, otherwise use empty form
+        contact_form = ContactInfoForm(instance=previous_contact)
+    return render(request, 'add_contact.html', {'contact_form': contact_form})
 
 # In views.py
 from django.core.exceptions import ObjectDoesNotExist
@@ -271,7 +274,6 @@ def user_profile(request, username):
     educations = None
     experiences = None
     skills = None
-    interests = None
     contact_info = None
 
     try:
@@ -292,10 +294,7 @@ def user_profile(request, username):
             skills = Skill.objects.filter(user=user)
         except ObjectDoesNotExist:
             pass
-        try:
-            interests = Interest.objects.filter(user=user)
-        except ObjectDoesNotExist:
-            pass
+
 
 
     if request.method == 'POST':
@@ -361,7 +360,6 @@ def user_profile(request, username):
         'educations': educations,
         'experiences': experiences,
         'skills': skills,
-        'interests': interests,
         'contact_info': contact_info,
         'send_form' : send_form
     }
@@ -757,165 +755,83 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .forms import (ChangeStudentInfoForm, ChangeTeacherInfoForm, 
                     ChangeEducationForm, ChangePasswordForm, 
-                    ContactInfoForm, ExperienceForm, SkillsForm, InterestForm)
-from .models import Education, ContactInfo, Experience, Skill, Interest
+                    ContactInfoForm, ExperienceForm, SkillsForm, )
+from .models import Education, ContactInfo, Experience, Skill
+
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 
 
 def update_info(request, username):
-    user = get_object_or_404(User, username=username)
-    teacher_form = None
-    student_form = None
-    password_form = None
-    user_form = None
-    education_form = None
-    enterprise_form = None
-    contact_form = None
-    experience_form = None
-    skills_form = None
-    interests_form = None
-    
-    try:
-        education_instance = Education.objects.get(user=user)
-    except Education.DoesNotExist:
-        education_instance = None
+    user = request.user
 
-    try:
-        contact_instance = ContactInfo.objects.get(user=user)
-    except ContactInfo.DoesNotExist:
-        contact_instance = None
+    # Retrieve existing instances of user information
+    skill_instance = Skill.objects.filter(user=user).first()
+    education_instance = Education.objects.filter(user=user).first()
+    experience_instance = Experience.objects.filter(user=user).first()
+    contact_instance = ContactInfo.objects.filter(user=user).first()
 
-    try:
-        experience_instance = Experience.objects.get(user=user)
-    except Experience.DoesNotExist:
-        experience_instance = None
-
-    try:
-        skill_instance = Skill.objects.get(user=user)
-    except Skill.DoesNotExist:
-        skill_instance = None
-
-    try:
-        interest_instance = Interest.objects.get(user=user)
-    except Interest.DoesNotExist:
-        interest_instance = None
+    # Define form variables
+    user_instance = user  # No need to query, as the user instance is readily available
+    user_form = UserForm(instance=user_instance)
+    skill_form = SkillsForm(prefix='skill', instance=skill_instance)
+    education_form = EducationForm(prefix='education', instance=education_instance)
+    experience_form = ExperienceForm(prefix='experience', instance=experience_instance)
+    contact_form = ContactInfoForm(prefix='contact', instance=contact_instance)
+    password_form = PasswordChangeForm(user=user_instance)
 
     if request.method == 'POST':
-        if 'submit_contact' in request.POST:
-            contact_form = ContactInfoForm(request.POST, instance=contact_instance) 
-            if contact_form.is_valid():
-                contact = contact_form.save(commit=False)
-                contact.user = request.user
-                contact.save()
-                return redirect(request.META.get('HTTP_REFERER', '/')) 
-
-        if 'change_password' in request.POST:
-            password_form = ChangePasswordForm(request.user, request.POST)
-            if password_form.is_valid():
-                user = password_form.save()
-                update_session_auth_hash(request, user)  
-                messages.success(request, 'Your password was successfully updated!')
-                return redirect(request.META.get('HTTP_REFERER', '/')) 
-            else:
-                messages.error(request, 'Please correct the error below.')
-
-        if 'update_info' in request.POST:
-            # Update user info and education based on user role
-            if user.role == 'STUDENT':
-                user_form = ChangeStudentInfoForm(request.POST, request.FILES, instance=user)
-                student_form = StudentInfoForm(request.POST, request.FILES, instance=user.student)
-                education_form = ChangeEducationForm(request.POST, instance=education_instance)
-
-                if user_form.is_valid() and student_form.is_valid() and education_form.is_valid():
-                    user_form.save()
-                    student_form.save()
-                    if education_instance:
-                        education_instance = education_form.save(commit=False)
-                    else:
-                        education_instance = education_form.save(commit=False)
-                        education_instance.user = user
-                    education_instance.save()
-                    return redirect(request.META.get('HTTP_REFERER', '/')) 
-
-            elif user.role == 'TEACHER':
-                user_form = ChangeTeacherInfoForm(request.POST, request.FILES, instance=user)
-                teacher_form = TeacherInfoForm(request.POST, request.FILES, instance=user.teacher)
-                education_form = ChangeEducationForm(request.POST, instance=education_instance)
-
-                if user_form.is_valid() and teacher_form.is_valid():
-                    user_form.save()
-                    teacher_form.save()
-                    if education_instance:
-                        education_instance = education_form.save(commit=False)
-                    else:
-                        education_instance = education_form.save(commit=False)
-                        education_instance.user = user
-                    education_instance.save()
-                    return redirect(request.META.get('HTTP_REFERER', '/')) 
-            elif user.role == 'ENTERPRISE':
-                enterprise_form = ChangeEnterpriseInfoForm(request.POST, request.FILES, instance=user.enterprise)
-                if enterprise_form.is_valid():
-                    enterprise = enterprise_form.save(commit=False)
-                    enterprise.user = user
-                    enterprise.save()
-                    return redirect(request.META.get('HTTP_REFERER', '/')) 
-
-        if 'submit_experience' in request.POST:
-            experience_form = ExperienceForm(request.POST, instance=experience_instance)
+        if 'submit_user' in request.POST:
+            user_form = UserForm(request.POST, instance=user_instance)
+            if user_form.is_valid():
+                user_form.save()
+                return redirect('user_profile', username)
+        elif 'submit_skill' in request.POST:
+            skill_form = SkillsForm(request.POST, prefix='skill', instance=skill_instance)
+            if skill_form.is_valid():
+                skill = skill_form.save(commit=False)
+                skill.user = user
+                skill.save()
+                return redirect('user_profile', username)
+        elif 'submit_education' in request.POST:
+            education_form = EducationForm(request.POST, prefix='education', instance=education_instance)
+            if education_form.is_valid():
+                education = education_form.save(commit=False)
+                education.user = user
+                education.save()
+                return redirect('user_profile', username)
+        elif 'submit_experience' in request.POST:
+            experience_form = ExperienceForm(request.POST, prefix='experience', instance=experience_instance)
             if experience_form.is_valid():
                 experience = experience_form.save(commit=False)
-                experience.user = request.user
+                experience.user = user
                 experience.save()
-                return redirect(request.META.get('HTTP_REFERER', '/')) 
+                return redirect('user_profile', username)
+        elif 'submit_contact' in request.POST:
+            contact_form = ContactInfoForm(request.POST, prefix='contact', instance=contact_instance)
+            if contact_form.is_valid():
+                contact = contact_form.save(commit=False)
+                contact.user = user
+                contact.save()
+                return redirect('user_profile', username)
+        elif 'submit_password' in request.POST:
+                    password_form = PasswordChangeForm(user=user_instance, data=request.POST)
+                    if password_form.is_valid():
+                        password_form.save()
+                        update_session_auth_hash(request, password_form.user)
+                        return redirect('user_profile', username)
 
-        if 'update_skills' in request.POST:
-            skills_form = SkillsForm(request.POST, instance=skill_instance)
-            if skills_form.is_valid():
-                skills = skills_form.save(commit=False)
-                skills.user = request.user
-                skills.save()
-                return redirect(request.META.get('HTTP_REFERER', '/')) 
-
-        if 'update_interests' in request.POST:
-            interests_form = InterestForm(request.POST, instance=interest_instance)
-            if interests_form.is_valid():
-                interests = interests_form.save(commit=False)
-                interests.user = request.user
-                interests.save()
-                return redirect(request.META.get('HTTP_REFERER', '/')) 
-
-    else:
-        # Instantiate forms with instances for current values
-        contact_form = ContactInfoForm(instance=contact_instance)
-        experience_form = ExperienceForm(instance=experience_instance)
-        skills_form = SkillsForm(instance=skill_instance)
-        interests_form = InterestForm(instance=interest_instance)
-        education_form = EducationForm(instance=interest_instance)
-
-    if user.role == 'STUDENT':
-        user_form = ChangeStudentInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
-        student_form = StudentInfoForm(instance=user.student)
-        education_form = ChangeEducationForm(instance=education_instance) if education_instance else ChangeEducationForm()
-    elif user.role == 'TEACHER':
-        user_form = ChangeTeacherInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
-        teacher_form = TeacherInfoForm(instance=user.teacher)
-        education_form = ChangeEducationForm(instance=education_instance) if education_instance else ChangeEducationForm()
-    elif user.role == 'ENTERPRISE' :
-        user_form =  ChangeTeacherInfoForm(instance=user, initial={'profile_pic': user.profile_pic, 'profile_cover': user.profile_cover})
-        enterprise_form = TeacherInfoForm(instance=user.enterprise)
-    context = {
+    return render(request, 'update_info.html', {
         'user_form': user_form,
-        'student_form': student_form,
-        'teacher_form': teacher_form,
-        'enterprise_form' : enterprise_form,
+        'skill_form': skill_form,
         'education_form': education_form,
-        'password_form': password_form,
-        'contact_form': contact_form,
         'experience_form': experience_form,
-        'skills_form': skills_form,
-        'interests_form': interests_form,
-    }
-    return render(request, 'update_info.html', context)
+        'contact_form': contact_form,
+        'password_form': password_form,
+
+    })
+
 
 def update_profile(request, username):
     user = get_object_or_404(User, username=username)
