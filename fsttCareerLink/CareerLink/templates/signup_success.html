@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+  font-family: "Poppins", sans-serif;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  transition: all 0.5s ease;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #e3ddd5 0%, #c7b6a4 100%);
+}
+
+.card {
+  width: 33rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.3rem;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, #58AED7 0%, #3983BA 100%);
+  box-shadow: 14px 17px 33px 13px #C8B7A5;
+}
+
+h3 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+p {
+  font-size: 0.6rem;
+  font-weight: 400;
+  line-height: 1.2rem;
+  margin: 0.5rem 0;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+button {
+  display: flex;
+  align-self: flex-end;
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: #3983BA;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 0.2rem;
+  padding: 0.3rem 1.3rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+button:hover {
+  color: #ffffff;
+  background-color: #3983BA;
+}
+    </style>
+</head>
+<body>
+    
+
+    <div class="card" id="card">
+        <p>Thank you for registering!</p>
+        <p>Your account has been created successfully.</p>
+        <p>Please wait for the administrator to approve your account.</p>
+        <button id="toggleButton">Read More</button>
+      </div>
+</body>
+</html>

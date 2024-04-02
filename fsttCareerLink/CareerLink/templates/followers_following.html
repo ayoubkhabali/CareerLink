@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/all.min.css'  %}" />
+<link rel="stylesheet" href="{% static 'css/framework.css' %}" />
+<link rel="stylesheet" href="{% static 'css/master.css'%}" />
+
+ 
+<h2 style="margin-left: 3rem;" >Followers:</h2>
+<div class="friends-page d-grid m-20 gap-20" style="margin: auto;width: 90%;">
+   {% for follower in followers %}
+
+   <div class="friend bg-white rad-6 p-20 p-relative">
+
+     <div class="txt-c" style="display: flex;flex-direction: column;align-items: center;" >
+       <img class="rad-half mt-10 mb-10 w-100 h-100" src="{{follower.profile_pic.url}}" alt="" />
+       <a class="m-0" href="{% url 'user_profile' follower.username %}" >{{follower.username}}</a>
+       <p class="c-grey fs-13 mt-5 mb-0">{{follower.role}}</p>
+     </div>
+     <div class="icons fs-14 p-relative">
+       <div class="mb-10">
+         <i class="fa-regular fa-face-smile fa-fw"></i>
+         <span>{{follower.followers.count}} followers</span>
+       </div>
+       <div class="mb-10">
+         <i class="fa-solid fa-code-commit fa-fw"></i>
+         <span>{{follower.following.count}} following</span>
+       </div>
+     </div>
+   </div>
+   {% endfor %}
+ </div>
+
+ 
+ <h2 style="margin-left: 3rem;" >Following:</h2>
+ <div class="friends-page d-grid m-20 gap-20" style="margin: auto;width: 90%;">
+   {% for followee in following %}
+   <div class="friend bg-white rad-6 p-20 p-relative">
+     <div class="contact">
+       <i class="fa-solid fa-phone"></i>
+       <i class="fa-regular fa-envelope"></i>
+     </div>
+     <div class="txt-c">
+       <img class="rad-half mt-10 mb-10 w-100 h-100" src="{{followee.user_profile_pic.url}}" alt="" />
+       <h4 class="m-0">{{followee.username}}</h4>
+       <p class="c-grey fs-13 mt-5 mb-0">{{followee.role}}</p>
+     </div>
+     <div class="icons fs-14 p-relative">
+       <div class="mb-10">
+         <i class="fa-regular fa-face-smile fa-fw"></i>
+         <span>{{followee.followers.count}} followers</span>
+       </div>
+       <div class="mb-10">
+         <i class="fa-solid fa-code-commit fa-fw"></i>
+         <span>{{followee.following.count}} following</span>
+       </div>
+     </div>
+   </div>
+   {% endfor %}
+ </div>
+{% endblock %}

@@ -1,5 +1,5 @@
 
-<form method="post" id="contact-form" >
+<form method="post" id="contact-form" enctype="multipart/form-data"  >
     {% csrf_token %}
     {{ contact_form.as_p }}
     <button type="submit" name="submit_contact">Submit</button>

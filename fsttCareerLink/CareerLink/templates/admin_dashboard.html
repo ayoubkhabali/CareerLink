@@ -65,7 +65,6 @@ form {
   font-weight: 500;
 }
 </style>
-
 <main class="admin-dashboard" >
     <h1>Analytics</h1>
     <!-- Analyses -->
@@ -202,20 +201,32 @@ form {
         <table>
             <thead>
                 <tr>
-                    <th>Course Name</th>
-                    <th>Course Number</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                    <th></th>
+                    <th>Post</th>
+                    <th>Author</th>
+                    <th>Created at </th>
+                    <th>Likes</th>
+                    <th>Comment</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                {% for post in posts %}
+                <a href="{% url 'user_profile' post.author.id %}">
+                <tr>
+                    <td>{{post.content}}</td>
+                    <td>{{post.author.username}}</td>
+                    <td>{{post.created_at}}</td>
+                    <td>{{post.likes.count}}</td>
+                    <td>0</td>
+                </tr>
+                </a>
+                {% endfor %}
+            </tbody>
         </table>
-        <a href="#">Show All</a>
     </div>
     <div>
         <div class="new-notifications">
             <h2>New Notifications</h2>
+
             <div class="notification-list">
                 {% for notification in admin_notifications %}
                     <div class="notification">
@@ -237,6 +248,8 @@ form {
     <!-- End of Recent Orders -->
 
 </main>
+
+
 <div class="overlay">
     <div class="modal addUser-modal">
         <form method="POST" class="sign-up-form">

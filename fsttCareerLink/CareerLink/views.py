@@ -15,6 +15,15 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 
 
+def followers_view(request,username) :
+    user = get_object_or_404(User, username=username)
+    followers = user.followers.all()
+    following = user.following.all()
+    return render(request, 'followers_following.html', {'user': user, 'followers': followers, 'following': following})
+
+def signup_success(request):
+    return render(request, 'signup_success.html')
+
 
 def signup(request):
     if request.method == 'POST':
@@ -36,7 +45,7 @@ def signup(request):
             else:
                 messages.error(request, "Admin user not found. Cannot send approval request.")
 
-            return redirect('home')  # Redirect to home or wherever appropriate
+            return redirect('signup_success')  # Redirect to signup success page
     else:
         form = SignUpForm()
     return render(request, 'authentification.html', {'form': form})

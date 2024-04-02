@@ -159,6 +159,9 @@ class ClassForm(forms.ModelForm):
     class Meta:
         model = Class
         fields = ['title', 'description', 'students', 'class_cover']
+        widgets = {
+            'students': forms.Select(attrs={'class': 'students-select'}),  # You can adjust the widget as needed
+        }
 
 class CustomUserCreationForm(UserCreationForm):
     role = forms.ChoiceField(choices=User.Role.choices)

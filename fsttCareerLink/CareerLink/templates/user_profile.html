@@ -52,11 +52,15 @@
             {% else %}
             {% if request.user not in user.followers.all %}
             {% if follow_request_sent %}
+              <div style="display: flex; gap: 1rem; align-items: center; " >
+
                 <form method="post" action="{% url 'remove_follow_request' user.username %}">
                     {% csrf_token %}
                     <button type="submit">Requested</button>
-                    <button class="modal-trigger" data-form-type="message" ><i class='bx bxs-envelope'></i></button>
                   </form>
+                  <button class="modal-trigger" data-form-type="message"  style="font-size: 3rem;"><i class='bx bxs-envelope'></i></button>
+                </div>
+
                 {% else %}
                 <form method="post" action="{% url 'follow_user' user.username %}">
                     {% csrf_token %}
@@ -84,8 +88,6 @@
         <h1 class="full-name" >{{ user.username }}</h1>
         {% if user.role == "TEACHER" %}
         <p>Teacher at {{user.teacher.department}}</p>
-        <p>{{about_url}}</p>
-        <p>{{posts_url}}</p>
         {% elif user.role == "STUDENT" %}
         <p>Student at {{ user.student.university }}</p>
         <p>Studying  {{ user.student.major }} major</p>
@@ -302,106 +304,225 @@
       </div>
   </form>
   {% endif %}
-
+  {% if user.role == 'TEACHER' %}
+  <nav class="profile-nav-tabs filtering-posts">
+    <ul>
+        <li class="profile-tab current-tab" data-filter="all">All</li>
+        <li class="profile-tab" data-filter="POST">Regular Posts</li>
+        <li class="profile-tab" data-filter="PEDAGOGICAL">Pedagogical Activities</li>
+        <li class="profile-tab" data-filter="RESEARCH">Research Activities</li>
+    </ul>
+</nav>
+{% endif %}
     <div class="feeds" style="width: 70%;margin: auto;">
 
+      {% if user == request.user %}
       {% for post in posts %}
 
+      <div class="feed" data-type="{{ post.post_type}}">
+        <div class="head">
+            <div class="user">
+                <div class="profile-photo">
+                    <img src="{{ request.user.profile_pic.url }}">
+                </div>
+                <div class="info">
+                    <h3>{{post.author.username}}</h3>
+                    <small>{{post.created_at}}</small>
+                    <span style="color: #1976D2;" >{{post.post_type}}</span>
+                </div>
+            </div>
+            {% if post.author.username == request.user.username %}
+<div class="menu  edit">
+  <i class='bx bx-dots-horizontal-rounded icon'></i>
+  <ul class="menu-link">
+    <li>
+                        <form action="{% url 'delete_post' post.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="">Remove</button>
+                        </form>
+                    </li>
+  </ul>
+</div>
+            {% endif %}
 
-          <div class="feed">
-              <div class="head">
-                  <div class="user">
-                      <div class="profile-photo">
-                          <img src="{{ request.user.profile_pic.url }}">
+
+        </div>
+
+        <div class="caption">
+            <br>
+            <p> {{post.content}}</p>
+        </div>
+        {% if post.attachment %}
+        <div class="assign-attachment" style="margin: .5rem 0;">
+            <a href="{{ post.attachment.url }}" style="color: #1976D2;"  download><i class='bx bxs-file-archive'></i> {{ post.attachment }}</a>
+        </div>
+        {% endif %}
+
+        {% if post.post_media %}
+
+        <div class="photo">
+            <img src="{{post.post_media.url}}">
+        </div>
+        {% endif%}
+
+
+        <div class="action-buttons">
+            <div class="interaction-buttons">
+                <span class="like-button {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
+                    <i class="uil uil-heart"></i>
+                </span>
+                
+                                            <span><i class="uil uil-comment-dots"></i></span>
+                <span><a href="{% url 'share_post' post_id=post.id %}"><i class="uil uil-share-alt"></i></a></span>
+            </div>
+
+        </div>
+
+        <div class="liked-by">
+            <p>Liked by {{ post.likes.count }} people</b></p>
+        </div>
+
+        <div class="comments text-muted" >
+            View all the comments
+        </div>
+        <div class="comments-section" style="display: none;">
+            {% for comment in post.comments.all %}
+            <div class="message" style="margin: 1rem 0;" >
+                <div class="profile-photo">
+                    <img src="{{comment.author.profile_pic.url}}">
+                </div>
+                <div class="message-body">
+                    <h5>{{comment.author.username}}</h5>
+                    <p class="text-muted">{{comment.content}}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="add-comment">
+
+                <form method="post" class="create-post" action="{% url 'comment_post' post_id=post.id %}">
+                    <div class="profile-photo">
+                        <img src="{{request.user.profile_pic.url}}">
+                    </div>
+                  
+                    {% csrf_token %}
+                    <input type="text" name="content" placeholder="Write a comment...">
+                    <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+      {% else %}
+
+            {% if user not in request.user.following.all %}
+            <div class="feed">
+              <div class="caption">
+                  <p style="text-align: center;" > You can't see this the posts </p>
+              </div>
+                </div>
+            {% else %}
+
+                  {% for post in posts %}
+
+
+              <div class="feed">
+                  <div class="head">
+                      <div class="user">
+                          <div class="profile-photo">
+                              <img src="{{ request.user.profile_pic.url }}">
+                          </div>
+                          <div class="info">
+                              <h3>{{post.author.username}}</h3>
+                              <small>{{post.created_at}}</small>
+                              <span style="color: #1976D2;" >{{post.post_type}}</span>
+                          </div>
                       </div>
-                      <div class="info">
-                          <h3>{{post.author.username}}</h3>
-                          <small>{{post.created_at}}</small>
-                          <span style="color: #1976D2;" >{{post.post_type}}</span>
-                      </div>
+                      {% if post.author.username == request.user.username %}
+          <div class="menu  edit">
+            <i class='bx bx-dots-horizontal-rounded icon'></i>
+            <ul class="menu-link">
+              <li>
+                                  <form action="{% url 'delete_post' post.id %}" method="post">
+                                      {% csrf_token %}
+                                      <button type="submit" class="">Remove</button>
+                                  </form>
+                              </li>
+            </ul>
+          </div>
+                      {% endif %}
+
+
                   </div>
-                  {% if post.author.username == request.user.username %}
-      <div class="menu  edit">
-        <i class='bx bx-dots-horizontal-rounded icon'></i>
-        <ul class="menu-link">
-          <li>
-                              <form action="{% url 'delete_post' post.id %}" method="post">
-                                  {% csrf_token %}
-                                  <button type="submit" class="">Remove</button>
-                              </form>
-                          </li>
-        </ul>
-      </div>
+
+                  <div class="caption">
+                      <br>
+                      <p> {{post.content}}</p>
+                  </div>
+                  {% if post.attachment %}
+                  <div class="assign-attachment" style="margin: .5rem 0;">
+                      <a href="{{ post.attachment.url }}" style="color: #1976D2;"  download><i class='bx bxs-file-archive'></i> {{ post.attachment }}</a>
+                  </div>
                   {% endif %}
 
+                  {% if post.post_media %}
 
-              </div>
-
-              <div class="caption">
-                  <br>
-                  <p> {{post.content}}</p>
-              </div>
-              {% if post.attachment %}
-              <div class="assign-attachment" style="margin: .5rem 0;">
-                  <a href="{{ post.attachment.url }}" style="color: #1976D2;"  download><i class='bx bxs-file-archive'></i> {{ post.attachment }}</a>
-              </div>
-              {% endif %}
-
-              {% if post.post_media %}
-
-              <div class="photo">
-                  <img src="{{post.post_media.url}}">
-              </div>
-              {% endif%}
+                  <div class="photo">
+                      <img src="{{post.post_media.url}}">
+                  </div>
+                  {% endif%}
 
 
-              <div class="action-buttons">
-                  <div class="interaction-buttons">
-                      <span class="like-button {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
-                          <i class="uil uil-heart"></i>
-                      </span>
-                      
-                                                  <span><i class="uil uil-comment-dots"></i></span>
-                      <span><a href="{% url 'share_post' post_id=post.id %}"><i class="uil uil-share-alt"></i></a></span>
+                  <div class="action-buttons">
+                      <div class="interaction-buttons">
+                          <span class="like-button {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
+                              <i class="uil uil-heart"></i>
+                          </span>
+                          
+                                                      <span><i class="uil uil-comment-dots"></i></span>
+                          <span><a href="{% url 'share_post' post_id=post.id %}"><i class="uil uil-share-alt"></i></a></span>
+                      </div>
+
                   </div>
 
-              </div>
-
-              <div class="liked-by">
-                  <p>Liked by {{ post.likes.count }} people</b></p>
-              </div>
-
-              <div class="comments text-muted" >
-                  View all the comments
-              </div>
-              <div class="comments-section" style="display: none;">
-                  {% for comment in post.comments.all %}
-                  <div class="message" style="margin: 1rem 0;" >
-                      <div class="profile-photo">
-                          <img src="{{comment.author.profile_pic.url}}">
-                      </div>
-                      <div class="message-body">
-                          <h5>{{comment.author.username}}</h5>
-                          <p class="text-muted">{{comment.content}}</p>
-                      </div>
+                  <div class="liked-by">
+                      <p>Liked by {{ post.likes.count }} people</b></p>
                   </div>
-                  {% endfor %}
-                  <div class="add-comment">
 
-                      <form method="post" class="create-post" action="{% url 'comment_post' post_id=post.id %}">
+                  <div class="comments text-muted" >
+                      View all the comments
+                  </div>
+                  <div class="comments-section" style="display: none;">
+                      {% for comment in post.comments.all %}
+                      <div class="message" style="margin: 1rem 0;" >
                           <div class="profile-photo">
-                              <img src="{{request.user.profile_pic.url}}">
+                              <img src="{{comment.author.profile_pic.url}}">
                           </div>
-                        
-                          {% csrf_token %}
-                          <input type="text" name="content" placeholder="Write a comment...">
-                          <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
-                      </form>
+                          <div class="message-body">
+                              <h5>{{comment.author.username}}</h5>
+                              <p class="text-muted">{{comment.content}}</p>
+                          </div>
+                      </div>
+                      {% endfor %}
+                      <div class="add-comment">
+
+                          <form method="post" class="create-post" action="{% url 'comment_post' post_id=post.id %}">
+                              <div class="profile-photo">
+                                  <img src="{{request.user.profile_pic.url}}">
+                              </div>
+                            
+                              {% csrf_token %}
+                              <input type="text" name="content" placeholder="Write a comment...">
+                              <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
+                          </form>
+                      </div>
                   </div>
               </div>
-          </div>
 
-      {% endfor %}
+                  {% endfor %}
+
+             {% endif %}
+          {% endif %}
       </div>
 
 
@@ -459,8 +580,38 @@
     </div>
 </div>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const tabs = document.querySelectorAll(".profile-tab");
+
+      tabs.forEach(function (tab) {
+          tab.addEventListener("click", function () {
+              const filter = this.dataset.filter;
+              const feeds = document.querySelectorAll(".feed");
+
+              feeds.forEach(function (feed) {
+                  if (filter === "all" || feed.dataset.type === filter) {
+                      feed.style.display = "block";
+                  } else {
+                      feed.style.display = "none";
+                  }
+              });
+
+              tabs.forEach(function (t) {
+                  t.classList.remove("current-tab");
+              });
+
+              this.classList.add("current-tab");
+          });
+      });
+  });
+</script>
+
+
 
 <script>
+
+  
   document.addEventListener('DOMContentLoaded', function() {
       var likeButtons = document.querySelectorAll('.like-button');
       likeButtons.forEach(function(button) {

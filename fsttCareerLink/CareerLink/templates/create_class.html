@@ -1,23 +1,32 @@
-      <h4>Create Class</h4>
-
-      <form id="class-form" method="post" action="{% url 'create_class' %}">
+<style>
+    #id_students {
+        display: none;
+    }
+    .user-founded.clicked {
+        background-color: #1976D2;
+    }
+</style>
+     <h4>Create Class</h4>
+     <div class="search-container">
+        <form action="#">
+            <div class="form-input" style="display: flex;gap: 1rem;">
+                <input type="search" id="searchStudentInput" type="search" placeholder="Search..." style="width: 300px;" >
+                <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
+            </div>
+        </form>
+        <div class="search-results search_students_results" style="display: flex;flex-wrap: wrap;"  id="searchStudentsResults">
+            {% include 'search_students_results.html' %}
+        
+        </div>
+    </div>
+      <form id="class-form" method="post"  enctype="multipart/form-data"   action="{% url 'create_class' %}">
         {% csrf_token %}
 
 
 
         {{  class_form.as_p }}
-        <div class="search-container">
-            <form action="#">
-                <div class="form-input" style="display: flex;gap: 1rem;">
-                    <input type="search" id="searchStudentInput" type="search" placeholder="Search..." style="width: 300px;" >
-                    <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
-                </div>
-            </form>
-            <div class="search-results search_students_results"  id="searchStudentsResults">
-                {% include 'search_students_results.html' %}
-            
-            </div>
-        </div>
+
+
 
         <button type="submit" class="btn search-student">Create</button>
       </form>
@@ -55,6 +64,8 @@ $(document).ready(function() {
     $(document).on('click', '.user-founded', function() {
         // Get the student's CNE from the data-student-cne attribute
         var studentCNE = $(this).attr('data-student-cne');
+        $(this).toggleClass('clicked');
+
         
         // Find the checkbox for this student
         var checkbox = $('#id_students input[type="checkbox"][value="' + studentCNE + '"]');
