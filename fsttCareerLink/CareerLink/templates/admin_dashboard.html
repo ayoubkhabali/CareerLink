@@ -213,6 +213,27 @@ form {
         </table>
         <a href="#">Show All</a>
     </div>
+    <div>
+        <div class="new-notifications">
+            <h2>New Notifications</h2>
+            <div class="notification-list">
+                {% for notification in admin_notifications %}
+                    <div class="notification">
+                        <p>{{ notification.message }}</p>
+                        <form method="post" action="{% url 'approve_user' user_id=notification.sender.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        </form>
+                        <form method="post" action="{% url 'reject_user' user_id=notification.sender.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Reject</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
     <!-- End of Recent Orders -->
 
 </main>

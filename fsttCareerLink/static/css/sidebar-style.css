@@ -258,13 +258,15 @@ body{
     margin-right: auto;
 }
 
-.content nav form .form-input{
+.content nav form .form-input,
+.class-form .search-container .form-input{
     display: flex;
     align-items: center;
     height: 36px;
 }
 
-.content nav form .form-input input{
+.content nav form .form-input input,
+.class-form .search-container .form-input input{
     flex-grow: 1;
     padding: 0 16px;
     height: 100%;
@@ -276,7 +278,8 @@ body{
     color: var(--dark);
 }
 
-.content nav form .form-input button{
+.content nav form .form-input button,
+.class-form .search-container .form-input button{
     width: 80px;
     height: 100%;
     display: flex;

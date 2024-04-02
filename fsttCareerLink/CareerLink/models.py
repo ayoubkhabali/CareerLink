@@ -28,6 +28,7 @@ class User(AbstractUser):
     birth_date = models.DateField(default=date(2000, 1, 1))
     country = models.CharField(max_length=50, default='undefined')
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES,default='M')
+    is_approved = models.BooleanField(default=False)
 
 
 

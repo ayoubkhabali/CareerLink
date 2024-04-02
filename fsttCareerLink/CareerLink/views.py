@@ -20,13 +20,26 @@ def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user) 
-            return redirect(reverse('update_info', kwargs={'username': user.username})) 
+            user = form.save(commit=False)
+            user.is_active = False  # Deactivate the user until approved by admin
+            user.save()
+            
+            # Notify admin
+            admin = User.objects.filter(role=User.Role.ADMIN).first()  # You need to fetch the admin user
+            if admin:
+                notification = Notification.objects.create(
+                    sender=user,
+                    receiver=admin,
+                    message=f"New user '{user.username}' signed up and requires approval."
+                )
+                messages.success(request, "Your account has been created. Please wait for admin approval.")
+            else:
+                messages.error(request, "Admin user not found. Cannot send approval request.")
+
+            return redirect('home')  # Redirect to home or wherever appropriate
     else:
         form = SignUpForm()
     return render(request, 'authentification.html', {'form': form})
-
 
 def search_users(request):
     # Get the search query from the AJAX request
@@ -71,6 +84,8 @@ def admin_dashboard(request) :
     posts = Post.objects.all()
     classes = Class.objects.all()
     offers = Post.objects.all()
+    admin = User.objects.filter(role=User.Role.ADMIN).first()  # Fetch admin user
+    admin_notifications = Notification.objects.filter(receiver=admin, read=False) if admin else []
 
 
 
@@ -91,12 +106,29 @@ def admin_dashboard(request) :
         'posts' : posts,
         'classes' : classes,
         'offers' :offers,
-        'add_form' : add_form
+        'add_form' : add_form,
+        'admin_notifications': admin_notifications,
+
                }
 
     return render(request, 'admin_dashboard.html', context)
 
+def approve_user(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    user.is_approved = True
+    user.is_active = True  # Activate the user upon approval
+    user.save()
 
+    admin = User.objects.filter(role=User.Role.ADMIN).first()
+    if admin:
+        notification = Notification.objects.filter(sender=user, receiver=admin).first()
+        if notification:
+            notification.delete()
+
+def reject_user(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    user.delete()  # Or any other action you want to take upon rejection
+    return redirect('admin_dashboard')
 
 def aboutUs(request) :
     return render(request,'about_us.html')

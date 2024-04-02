@@ -16,9 +16,15 @@ from .models import Education, Skill, Experience, ContactInfo
 from django.contrib.auth.forms import PasswordChangeForm
 
 class SignUpForm(UserCreationForm):
+    role = forms.ChoiceField(choices=User.Role.choices, required=True, initial=User.Role.STUDENT)
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ['username', 'email', 'password1', 'password2', 'role', 'bio']
+
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields['role'].choices = [choice for choice in self.fields['role'].choices if choice[0] != 'ADMIN']
 
 class ChangePasswordForm(PasswordChangeForm):
     def __init__(self, user, *args, **kwargs):
