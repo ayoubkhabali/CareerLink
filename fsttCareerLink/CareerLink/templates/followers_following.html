@@ -19,11 +19,11 @@
      </div>
      <div class="icons fs-14 p-relative">
        <div class="mb-10">
-         <i class="fa-regular fa-face-smile fa-fw"></i>
+        <i class='bx bxs-user-pin' ></i>
          <span>{{follower.followers.count}} followers</span>
        </div>
        <div class="mb-10">
-         <i class="fa-solid fa-code-commit fa-fw"></i>
+        <i class='bx bx-user-pin' ></i>
          <span>{{follower.following.count}} following</span>
        </div>
      </div>
@@ -37,22 +37,20 @@
    {% for followee in following %}
    <div class="friend bg-white rad-6 p-20 p-relative">
      <div class="contact">
-       <i class="fa-solid fa-phone"></i>
-       <i class="fa-regular fa-envelope"></i>
      </div>
-     <div class="txt-c">
-       <img class="rad-half mt-10 mb-10 w-100 h-100" src="{{followee.user_profile_pic.url}}" alt="" />
+     <div class="txt-c" style="display: flex;flex-direction: column;align-items: center;" >
+      <img class="rad-half mt-10 mb-10 w-100 h-100" src="{{followee.profile_pic.url}}" alt="" />
        <h4 class="m-0">{{followee.username}}</h4>
        <p class="c-grey fs-13 mt-5 mb-0">{{followee.role}}</p>
      </div>
      <div class="icons fs-14 p-relative">
        <div class="mb-10">
-         <i class="fa-regular fa-face-smile fa-fw"></i>
+        <i class='bx bxs-user-pin'></i>
          <span>{{followee.followers.count}} followers</span>
        </div>
        <div class="mb-10">
-         <i class="fa-solid fa-code-commit fa-fw"></i>
-         <span>{{followee.following.count}} following</span>
+        <i class='bx bx-user-pin' ></i>
+           <span>{{followee.following.count}} following</span>
        </div>
      </div>
    </div>

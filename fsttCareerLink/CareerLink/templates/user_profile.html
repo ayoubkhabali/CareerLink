@@ -43,7 +43,7 @@
             <img src="{{ user.profile_pic.url }}" alt="">
         </div>
         
-        <div class="profile-func">
+        <div class="profile-func"  style="display: flex; gap: 1rem; align-items: center; ">
             {% if user.is_authenticated and user == request.user %}
                 {% if user.role == "TEACHER" %}
             <button class="post-btn btn modal-trigger" data-form-type="class">Create Class</button>
@@ -56,7 +56,7 @@
 
                 <form method="post" action="{% url 'remove_follow_request' user.username %}">
                     {% csrf_token %}
-                    <button type="submit">Requested</button>
+                    <button type="submit"><i class='bx bxs-user-check'></i></button>
                   </form>
                   <button class="modal-trigger" data-form-type="message"  style="font-size: 3rem;"><i class='bx bxs-envelope'></i></button>
                 </div>
@@ -72,8 +72,8 @@
         {% else %}
             <form method="post" action="{% url 'unfollow_user' user.username %}">
                 {% csrf_token %}
-                <button type="submit">Unfollow</button>
-            </form>
+                <button type="submit"><i class='bx bxs-user-x'></i></button>
+              </form>
             <button class="modal-trigger" data-form-type="message" ><i class='bx bxs-envelope'></i></button>
 
         {% endif %}
@@ -308,7 +308,7 @@
   <nav class="profile-nav-tabs filtering-posts">
     <ul>
         <li class="profile-tab current-tab" data-filter="all">All</li>
-        <li class="profile-tab" data-filter="POST">Regular Posts</li>
+        <li class="profile-tab" data-filter="REGULAR">Regular Posts</li>
         <li class="profile-tab" data-filter="PEDAGOGICAL">Pedagogical Activities</li>
         <li class="profile-tab" data-filter="RESEARCH">Research Activities</li>
     </ul>
@@ -317,6 +317,88 @@
     <div class="feeds" style="width: 70%;margin: auto;">
 
       {% if user == request.user %}
+
+
+      {% for shared_post in shared_posts %}
+      <div class="feed">
+        <p style="color: #1976D2; position: relative;font-size: 1.1rem;padding: .5rem 0;">Shared Post : </p>
+
+          <div class="head">
+              <div class="user">
+                  <div class="profile-photo">
+                      <img src="{{ shared_post.post.author.profile_pic.url }}">
+                  </div>
+                  <div class="info">
+                      <h3>{{  shared_post.post.author.username }}</h3>
+                      <small>{{ shared_post.shared_at }}</small>
+                  </div>
+              </div>
+          </div>
+  
+          <div class="caption">
+              <br>
+              <p>{{ shared_post.post.content }}</p>
+          </div>
+          {% if shared_post.post.attachment %}
+              <div class="assign-attachment" style="margin: .5rem 0;">
+                  <a href="{{ shared_post.post.attachment.url }}" style="color: #1976D2;" download>
+                      <i class='bx bxs-file-archive'></i> {{ shared_post.post.attachment }}
+                  </a>
+              </div>
+          {% endif %}
+  
+          {% if shared_post.post.post_media %}
+              <div class="photo">
+                  <img src="{{ shared_post.post.post_media.url }}">
+              </div>
+          {% endif %}
+  
+          <div class="action-buttons">
+              <div class="interaction-buttons">
+                  <span class="like-button {% if user in shared_post.post.likes.all %}liked{% endif %}"
+                        data-post-id="{{ shared_post.post.id }}">
+                      <i class="uil uil-heart"></i>
+                  </span>
+                  <span><i class="uil uil-comment-dots"></i></span>
+                  <span><a href="{% url 'share_post' post_id=shared_post.post.id %}"><i class="uil uil-share-alt"></i></a></span>
+              </div>
+          </div>
+  
+          <div class="liked-by">
+              <p>Liked by {{ shared_post.post.likes.count }} people</p>
+          </div>
+  
+          <div class="comments text-muted">
+              View all the comments
+          </div>
+          <div class="comments-section" style="display: none;">
+              {% for comment in shared_post.post.comments.all %}
+                  <div class="message" style="margin: 1rem 0;">
+                      <div class="profile-photo">
+                          <img src="{{ comment.author.profile_pic.url }}">
+                      </div>
+                      <div class="message-body">
+                          <h5>{{ comment.author.username }}</h5>
+                          <p class="text-muted">{{ comment.content }}</p>
+                      </div>
+                  </div>
+              {% endfor %}
+              <div class="add-comment">
+
+                <form method="post" class="create-post" action="{% url 'comment_post' post_id=shared_post.post.id %}">
+                    <div class="profile-photo">
+                        <img src="{{request.user.profile_pic.url}}">
+                    </div>
+                  
+                    {% csrf_token %}
+                    <input type="text" name="content" placeholder="Write a comment...">
+                    <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
       {% for post in posts %}
 
       <div class="feed" data-type="{{ post.post_type}}">
@@ -413,6 +495,7 @@
     </div>
     {% endfor %}
 
+
       {% else %}
 
             {% if user not in request.user.following.all %}
@@ -423,103 +506,184 @@
                 </div>
             {% else %}
 
-                  {% for post in posts %}
-
-
-              <div class="feed">
-                  <div class="head">
-                      <div class="user">
+            {% for shared_post in shared_posts %}
+            <div class="feed">
+              <p style="color: #1976D2; position: relative;font-size: 1.1rem;padding: .5rem 0;">{{user.username} }Shared Post : </p>
+      
+                <div class="head">
+                    <div class="user">
+                        <div class="profile-photo">
+                            <img src="{{ shared_post.post.author.profile_pic.url }}">
+                        </div>
+                        <div class="info">
+                            <h3>{{ shared_post.post.author.username }}</h3>
+                            <small>{{ shared_post.shared_at }}</small>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="caption">
+                    <br>
+                    <p>{{ shared_post.post.content }}</p>
+                </div>
+                {% if shared_post.post.attachment %}
+                    <div class="assign-attachment" style="margin: .5rem 0;">
+                        <a href="{{ shared_post.post.attachment.url }}" style="color: #1976D2;" download>
+                            <i class='bx bxs-file-archive'></i> {{ shared_post.post.attachment }}
+                        </a>
+                    </div>
+                {% endif %}
+        
+                {% if shared_post.post.post_media %}
+                    <div class="photo">
+                        <img src="{{ shared_post.post.post_media.url }}">
+                    </div>
+                {% endif %}
+        
+                <div class="action-buttons">
+                    <div class="interaction-buttons">
+                        <span class="like-button {% if user in shared_post.post.likes.all %}liked{% endif %}"
+                              data-post-id="{{ shared_post.post.id }}">
+                            <i class="uil uil-heart"></i>
+                        </span>
+                        <span><i class="uil uil-comment-dots"></i></span>
+                        <span><a href="{% url 'share_post' post_id=shared_post.post.id %}"><i class="uil uil-share-alt"></i></a></span>
+                    </div>
+                </div>
+        
+                <div class="liked-by">
+                    <p>Liked by {{ shared_post.post.likes.count }} people</p>
+                </div>
+        
+                <div class="comments text-muted">
+                    View all the comments
+                </div>
+                <div class="comments-section" style="display: none;">
+                    {% for comment in shared_post.post.comments.all %}
+                        <div class="message" style="margin: 1rem 0;">
+                            <div class="profile-photo">
+                                <img src="{{ comment.author.profile_pic.url }}">
+                            </div>
+                            <div class="message-body">
+                                <h5>{{ comment.author.username }}</h5>
+                                <p class="text-muted">{{ comment.content }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="add-comment">
+      
+                      <form method="post" class="create-post" action="{% url 'comment_post' post_id=shared_post.post.id %}">
                           <div class="profile-photo">
-                              <img src="{{ request.user.profile_pic.url }}">
+                              <img src="{{request.user.profile_pic.url}}">
                           </div>
-                          <div class="info">
-                              <h3>{{post.author.username}}</h3>
-                              <small>{{post.created_at}}</small>
-                              <span style="color: #1976D2;" >{{post.post_type}}</span>
-                          </div>
-                      </div>
-                      {% if post.author.username == request.user.username %}
-          <div class="menu  edit">
-            <i class='bx bx-dots-horizontal-rounded icon'></i>
-            <ul class="menu-link">
-              <li>
-                                  <form action="{% url 'delete_post' post.id %}" method="post">
-                                      {% csrf_token %}
-                                      <button type="submit" class="">Remove</button>
-                                  </form>
-                              </li>
-            </ul>
-          </div>
-                      {% endif %}
-
-
-                  </div>
-
-                  <div class="caption">
-                      <br>
-                      <p> {{post.content}}</p>
-                  </div>
-                  {% if post.attachment %}
-                  <div class="assign-attachment" style="margin: .5rem 0;">
-                      <a href="{{ post.attachment.url }}" style="color: #1976D2;"  download><i class='bx bxs-file-archive'></i> {{ post.attachment }}</a>
-                  </div>
-                  {% endif %}
-
-                  {% if post.post_media %}
-
-                  <div class="photo">
-                      <img src="{{post.post_media.url}}">
-                  </div>
-                  {% endif%}
-
-
-                  <div class="action-buttons">
-                      <div class="interaction-buttons">
-                          <span class="like-button {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
-                              <i class="uil uil-heart"></i>
-                          </span>
-                          
-                                                      <span><i class="uil uil-comment-dots"></i></span>
-                          <span><a href="{% url 'share_post' post_id=post.id %}"><i class="uil uil-share-alt"></i></a></span>
-                      </div>
-
-                  </div>
-
-                  <div class="liked-by">
-                      <p>Liked by {{ post.likes.count }} people</b></p>
-                  </div>
-
-                  <div class="comments text-muted" >
-                      View all the comments
-                  </div>
-                  <div class="comments-section" style="display: none;">
-                      {% for comment in post.comments.all %}
-                      <div class="message" style="margin: 1rem 0;" >
-                          <div class="profile-photo">
-                              <img src="{{comment.author.profile_pic.url}}">
-                          </div>
-                          <div class="message-body">
-                              <h5>{{comment.author.username}}</h5>
-                              <p class="text-muted">{{comment.content}}</p>
-                          </div>
-                      </div>
-                      {% endfor %}
-                      <div class="add-comment">
-
-                          <form method="post" class="create-post" action="{% url 'comment_post' post_id=post.id %}">
-                              <div class="profile-photo">
-                                  <img src="{{request.user.profile_pic.url}}">
-                              </div>
-                            
-                              {% csrf_token %}
-                              <input type="text" name="content" placeholder="Write a comment...">
-                              <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
-                          </form>
-                      </div>
+                        
+                          {% csrf_token %}
+                          <input type="text" name="content" placeholder="Write a comment...">
+                          <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
+                      </form>
                   </div>
               </div>
+          </div>
+          {% endfor %}
 
+
+          {% for post in posts %}
+
+
+          <div class="feed">
+              <div class="head">
+                  <div class="user">
+                      <div class="profile-photo">
+                          <img src="{{ request.user.profile_pic.url }}">
+                      </div>
+                      <div class="info">
+                          <h3>{{post.author.username}}</h3>
+                          <small>{{post.created_at}}</small>
+                          <span style="color: #1976D2;" >{{post.post_type}}</span>
+                      </div>
+                  </div>
+                  {% if post.author.username == request.user.username %}
+      <div class="menu  edit">
+        <i class='bx bx-dots-horizontal-rounded icon'></i>
+        <ul class="menu-link">
+          <li>
+                              <form action="{% url 'delete_post' post.id %}" method="post">
+                                  {% csrf_token %}
+                                  <button type="submit" class="">Remove</button>
+                              </form>
+                          </li>
+        </ul>
+      </div>
+                  {% endif %}
+
+
+              </div>
+
+              <div class="caption">
+                  <br>
+                  <p> {{post.content}}</p>
+              </div>
+              {% if post.attachment %}
+              <div class="assign-attachment" style="margin: .5rem 0;">
+                  <a href="{{ post.attachment.url }}" style="color: #1976D2;"  download><i class='bx bxs-file-archive'></i> {{ post.attachment }}</a>
+              </div>
+              {% endif %}
+
+              {% if post.post_media %}
+
+              <div class="photo">
+                  <img src="{{post.post_media.url}}">
+              </div>
+              {% endif%}
+
+
+              <div class="action-buttons">
+                  <div class="interaction-buttons">
+                      <span class="like-button {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
+                          <i class="uil uil-heart"></i>
+                      </span>
+                      
+                                                  <span><i class="uil uil-comment-dots"></i></span>
+                      <span><a href="{% url 'share_post' post_id=post.id %}"><i class="uil uil-share-alt"></i></a></span>
+                  </div>
+
+              </div>
+
+              <div class="liked-by">
+                  <p>Liked by {{ post.likes.count }} people</b></p>
+              </div>
+
+              <div class="comments text-muted" >
+                  View all the comments
+              </div>
+              <div class="comments-section" style="display: none;">
+                  {% for comment in post.comments.all %}
+                  <div class="message" style="margin: 1rem 0;" >
+                      <div class="profile-photo">
+                          <img src="{{comment.author.profile_pic.url}}">
+                      </div>
+                      <div class="message-body">
+                          <h5>{{comment.author.username}}</h5>
+                          <p class="text-muted">{{comment.content}}</p>
+                      </div>
+                  </div>
                   {% endfor %}
+                  <div class="add-comment">
+
+                      <form method="post" class="create-post" action="{% url 'comment_post' post_id=post.id %}">
+                          <div class="profile-photo">
+                              <img src="{{request.user.profile_pic.url}}">
+                          </div>
+                        
+                          {% csrf_token %}
+                          <input type="text" name="content" placeholder="Write a comment...">
+                          <button type="submit" class="btn btn-primary"><i class='bx bxs-send'></i></button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+
+      {% endfor %}
 
              {% endif %}
           {% endif %}
@@ -568,14 +732,16 @@
 
 
 <div class="overlay">
-    <div class="modal class-modal">
+    <div class="quick-draft p-20 bg-white rad-10 modal class-modal">
+        <h2 class="mt-0 mb-10">Create Class</h2>
         {% include 'create_class.html' %}
     </div>
-    <div class="modal message-modal">
+    <div class="quick-draft p-20 bg-white rad-10 modal message-modal">
+        <h2 class="mt-0 mb-10">Send Message to {{user.username}}</h2>
         <form method="post" id="send-message-form">
             {% csrf_token %}
             {{ send_form.as_p }}
-            <button type="submit">Send</button>
+            <button class="save d-block fs-14 bg-blue c-white b-none w-fit btn-shape"  type="submit">Send</button>
         </form>
     </div>
 </div>
@@ -583,7 +749,6 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
       const tabs = document.querySelectorAll(".profile-tab");
-
       tabs.forEach(function (tab) {
           tab.addEventListener("click", function () {
               const filter = this.dataset.filter;

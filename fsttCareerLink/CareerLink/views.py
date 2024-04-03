@@ -133,6 +133,7 @@ def approve_user(request, user_id):
         notification = Notification.objects.filter(sender=user, receiver=admin).first()
         if notification:
             notification.delete()
+    return redirect('admin_dashboard')
 
 def reject_user(request, user_id):
     user = get_object_or_404(User, pk=user_id)
@@ -528,12 +529,6 @@ def class_detail(request, class_id, class_title):
 def assignment_detail(request, class_id, class_title, assignment_id):
     class_instance = get_object_or_404(Class, pk=class_id)
     assignment = get_object_or_404(Assignment, pk=assignment_id)
-
-    if not (request.user.role == User.Role.STUDENT or request.user.role == User.Role.TEACHER):
-        raise Http404("You are not authorized to view this page.")
-
-    if not (class_instance.teacher.user == request.user or request.user in class_instance.students.all()):
-        raise Http404("You are not authorized to view this page.")
     
     if request.method == 'POST':
         assign_submit_form = AssignmentSubmissionForm(request.POST, request.FILES)

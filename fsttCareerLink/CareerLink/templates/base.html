@@ -11,7 +11,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/profile-style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard-style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/all.min.css'  %}" />
+    <link rel="stylesheet" href="{% static 'css/framework.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/master.css'%}" />
+    
     <link rel="icon" href="{% static 'images/icon.png' %}" type="image/x-icon">
 
     <title>{{ request.path }}</title>
@@ -39,7 +42,7 @@
 
 
            
-            <li><a  href="" class="menu-item"><i class='bx bx-group'></i>Follow Request</a></li>
+            <li><a  href="{% url 'user_followers_following' username=request.user.username %}" class="menu-item"><i class='bx bx-group'></i>Followers</a></li>
             <li><a  href="{% url 'display_offers' %}" class="menu-item"><i class='bx bxs-briefcase'></i> Job offers</a></li>
             <li><a href="{% url 'update_info' username=request.user.username %}" class="menu-item"><i class='bx bx-cog'></i>Settings</a></li>
         </ul>
@@ -59,7 +62,7 @@
     <div class="content">
         <!-- Navbar -->
         <nav>
-            <i class='bx bx-menu'></i>
+            <i class='bx bx-menu' style="margin-left: 2rem;"></i>
             <div class="search-container">
                 <form action="#">
                     <div class="form-input">

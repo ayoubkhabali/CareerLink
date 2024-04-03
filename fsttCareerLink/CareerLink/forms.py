@@ -132,9 +132,7 @@ class AnnouncementForm(forms.ModelForm):
     class Meta:
         model = Announcement
         fields = ['title', 'content', 'attachment', 'photo']
-        widgets = {
-            'content': forms.Textarea(attrs={'rows': 4, 'cols': 40}),  # Adjust rows and columns as needed
-        }
+
 
 from django.utils import timezone
 
@@ -158,10 +156,18 @@ class ClassForm(forms.ModelForm):
 
     class Meta:
         model = Class
-        fields = ['title', 'description', 'students', 'class_cover']
+        fields = ['title', 'description', 'students']
         widgets = {
-            'students': forms.Select(attrs={'class': 'students-select'}),  # You can adjust the widget as needed
+            'title': forms.TextInput(attrs={'class': 'd-block mb-20 w-full p-10 b-none bg-eee rad-6', 'placeholder' : 'enter a title...'}),
+            'students': forms.Select(attrs={'class': 'students-select d-block mb-20 w-full p-10 b-none bg-eee rad-6',}),  # You can adjust the widget as needed
+            'description': forms.TextInput(attrs={'class': ' d-block mb-20 w-full p-10 b-none bg-eee rad-6', 'placeholder' : 'enter a description...'}),  # You can adjust the widget as needed
         }
+        labels = {
+            'title': '',
+            'description': '',
+            'students' :  'heelllo',
+        }
+    
 
 class CustomUserCreationForm(UserCreationForm):
     role = forms.ChoiceField(choices=User.Role.choices)
@@ -182,8 +188,13 @@ class SendMessageForm(forms.ModelForm):
         model = ChatMessage
         fields = ['receiver', 'content']
         widgets = {
-            'receiver': forms.Select(attrs={'class': 'form-control'}),  # You can adjust the widget as needed
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Type your message...'}),
+            'receiver': forms.Select(attrs={'class': 'form-control d-block mb-20 w-full p-10 b-none bg-eee rad-6' }),  # You can adjust the widget as needed
+            'content': forms.Textarea(attrs={'class': 'form-control d-block mb-20 w-full p-10 b-none bg-eee rad-6', 'rows': 3, 'placeholder': 'Type your message...'}),
+        }
+        labels = {
+            'content': '',
+            'receiver': '',
+
         }
 
 class PostForm(forms.ModelForm):

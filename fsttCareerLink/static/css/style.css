@@ -581,6 +581,15 @@ img {
 
 }
 
+.overlay .modal form {
+    width: 100%;
+}
+
+.overlay .modal form input {
+    width: 100%;
+    padding: 1rem;
+}
+
 .overlay.show-modal {
     display: flex;
 }

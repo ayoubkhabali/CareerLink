@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
+
+
 
 {% if request.user.is_authenticated %}
 <main class="main-section">
@@ -245,15 +246,6 @@
                 <h6 class="active">Primary</h6>
             </div>
             <!------- MESSAGES ------->
-            <div class="message">
-                <div class="profile-photo">
-                    <img src="./images/profile-17.jpg">
-                </div>
-                <div class="message-body">
-                    <h5>Edem Quist</h5>
-                    <p class="text-muted">Just woke up bruh</p>
-                </div>
-            </div>
                     {% for user_with_message in users_with_messages %}
                     {% if user_with_message.latest_message %}
                     <a  href="{% url 'conversation_detail' user_with_message.id %}">
@@ -325,13 +317,31 @@
 {% endif %}
 
     <div class="overlay">
-        <div class="modal message-modal">
-            <form method="post" id="send-message-form">
-                {% csrf_token %}
-                {{ send_form.as_p }}
-                <button type="submit">Send</button>
-            </form>
-        </div>
+        <style>
+            .message-modal form {
+                width: 100%;
+                padding: 1rem;
+
+            }
+            .message-modal form input {
+                width: 100%;
+                padding: .5rem;
+            }
+             .message-modal form textarea {
+                height: 300px;
+             }
+        </style>
+
+<div class="quick-draft p-20 bg-white rad-10 modal message-modal">
+    <h2 class="mt-0 mb-10">Send Message</h2>
+    <form method="post" id="send-message-form">
+        {% csrf_token %}
+        {{ send_form.as_p }}
+        <button class="save d-block fs-14 bg-blue c-white b-none w-fit btn-shape"  type="submit">Send</button>
+    </form>
+  </div>
+
+
     </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

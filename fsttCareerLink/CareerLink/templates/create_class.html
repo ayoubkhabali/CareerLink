@@ -6,29 +6,23 @@
         background-color: #1976D2;
     }
 </style>
-     <h4>Create Class</h4>
-     <div class="search-container">
-        <form action="#">
-            <div class="form-input" style="display: flex;gap: 1rem;">
-                <input type="search" id="searchStudentInput" type="search" placeholder="Search..." style="width: 300px;" >
-                <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
-            </div>
-        </form>
-        <div class="search-results search_students_results" style="display: flex;flex-wrap: wrap;"  id="searchStudentsResults">
-            {% include 'search_students_results.html' %}
-        
+<div class="search-container" style="position: relative;">
+    <form action="#">
+        <div class="form-input" style="display: flex;gap: 1rem;">
+            <input type="search"class=" d-block mb-20 w-full p-10 b-none bg-eee rad-6" id="searchStudentInput" type="search" placeholder="Search..." style="width: 300px;" >
+            <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
         </div>
+    </form>
+    <div class="search-results search_students_results " style="display: flex;flex-wrap: wrap;"  id="searchStudentsResults">
+        {% include 'search_students_results.html' %}
+    
     </div>
+</div>
       <form id="class-form" method="post"  enctype="multipart/form-data"   action="{% url 'create_class' %}">
         {% csrf_token %}
-
-
-
+        
         {{  class_form.as_p }}
-
-
-
-        <button type="submit" class="btn search-student">Create</button>
+        <button type="submit" class="save d-block fs-14 bg-blue c-white b-none w-fit btn-shape">Create</button>
       </form>
 
 
