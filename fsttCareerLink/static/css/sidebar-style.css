@@ -386,7 +386,6 @@ nav .profile .profile-link a:hover {
 .content main{
     width: 100%;
     padding: 36px 24px;
-    max-height: calc(100vh - 56px);
 }
 
 .content main .header{

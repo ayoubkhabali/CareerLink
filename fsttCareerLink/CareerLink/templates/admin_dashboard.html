@@ -18,6 +18,17 @@ form {
   grid-row: 1 / 2;
 }
 
+.progresss {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #1976D2;
+}
+
+.progresss i {
+    font-size: 5rem;
+}
+
 .title {
   font-size: 2.2rem;
   color: #444;
@@ -76,12 +87,7 @@ form {
                     <h1>{{students.count}}</h1>
                 </div>
                 <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>+81%</p>
-                    </div>
+                    <i class='bx bxs-graduation'></i>
                 </div>
             </div>
         </div>
@@ -92,12 +98,7 @@ form {
                     <h1>{{teachers.count}}</h1>
                 </div>
                 <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>-48%</p>
-                    </div>
+                    <i class='bx bx-user'></i>
                 </div>
             </div>
         </div>
@@ -108,12 +109,7 @@ form {
                     <h1>{{enterprises.count}}</h1>
                 </div>
                 <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>+21%</p>
-                    </div>
+                    <i class='bx bxs-buildings'></i>
                 </div>
             </div>
         </div>
@@ -124,12 +120,7 @@ form {
                     <h1>{{posts.count}}</h1>
                 </div>
                 <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>+21%</p>
-                    </div>
+                    <i class='bx bxs-notepad'></i>
                 </div>
             </div>
         </div>
@@ -140,12 +131,7 @@ form {
                     <h1>{{classes.count}}</h1>
                 </div>
                 <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>+21%</p>
-                    </div>
+                    <i class='bx bxs-chalkboard' ></i>
                 </div>
             </div>
         </div>
@@ -156,12 +142,7 @@ form {
                     <h1>{{offers.count}}</h1>
                 </div>
                 <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>+21%</p>
-                    </div>
+                    <i class='bx bxs-briefcase'></i>
                 </div>
             </div>
         </div>
@@ -197,7 +178,35 @@ form {
 
     <!-- Recent Orders Table -->
     <div class="recent-orders">
-        <h2>Recent Orders</h2>
+        <h2>Recent Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Notification</th>
+                    <th>approve or reject</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for notification in admin_notifications %}
+                <tr>
+                    <td>{{ notification.message }}</td>
+                    <td style="display: flex;justify-content: center;" >  
+                        <form method="post" action="{% url 'approve_user' user_id=notification.sender.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class=" d-block fs-14 bg-blue c-white b-none w-fit btn-shape btn-success">Approve</button>
+                        </form>
+                        <form method="post" action="{% url 'reject_user' user_id=notification.sender.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class=" d-block fs-14 bg-blue c-white b-none w-fit btn-shape btn-danger">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="recent-orders">
+        <h2>Recent Posts</h2>
         <table>
             <thead>
                 <tr>
@@ -223,29 +232,7 @@ form {
             </tbody>
         </table>
     </div>
-    <div>
-        <div class="new-notifications">
-            <h2>New Notifications</h2>
 
-            <div class="notification-list">
-                {% for notification in admin_notifications %}
-                    <div class="notification">
-                        <p>{{ notification.message }}</p>
-                        <form method="post" action="{% url 'approve_user' user_id=notification.sender.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">Approve</button>
-                        </form>
-                        <form method="post" action="{% url 'reject_user' user_id=notification.sender.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Reject</button>
-                        </form>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        
-    </div>
-    <!-- End of Recent Orders -->
 
 </main>
 

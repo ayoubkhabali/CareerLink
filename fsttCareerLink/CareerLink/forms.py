@@ -132,6 +132,14 @@ class AnnouncementForm(forms.ModelForm):
     class Meta:
         model = Announcement
         fields = ['title', 'content', 'attachment', 'photo']
+        widgets = {
+            'title': forms.TextInput(attrs={'class' : 'd-block mb-20 w-full p-10 b-none bg-eee rad-6', 'placeholder' : 'enter a title...'}),
+            'content': forms.Textarea(attrs={'rows': 4, 'cols': 40, 'class' : 'd-block mb-20 w-full p-10 b-none bg-eee rad-6', 'placeholder' : 'enter a content...'}),
+        }
+        labels = {
+            'title': '',
+            'content': '',
+        }
 
 
 from django.utils import timezone
@@ -142,8 +150,14 @@ class AssignmentForm(forms.ModelForm):
         model = Assignment
         fields = ['title', 'description','due_date','attachment']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
-            'due_date': forms.DateInput(attrs={'type': 'date'}),
+            'title': forms.TextInput(attrs={'class' : 'd-block mb-20 w-full p-10 b-none bg-eee rad-6', 'placeholder' : 'enter a title...'}),
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 40, 'class' : 'd-block mb-20 w-full p-10 b-none bg-eee rad-6', 'placeholder' : 'enter a description...'}),
+            'due_date': forms.DateInput(attrs={'type': 'date',  'class' : 'd-block mb-20 w-full p-10 b-none bg-eee rad-6'}),
+        }
+        labels = {
+            'title': '',
+            'description': '',
+            'attachment' :  '',
         }
 
 
@@ -165,7 +179,7 @@ class ClassForm(forms.ModelForm):
         labels = {
             'title': '',
             'description': '',
-            'students' :  'heelllo',
+            'students' :  '',
         }
     
 
